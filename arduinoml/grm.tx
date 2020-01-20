@@ -1,0 +1,19 @@
+Model:
+    brk*=Brick
+;
+
+Brick:
+    Sensor | Actuator
+;
+
+Sensor:
+    'SEN' name=ID pins=Pins
+;
+
+Actuator:
+    'ACT' name=ID pins=Pins
+;
+
+Pins:
+    data*=INT | data*=INT[' ']
+;
