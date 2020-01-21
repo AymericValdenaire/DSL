@@ -1,5 +1,7 @@
 Model:
+    'DEBOUNCE = ' debounce=INT
     brk*=Brick
+    exprBlock*=ExpressionBlock
 ;
 
 Brick:
@@ -7,13 +9,61 @@ Brick:
 ;
 
 Sensor:
-    'SEN' name=ID pins=Pins
+    'SEN' name=ID atr=Attributes
 ;
 
 Actuator:
-    'ACT' name=ID pins=Pins
+    'ACT' name=ID atr=Attributes
 ;
 
-Pins:
-    data*=INT | data*=INT[' ']
+Attributes:
+    data*=Attribute
+;
+
+Attribute:
+    id=ID '=' value=INT init*=State
+;
+
+ExpressionBlock:
+    'WHEN' cond=Bexprs '{' expr=Expressions '}'
+;
+
+Bops:
+    'AND' |
+    'OR'
+;
+
+Bexprs:
+    single=Bexpr |
+    l=Bexpr op=Bops r=Bexpr
+;
+
+Bexpr:
+    trigger=Var state=State
+;
+
+Expressions:
+    data*=Expression
+;
+
+Expression:
+    Affectation |
+    Negation
+;
+
+Negation:
+    '!' var=Var
+;
+
+Var:
+    brk=ID '.' atr_name=ID
+;
+
+Affectation:
+    l=Var '=' r=Expression |
+    l=Var '=' r=State
+;
+
+State:
+    'HIGH' | 'LOW'
 ;

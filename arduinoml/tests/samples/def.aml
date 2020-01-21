@@ -1,2 +1,13 @@
-SEN button 1
-ACT led 2 5 8
+
+DEBOUNCE = 200
+
+SEN button pin=9
+ACT led2 pin = 11 LOW
+
+ACT led
+    pin=10 HIGH
+
+WHEN button.pin HIGH {
+    led.pin = !led.pin
+    led2.pin = !led2.pin
+}
