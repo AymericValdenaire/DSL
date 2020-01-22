@@ -4,7 +4,7 @@ Model:
 ;
 
 Brick:
-    Actuator | Sensor
+    Actuator | Sensor | Lcd
 ;
 
 Actuator:
@@ -15,12 +15,18 @@ Sensor:
     'SENSOR' name=ID pin=INT
 ;
 
+Lcd:
+    'LCD' name=ID 'BUS' bus_id=INT
+;
+
 DigitalValue:
     value='ON' | value='OFF'
 ;
 
 Action:
-    'SET' var=ID value=DigitalValue
+    type='SET' var=ID value=DigitalValue |
+    type='PRINT' var=ID value=STRING |
+    type='CLEAR' var=ID
 ;
 
 Transition:

@@ -1,33 +1,7 @@
 import textx as tx
 import sys
 
-class Model(object):
-    def __init__(self, bricks, states):
-        self.bricks = bricks
-        self.states = states
 
-        self.init_state = self.generate_loop_code()
-
-    def generate_setup_code(self):
-        setup = open("templates/setup.amlt", 'r').read()
-        return setup.format(setup_code='\n\t'+ '\n\t'.join([e.setup_code() for e in self.bricks]))
-
-    def generate_loop_code(self):
-        init_states = list(map(lambda e : e.name,
-                          list(filter(lambda e : e.is_init_state, self.states))))
-        if len(init_states) != 1:
-            raise SyntaxError("Invalid number of initial state")
-
-        return 'void loop() {{ {init_state}(); }}'.format(init_state=init_states[0])
-
-    def __str__(self):
-
-        header = open("header.txt", 'r').read()
-        return "{}\n{}\n{}\n{}\n{}".format(header,
-                                           self.generate_setup_code(),
-                                           '\n'.join([str(brick) for brick in self.bricks]),
-                                           '\n'.join([str(state) for state in self.states]),
-                                           self.init_state)
 
 class Brick:
     def __init__(self, parent):
@@ -40,7 +14,7 @@ class Actuator:
         self.pin = pin
 
     def setup_code(self):
-        return "pinMode({}, OUTPUT);".format(self.pin)
+        return "pinMode({}, OUTPUT);".format(self.name)
 
     def __str__(self):
         return "int {} = {};".format(self.name, self.pin)
@@ -52,7 +26,7 @@ class Sensor:
         self.pin = pin
 
     def setup_code(self):
-        return "pinMode({}, INPUT);".format(self.pin)
+        return "pinMode({}, INPUT);".format(self.name)
 
     def __str__(self):
         return "int {} = {};".format(self.name, self.pin)
@@ -66,13 +40,20 @@ class DigitalValue:
         return 'HIGH' if self.value == 'ON' else "LOW"
 
 class Action:
-    def __init__(self, parent, var, value):
+    def __init__(self, parent,type, var, value):
         self.parent = parent
+        self.type = type
         self.var = var
         self.value = value
 
     def __str__(self):
-        return 'digitalWrite({}, {});\n'.format(self.var, self.value)
+        if self.type == "SET":
+            return 'digitalWrite({}, {});\n'.format(self.var, self.value)
+        if self.type == "PRINT":
+            return '{lcd_name}.setCursor(0, 0);\n' \
+                   '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var,value=self.value.ljust(16))
+        if self.type == "CLEAR":
+            return '{lcd_name}.clear();\n'.format(lcd_name=self.var)
 
 class Transition:
     def __init__(self, parent, cond, next_state):
@@ -129,15 +110,73 @@ class Bexpr:
     def __str__(self):
         return 'digitalRead({}) {} {}'.format(self.var, self.op, self.value)
 
+class Lcd:
+    def __init__(self, parent, name,bus_id):
+        self.parent = parent
+        self.name = name
+        self.bus_id = bus_id
+
+    def get_bus_pins(self):
+        if self.bus_id == 1:
+            return '2, 3, 4, 5, 6, 7, 8'
+        if self.bus_id == 2:
+            return '10, 11, 12, 13, 14, 15, 16'
+        else:
+            raise ValueError('Invalid Bus for lcd {} must be 1 or 2'.format(self.name))
+
+    def setup_code(self):
+        return "{}.begin(16, 2);".format(self.name)
+
+    def __str__(self):
+        return 'LiquidCrystal lcd({});'.format(self.get_bus_pins())
+
+
+class Model(object):
+    def __init__(self, bricks, states):
+        self.bricks = bricks
+        self.states = states
+
+        self.init_state = self.generate_loop_code()
+
+    def generate_includes(self):
+        out = set()
+        for e in self.bricks:
+            if type(e) == Lcd:
+                out.add("LiquidCrystal.h")
+        return '\n'.join(["#include <{}>".format(e) for e in out])
+
+    def generate_setup_code(self):
+        setup = open("templates/setup.amlt", 'r').read()
+        return setup.format(setup_code='\n\t' + '\n\t'.join([e.setup_code() for e in self.bricks]))
+
+    def generate_loop_code(self):
+        init_states = list(map(lambda e: e.name,
+                               list(filter(lambda e: e.is_init_state, self.states))))
+        if len(init_states) != 1:
+            raise SyntaxError("Invalid number of initial state")
+
+        return 'void loop() {{ {init_state}(); }}'.format(init_state=init_states[0])
+
+    def __str__(self):
+
+        header = open("header.txt", 'r').read()
+        return "{}\n{}\n{}\n{}\n{}\n{}".format(header,
+                                               self.generate_includes(),
+                                                '\n'.join([str(brick) for brick in self.bricks]),
+                                                self.generate_setup_code(),
+                                                '\n'.join([str(state) for state in self.states]),
+                                                self.init_state)
+
+
 def cname(o):
     return o.__class__.__name__
 
-classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr]
+classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
 
 mmodel = tx.metamodel_from_file('grammar.tx', classes=classes)
 
 if len(sys.argv) < 2 :
-    print(mmodel.model_from_file('samples/scenario_4.aml'))
+    print(mmodel.model_from_file('samples/lcd.aml'))
 else:
 
 
