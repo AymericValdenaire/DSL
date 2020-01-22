@@ -10,6 +10,5 @@ public abstract class Brick implements Visitable {
     private int pin;
     private String name;
 
-    @Override
     public abstract void accept(Visitor visitor);
 }

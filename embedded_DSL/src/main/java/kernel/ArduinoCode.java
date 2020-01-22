@@ -13,7 +13,6 @@ public class ArduinoCode implements Visitable {
   private List<Brick> bricks;
   private List<State> stateMachine;
 
-  @Override
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }

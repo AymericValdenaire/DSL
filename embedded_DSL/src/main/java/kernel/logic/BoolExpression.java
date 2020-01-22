@@ -1,15 +1,13 @@
 package kernel.logic;
 
-import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import lombok.Getter;
 
 @Getter
-public class State implements Visitable {
+public class BoolExpression implements Visitable {
 
-  String name;
-  List<Transition> transitions;
+  String expression;
 
   public void accept(Visitor visitor) {
     visitor.visit(this);

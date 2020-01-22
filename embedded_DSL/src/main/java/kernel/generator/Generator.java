@@ -1,7 +1,9 @@
 package kernel.generator;
 
 import kernel.ArduinoCode;
+import kernel.logic.BoolExpression;
 import kernel.logic.State;
+import kernel.logic.Transition;
 import kernel.model.Actuator;
 import kernel.model.Brick;
 import kernel.model.Sensor;
@@ -47,4 +49,13 @@ public class Generator extends Visitor<StringBuilder>{
     builder.append("}\n");
   }
 
+  @Override
+  public void visit(Transition transition) {
+
+  }
+
+  @Override
+  public void visit(BoolExpression boolExpression) {
+
+  }
 }
