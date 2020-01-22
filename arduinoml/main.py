@@ -2,10 +2,10 @@ import textx as tx
 import sys
 
 class Model(object):
-    def __init__(self, brk, exprBlock, debounce):
+    def __init__(self,gvar,  brk, exprBlock):
+        self.gvar = gvar
         self.brk = brk
         self.exprBlock = exprBlock
-        self.debounce = debounce
 
     def __str__(self):
         out = self.generate_var_init()
@@ -13,17 +13,50 @@ class Model(object):
         out += self.generate_loop_code()
         return out
 
+    def freq_init_code(self):
+        freq = self.get_global_var('FREQUENCY')
+        if freq is not None:
+            return str(freq)
+        else:
+            return 'float FREQUENCY 0.0;'
+
+    def get_global_var(self, name):
+        for var in self.gvar:
+            if var.name == name:
+                return var
+        return None
+
     def generate_loop_code(self):
         out = open('templates/loop.tpl', 'r').read()
-        return out.format(loop_code=''.join([str(expr) for expr in self.exprBlock]))
+        return out.format(freq_init=self.freq_init_code(),
+                          loop_code=''.join([str(expr) for expr in self.exprBlock]))
 
     def generate_var_init(self):
         return ''.join([brk.declaration_code() for brk in self.brk])
 
     def generate_var_setup(self):
         out = open('templates/VarSetup.tpl', 'r').read()
-        return out.format(debounce=self.debounce,
+        return out.format(global_var='\n'.join([str(var) for var in self.gvar]),
                           setup_code='\t'.join([act.setup_code() for act in self.brk]))
+
+class GlobalVar:
+    def __init__(self, parent, name, val):
+        self.parent = parent
+        self.name = name
+        self.val = val
+
+    def __str__(self):
+        if type(self.val) is int:
+            return 'int {} = {};'.format(self.name, self.val)
+
+class Wait:
+    def __init__(self, parent, val):
+        self.parent = parent
+        self.val = val
+
+    def __str__(self):
+        if type(self.val) is int:
+            return 'delay({});'.format(self.val)
 
 class Attributes(object):
     def __init__(self, parent, data):
@@ -171,7 +204,7 @@ class Var:
 def cname(o):
     return o.__class__.__name__
 
-classes=[Model, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr, State, Bool]
+classes=[Model,GlobalVar,Wait, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr, State, Bool]
 
 mmodel = tx.metamodel_from_file('grm.tx', classes=classes)
 
