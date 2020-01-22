@@ -1,4 +1,4 @@
-long time = 0; long debounce = {debounce};
+{global_var}
 void setup()
 {{
     {setup_code}}}

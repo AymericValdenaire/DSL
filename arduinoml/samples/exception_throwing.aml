@@ -1,5 +1,5 @@
 DEBOUNCE = 200
-
+FREQUENCY = 0.25
 SEN btn pin=11
 ACT btn2 pin=10
 ACT led
@@ -12,4 +12,9 @@ WHEN (btn.pin HIGH AND btn2.pin HIGH) {
 
 WHEN led.blink TRUE {
     led.pin = !led.pin
+    SLEEP 200
+    led.pin = !led.pin
+    SLEEP 200
+    led.pin = !led.pin
+    SLEEP 200
 }

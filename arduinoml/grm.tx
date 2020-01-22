@@ -1,7 +1,12 @@
 Model:
-    'DEBOUNCE = ' debounce=INT
+    gvar*=GlobalVar
     brk*=Brick
     exprBlock*=ExpressionBlock
+;
+
+GlobalVar:
+    name='FREQUENCY' '=' val=FLOAT |
+    name='DEBOUNCE' '=' val=INT
 ;
 
 Brick:
@@ -50,7 +55,12 @@ Expressions:
 
 Expression:
     Affectation |
-    Negation
+    Negation |
+    Wait
+;
+
+Wait:
+    'SLEEP' val=INT
 ;
 
 Negation:

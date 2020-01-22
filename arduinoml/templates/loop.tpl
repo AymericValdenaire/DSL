@@ -1,3 +1,7 @@
 void loop()
 {{
-    {loop_code}}}
+    {freq_init}
+    {loop_code}
+
+    delay(FREQUENCY);
+}}
