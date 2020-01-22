@@ -31,6 +31,9 @@ public class Generator extends Visitor<StringBuilder>{
   @Override
   public void visit(State state) {
 
+    //builder.append(String.format("if ( "));
+    //state.getTransitions().get(0).accept(this);
+
   }
 
   @Override
@@ -53,6 +56,7 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Transition transition) {
+    //builder.append(String.format("digitalRead( %s == %s ) { \n",transition.getSensor(),transition.getCondition().getExpression()));
 
   }
 

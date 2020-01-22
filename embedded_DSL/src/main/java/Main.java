@@ -13,6 +13,8 @@ public class Main {
                     .setup(sensor("led",2))
                     .setup(actuator("button",3))
                     .stateTable()
+                        .state("on").when("button").isHigh().thenState("off")
+                        .state("off").when("button").isHigh().thenState("on")
                     .endStateTable()
                 .build();
 
