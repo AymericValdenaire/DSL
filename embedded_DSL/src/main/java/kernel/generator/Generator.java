@@ -1,6 +1,6 @@
 package kernel.generator;
 
-import kernel.ArduinoCode;
+import kernel.ArduinoApp;
 import kernel.logic.BoolExpression;
 import kernel.logic.State;
 import kernel.logic.Transition;
@@ -32,18 +32,18 @@ public class Generator extends Visitor<StringBuilder>{
   }
 
   @Override
-  public void visit(ArduinoCode arduinoCode) {
+  public void visit(ArduinoApp arduinoApp) {
 
     //setup
     builder.append("void setup()\n{\n");
-    for (Brick brick: arduinoCode.getBricks()){
+    for (Brick brick: arduinoApp.getBricks()){
       brick.accept(this);
     }
     builder.append("}\n");
 
     //loop
     builder.append("void loop()\n{\n");
-    for (State state: arduinoCode.getStateMachine()){
+    for (State state: arduinoApp.getStateMachine()){
       state.accept(this);
     }
     builder.append("}\n");
@@ -57,5 +57,9 @@ public class Generator extends Visitor<StringBuilder>{
   @Override
   public void visit(BoolExpression boolExpression) {
 
+  }
+
+  public String getGeneratedCode(){
+    return builder.toString();
   }
 }

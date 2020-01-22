@@ -1,0 +1,12 @@
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/model/Sensor.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/logic/BoolExpression.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/ArduinoCode.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/generator/Generator.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/model/Brick.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/builder/ArduinoBuilder.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/generator/Visitable.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/model/Actuator.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/logic/State.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/logic/Transition.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/Main.java
+/home/michel/Bureau/DSL/embedded_DSL/src/main/java/kernel/generator/Visitor.java
