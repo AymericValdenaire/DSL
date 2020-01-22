@@ -2,11 +2,13 @@ package kernel.logic;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class Transition implements Visitable {
 
+  String sensor;
   BoolExpression condition;
   State destination;
 

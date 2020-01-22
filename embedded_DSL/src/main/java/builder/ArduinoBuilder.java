@@ -26,10 +26,7 @@ public class ArduinoBuilder {
         return arduinoBuilder;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public ArduinoApp build() {
         return arduinoApp;
     }
@@ -63,9 +60,12 @@ public class ArduinoBuilder {
             throw new IllegalArgumentException("Illegal brick pin");
     }
 
-    public StateTableBuilder stateTable(){
-        return new StateTableBuilder(this);
+    public TransitionTableBuilder stateTable(){
+        return new TransitionTableBuilder(this);
     }
 
+    public ArduinoApp getArduinoApp() {
+        return arduinoApp;
+    }
 
 }
