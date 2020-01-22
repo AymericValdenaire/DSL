@@ -3,13 +3,13 @@ ACTUATOR led 11
 ACTUATOR buzzer 9
 
 INIT off {
-    SET led off
-    SET buzzer off
-    button == on -> B
+    SET led OFF
+    SET buzzer OFF
+    button == ON -> on
 }
 
 on {
-    SET led on
-    SET buzzer on
-    button == off -> A
+    SET led ON
+    SET buzzer ON
+    button == OFF -> off
 }

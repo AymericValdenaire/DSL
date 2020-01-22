@@ -1,0 +1,42 @@
+Model:
+    bricks*=Brick
+    states*=State
+;
+
+Brick:
+    Actuator | Sensor
+;
+
+Actuator:
+    'ACTUATOR' name=ID pin=INT
+;
+
+Sensor:
+    'SENSOR' name=ID pin=INT
+;
+
+DigitalValue:
+    value='ON' | value='OFF'
+;
+
+Action:
+    'SET' var=ID value=DigitalValue
+;
+
+Transition:
+    cond=Condition '->' next_state=ID
+;
+
+State:
+    is_init_state?='INIT' name=ID '{'
+    exprs*=Exprs
+    '}'
+;
+
+Exprs:
+    Action | Transition
+;
+
+Condition:
+    var=ID '==' value=DigitalValue
+;

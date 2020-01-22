@@ -63,7 +63,7 @@ class DigitalValue:
         self.value=value
 
     def __str__(self):
-        return 'HIGH' if self.value == 'on' else "LOW"
+        return 'HIGH' if self.value == 'ON' else "LOW"
 
 class Action:
     def __init__(self, parent, var, value):
