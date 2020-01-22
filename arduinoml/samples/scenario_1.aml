@@ -1,0 +1,15 @@
+DEBOUNCE = 50
+
+SEN btn pin=11
+ACT buzzer pin=10 LOW
+ACT led pin = 9 LOW
+
+WHEN btn.pin HIGH {
+    buzzer.pin = HIGH
+    led.pin = HIGH
+}
+
+WHEN btn.pin LOW {
+    buzzer.pin = LOW
+    led.pin = LOW
+}

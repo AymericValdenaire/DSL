@@ -1,4 +1,5 @@
 import textx as tx
+import sys
 
 class Model(object):
     def __init__(self, brk, exprBlock, debounce):
@@ -67,13 +68,14 @@ class Actuator(object):
         out = ''
         for i in range(len(self.atr.data)):
             out += 'int {}_{} = {};\n'.format(self.name, self.atr.data[i].id, self.atr.data[i].value)
-            out += 'int {}_{}_state = {};\n'.format(self.name, self.atr.data[i].id, self.atr.data[i].init[0])
+            out += 'int {}_{}_state = {};\n'.format(self.name, self.atr.data[i].id,
+                                                    self.atr.data[i].init[0] if len(self.atr.data[i].init) > 0 else 'LOW')
         return out
 
     def setup_code(self):
         return ''.join(['pinMode({}_{}, OUTPUT);\ndigitalWrite({}_{}, {});'.format(self.name, pins.id,
                                                                                    self.name, pins.id,
-                                                                                   pins.init[0])
+                                                                                   pins.init[0] if len(pins.init) > 0 else 'LOW')
                         for pins in self.atr.data])
 
 class ExpressionBlock:
@@ -111,6 +113,14 @@ class Bexpr:
     def __str__(self):
         return 'digitalRead({}) == {}'.format(self.trigger, self.state)
 
+class State:
+    def __init__(self, parent, val):
+        self.parent = parent
+        self.val = val
+
+    def __str__(self):
+        return self.val
+
 class Affectation:
     def __init__(self,parent, l,r):
         self.parent = parent
@@ -118,7 +128,11 @@ class Affectation:
         self.r = r
 
     def __str__(self):
-        if type(self.r) is Negation :
+        if type(self.r) is State:
+            return '{}_state = {};\n' \
+                   'digitalWrite({}, {});'.format(self.l, self.r, self.l, self.r)
+
+        if type(self.r) is Negation:
             return '{}_state = {}_state;\n' \
                    'digitalWrite({}, {}_state);'.format(self.l, self.r, self.l, self.r.var)
 
@@ -145,27 +159,28 @@ class Var:
 def cname(o):
     return o.__class__.__name__
 
-classes=[Model, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr]
+classes=[Model, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr, State]
 
 mmodel = tx.metamodel_from_file('grm.tx', classes=classes)
 
-model = mmodel.model_from_file('./tests/samples/def.aml')
+data = sys.stdin.readlines()
+if len(sys.argv) < 2 and len(data) == 0 :
+    print("ERROR : Missing input file")
+    exit(1)
 
-#
-#For example, let’s consider the following scenario:
-#“As a user, considering a button and a LED, I want to switch on the LED after pushing the button.
-#Pushing the button again will switch it off, and so on”.
-#
-# The essence of ArduinoML is to support the definition of such an application.
+HEADER = open("header.txt", 'r').read()
 
-f = open("header.txt", 'r')
-print(f.read())
+if len(sys.argv) > 1:
+    model = mmodel.model_from_file(sys.argv[1])
+    print(HEADER)
+    print(model)
 
-#for brick in model.brk:
-#    print(brick, end='')
-#    print(brick.setup_code())
+if len(data) > 0:
+    for e in data:
 
-#for expr in model.exprBlock:
-#    print(expr)
-
-print(model)
+        e = e.replace('\n', '')
+        output_name = e.split('/')[-1].replace('.aml', '.ino')
+        output_f = open('out/' + output_name, 'w')
+        model = mmodel.model_from_file(e)
+        print(HEADER, file=output_f)
+        print(model, file=output_f)

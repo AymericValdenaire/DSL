@@ -34,8 +34,8 @@ Bops:
 ;
 
 Bexprs:
-    single=Bexpr |
-    l=Bexpr op=Bops r=Bexpr
+    '('l=Bexpr op=Bops r=Bexprs')' |
+    single=Bexpr
 ;
 
 Bexpr:
@@ -65,5 +65,5 @@ Affectation:
 ;
 
 State:
-    'HIGH' | 'LOW'
+    val='HIGH' | val='LOW'
 ;
