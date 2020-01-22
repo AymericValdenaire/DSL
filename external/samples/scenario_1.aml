@@ -1,0 +1,15 @@
+SENSOR button 10
+ACTUATOR led 11
+ACTUATOR buzzer 9
+
+INIT off {
+    SET led off
+    SET buzzer off
+    button == on -> B
+}
+
+on {
+    SET led on
+    SET buzzer on
+    button == off -> A
+}

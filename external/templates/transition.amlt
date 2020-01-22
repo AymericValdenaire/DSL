@@ -1,0 +1,8 @@
+boolean guard =  millis() - time > debounce;
+    if (digitalRead({test_var}) == {test_value}  && guard) {{
+        time = millis();
+        {next_state}();
+    }}
+    else {{
+        {current_state_name}();
+    }}
