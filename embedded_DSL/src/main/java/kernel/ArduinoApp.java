@@ -22,7 +22,6 @@ public class ArduinoApp implements Visitable {
     stateMachine =  new ArrayList<State>();
   }
 
-
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }

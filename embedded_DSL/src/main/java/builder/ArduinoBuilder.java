@@ -7,7 +7,7 @@ import kernel.model.Sensor;
 
 public class ArduinoBuilder {
 
-    ArduinoApp arduinoApp;
+    private ArduinoApp arduinoApp;
 
     public ArduinoBuilder(){
 
@@ -31,7 +31,8 @@ public class ArduinoBuilder {
      * @return
      */
     public ArduinoApp build() {
-        return arduinoApp; }
+        return arduinoApp;
+    }
 
     public ArduinoBuilder setup(Brick brick){
         this.arduinoApp.getBricks().add(brick);
@@ -61,4 +62,10 @@ public class ArduinoBuilder {
         if(pin < 1 || pin > 12)
             throw new IllegalArgumentException("Illegal brick pin");
     }
+
+    public StateTableBuilder stateTable(){
+        return new StateTableBuilder(this);
+    }
+
+
 }

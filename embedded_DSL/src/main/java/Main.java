@@ -11,6 +11,9 @@ public class Main {
         ArduinoApp arduinoApp =
                 arduino("monPremierCode")
                     .setup(sensor("led",2))
+                    .setup(actuator("button",3))
+                    .stateTable()
+                    .endStateTable()
                 .build();
 
         Generator generator = new Generator();
