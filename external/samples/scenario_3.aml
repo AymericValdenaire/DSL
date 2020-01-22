@@ -1,0 +1,12 @@
+SENSOR btn 9
+ACTUATOR led 11
+
+INIT off {
+    SET led OFF
+    btn == ON -> on
+}
+
+on {
+    SET led ON
+    btn == ON -> off
+}

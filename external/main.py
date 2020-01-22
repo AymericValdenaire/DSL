@@ -82,8 +82,7 @@ class Transition:
 
     def __str__(self):
         transition = open('templates/transition.amlt').read()
-        return transition.format(test_var=self.cond.var,
-                                 test_value=self.cond.value,
+        return transition.format(condition=self.cond,
                                  next_state=self.next_state,
                                  current_state_name=self.parent.name)
 
@@ -99,20 +98,46 @@ class State:
         return state.format(name=self.name, code='\t'.join([str(expr) for expr in self.exprs]))
 
 class Condition:
-    def __init__(self, parent, var, value):
+    def __init__(self,parent, l, r, op, single):
+        self.parent = parent
+        self.l = l
+        self.r = r
+        self.op = op
+        self.single = single
+
+    def __str__(self):
+        if type(self.single) == Bexpr:
+            return str(self.single)
+        return '{} {} {}'.format(self.l, self.op, self.r)
+
+class Bop:
+    def __init__(self,parent, token):
+        self.parent = parent
+        self.token = token
+
+    def __str__(self):
+        ops = {'AND': '&&', 'OR': '||'}
+        return ops[self.token]
+
+class Bexpr:
+    def __init__(self, parent, var,op, value):
         self.parent = parent
         self.var = var
+        self.op = op
         self.value = value
+
+    def __str__(self):
+        return 'digitalRead({}) {} {}'.format(self.var, self.op, self.value)
 
 def cname(o):
     return o.__class__.__name__
 
-classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action]
+classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr]
 
 mmodel = tx.metamodel_from_file('grammar.tx', classes=classes)
 
 if len(sys.argv) < 2 :
-    print(mmodel.model_from_file('samples/scenario_1.aml'))
+    print(mmodel.model_from_file('samples/scenario_4.aml'))
 else:
 
 

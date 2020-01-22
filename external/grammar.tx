@@ -38,5 +38,16 @@ Exprs:
 ;
 
 Condition:
-    var=ID '==' value=DigitalValue
+
+    l=Bexpr op=Bop r=Condition |
+    l=Bexpr op=Bop r=Bexpr |
+    single=Bexpr
+;
+
+Bop:
+    token='AND' | token='OR'
+;
+
+Bexpr:
+    var=ID op='==' value=DigitalValue
 ;

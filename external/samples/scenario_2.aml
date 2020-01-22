@@ -4,16 +4,10 @@ ACTUATOR buzzer 11
 
 INIT off {
     SET buzzer OFF
-    btn_1 == ON -> semi_on
-}
-
-semi_on {
-    btn_2 == ON -> on
-    btn_2 == OFF -> off
+    btn_1 == ON AND btn_2 == ON -> on
 }
 
 on {
     SET buzzer ON
-    btn_1 == OFF -> off
-    btn_2 == OFF -> on
+    btn_1 == OFF OR btn_2 == OFF -> off
 }
