@@ -121,6 +121,14 @@ class State:
     def __str__(self):
         return self.val
 
+class Bool:
+    def __init__(self, parent, val):
+        self.parent = parent
+        self.val = val
+
+    def __str__(self):
+        return 'true' if self.val == 'TRUE' else 'false'
+
 class Affectation:
     def __init__(self,parent, l,r):
         self.parent = parent
@@ -128,6 +136,10 @@ class Affectation:
         self.r = r
 
     def __str__(self):
+
+        if type(self.r) is Bool:
+            return '{} = {};'.format(self.l, self.r)
+
         if type(self.r) is State:
             return '{}_state = {};\n' \
                    'digitalWrite({}, {});'.format(self.l, self.r, self.l, self.r)
@@ -159,12 +171,11 @@ class Var:
 def cname(o):
     return o.__class__.__name__
 
-classes=[Model, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr, State]
+classes=[Model, Sensor, Actuator, Attributes, ExpressionBlock, Var, Affectation, Negation, Bexprs, Bexpr, State, Bool]
 
 mmodel = tx.metamodel_from_file('grm.tx', classes=classes)
 
-data = sys.stdin.readlines()
-if len(sys.argv) < 2 and len(data) == 0 :
+if len(sys.argv) < 2 :
     print("ERROR : Missing input file")
     exit(1)
 
@@ -174,8 +185,11 @@ if len(sys.argv) > 1:
     model = mmodel.model_from_file(sys.argv[1])
     print(HEADER)
     print(model)
+    exit(0)
 
+data = sys.stdin.readlines()
 if len(data) > 0:
+
     for e in data:
 
         e = e.replace('\n', '')

@@ -21,7 +21,8 @@ Attributes:
 ;
 
 Attribute:
-    id=ID '=' value=INT init*=State
+    id=ID '=' value=INT init*=State |
+    id=ID '=' value=Bool
 ;
 
 ExpressionBlock:
@@ -39,7 +40,8 @@ Bexprs:
 ;
 
 Bexpr:
-    trigger=Var state=State
+    trigger=Var state=State |
+    trigger=Var state=Bool
 ;
 
 Expressions:
@@ -61,7 +63,12 @@ Var:
 
 Affectation:
     l=Var '=' r=Expression |
+    l=Var '=' r=Bool |
     l=Var '=' r=State
+;
+
+Bool:
+    val='FALSE' | val='TRUE'
 ;
 
 State:
