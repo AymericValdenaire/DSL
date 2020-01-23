@@ -2,8 +2,13 @@ package kernel.model;
 
 import kernel.generator.Visitor;
 
-
 public class Actuator extends Brick {
+
+    final int pin;
+    public Actuator(String name, int pin) {
+        super(name);
+        this.pin = pin;
+    }
 
     @Override
     public void accept(Visitor visitor) {
@@ -11,7 +16,12 @@ public class Actuator extends Brick {
     }
 
     @Override
+    public String declarationVarCode() {
+        return String.format("int %s = %d;\n",this.name,this.pin);
+    }
+
+    @Override
     public String initCode() {
-        return String.format("pinMode(%s, OUTPUT);\n", this.getPin());
+        return String.format("\tpinMode(%s, OUTPUT);\n", this.pin);
     }
 }

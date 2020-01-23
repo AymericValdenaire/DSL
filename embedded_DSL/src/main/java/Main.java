@@ -1,7 +1,5 @@
-import builder.ArduinoBuilder;
 import kernel.ArduinoApp;
 import kernel.generator.Generator;
-import kernel.generator.Visitor;
 
 import static builder.ArduinoBuilder.*;
 
@@ -12,6 +10,7 @@ public class Main {
                 arduino("monPremierCode")
                     .setup(sensor("led",2))
                     .setup(actuator("button",3))
+                        .setup(lcd("lcd_0", 2))
 
                     .stateTable()
                         .state("on","led").when("button").isHigh().thenState("off","led")

@@ -7,14 +7,11 @@ import lombok.Data;
 @Data
 public abstract class Brick implements Visitable {
 
-    private int pin;
-    private String name;
+    final String name;
 
     public abstract void accept(Visitor visitor);
 
-    public String declarationVarCode(){
-        return String.format("int %s = %d;\n",this.name,this.pin);
-    }
+    public abstract String declarationVarCode();
 
     public abstract String initCode();
 }

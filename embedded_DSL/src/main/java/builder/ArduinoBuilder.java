@@ -3,6 +3,7 @@ package builder;
 import kernel.ArduinoApp;
 import kernel.model.Actuator;
 import kernel.model.Brick;
+import kernel.model.Lcd;
 import kernel.model.Sensor;
 
 public class ArduinoBuilder {
@@ -39,23 +40,22 @@ public class ArduinoBuilder {
     public static Brick sensor(String name, int pin){
 
         verifyArgument(name, pin);
-        Brick sensor = new Sensor();
-        sensor.setName(name);
-        sensor.setPin(pin);
-        return sensor;
+        return new Sensor(name, pin);
     }
 
     public static Brick actuator(String name, int pin){
         verifyArgument(name, pin);
-        Brick actuator = new Actuator();
-        actuator.setName(name);
-        actuator.setPin(pin);
-        return actuator;
+        return new Actuator(name, pin);
     }
 
+    public static Lcd lcd(String name, int busId){
+        return new Lcd(name, busId);
+    }
+
+    // TODO Should not be here but in accept() method, check params on visit
     private static void verifyArgument(String name, int pin){
         if(name.length() == 0 || !Character.isLowerCase(name.charAt(0)))
-            throw new IllegalArgumentException("Illegal birck name");
+            throw new IllegalArgumentException("Illegal brick name");
         if(pin < 1 || pin > 12)
             throw new IllegalArgumentException("Illegal brick pin");
     }
