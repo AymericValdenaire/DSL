@@ -1,0 +1,12 @@
+LCD lcd BUS 1
+SENSOR btn 9
+
+INIT off {
+    PRINT lcd "OFF"
+    btn == ON -> on
+}
+
+on {
+    PRINT lcd "ON"
+    btn == ON -> off
+}

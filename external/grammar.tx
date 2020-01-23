@@ -1,0 +1,59 @@
+Model:
+    bricks*=Brick
+    states*=State
+;
+
+Brick:
+    Actuator | Sensor | Lcd
+;
+
+Actuator:
+    'ACTUATOR' name=ID pin=INT
+;
+
+Sensor:
+    'SENSOR' name=ID pin=INT
+;
+
+Lcd:
+    'LCD' name=ID 'BUS' bus_id=INT
+;
+
+DigitalValue:
+    value='ON' | value='OFF'
+;
+
+Action:
+    type='SET' var=ID value=DigitalValue |
+    type='PRINT' var=ID value=STRING |
+    type='CLEAR' var=ID
+;
+
+Transition:
+    cond=Condition '->' next_state=ID
+;
+
+State:
+    is_init_state?='INIT' name=ID '{'
+    exprs*=Exprs
+    '}'
+;
+
+Exprs:
+    Action | Transition
+;
+
+Condition:
+
+    l=Bexpr op=Bop r=Condition |
+    l=Bexpr op=Bop r=Bexpr |
+    single=Bexpr
+;
+
+Bop:
+    token='AND' | token='OR'
+;
+
+Bexpr:
+    var=ID op='==' value=DigitalValue
+;

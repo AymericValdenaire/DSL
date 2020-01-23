@@ -1,0 +1,19 @@
+SENSOR btn 9
+ACTUATOR led 10
+ACTUATOR buzzer 11
+
+INIT off {
+    SET led OFF
+    btn == ON -> only_buzzer
+}
+
+only_buzzer {
+    SET buzzer ON
+    btn == ON -> only_led
+}
+
+only_led {
+    SET buzzer OFF
+    SET led ON
+    btn == ON -> off
+}

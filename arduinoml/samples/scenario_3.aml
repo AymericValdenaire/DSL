@@ -1,8 +1,0 @@
-DEBOUNCE = 200
-
-SEN btn pin=11
-ACT led pin = 9 LOW
-
-WHEN btn.pin HIGH {
-    led.pin = !led.pin
-}
