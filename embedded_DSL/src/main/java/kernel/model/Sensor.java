@@ -7,4 +7,9 @@ public class Sensor extends Brick {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String initCode() {
+        return String.format("pinMode(%s, INPUT);\n", this.getPin());
+    }
 }

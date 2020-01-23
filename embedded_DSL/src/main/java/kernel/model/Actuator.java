@@ -9,4 +9,9 @@ public class Actuator extends Brick {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String initCode() {
+        return String.format("pinMode(%s, OUTPUT);\n", this.getPin());
+    }
 }

@@ -17,16 +17,9 @@ public class Generator extends Visitor<StringBuilder>{
   }
 
   @Override
-  public void visit(Actuator actuator) {
-    builder.insert(0,String.format("int %s = %d;\n",actuator.getName(),actuator.getPin()));
-    builder.append("pinMode(").append(actuator.getPin()).append(", OUTPUT);\n");
-  }
-
-  @Override
-  public void visit(Sensor sensor) {
-
-    builder.insert(0,String.format("int %s = %d;\n",sensor.getName(),sensor.getPin()));
-    builder.append("pinMode(").append(sensor.getPin()).append(", INPUT);\n");
+  public void visit(Brick brick) {
+    builder.insert(0, brick.declarationVarCode());
+    builder.append(brick.initCode());
   }
 
   @Override
