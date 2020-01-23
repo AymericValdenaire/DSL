@@ -24,15 +24,25 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Sensor sensor) {
+
     builder.insert(0,String.format("int %s = %d;\n",sensor.getName(),sensor.getPin()));
     builder.append("pinMode(").append(sensor.getPin()).append(", INPUT);\n");
   }
 
   @Override
   public void visit(State state) {
+    for(int i = 0; i < state.getTransitions().size();i++) {
 
-    //builder.append(String.format("if ( "));
-    //state.getTransitions().get(0).accept(this);
+      builder.append(String.format("if ( "));
+      if(state.getName().equals("on")) {
+        builder.append("HIGH");
+      }else if(state.getName().equals("off")){
+        builder.append("LOW");
+      }
+      builder.append(String.format(" == digitalRead(%s) && ",state.getSensor().getName()));
+      state.getTransitions().get(i).accept(this);
+    }
+
 
   }
 
@@ -56,8 +66,16 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Transition transition) {
-    //builder.append(String.format("digitalRead( %s == %s ) { \n",transition.getSensor(),transition.getCondition().getExpression()));
 
+    builder.append(String.format("digitalRead(%s) == %s ) { \n",transition.getSensor(),transition.getCondition()));
+
+    builder.append(String.format("digitalWrite( %s, ",transition.getDestination().getSensor().getName()));
+    if(transition.getDestination().getName().equals("on")) {
+      builder.append("HIGH");
+    }else if(transition.getDestination().getName().equals("off")){
+      builder.append("LOW");
+    }
+    builder.append(" ); \n}\n");
   }
 
   @Override
@@ -68,4 +86,5 @@ public class Generator extends Visitor<StringBuilder>{
   public String getGeneratedCode(){
     return builder.toString();
   }
+
 }

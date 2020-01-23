@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import kernel.model.Brick;
+import kernel.model.Sensor;
 import lombok.Data;
 import lombok.Getter;
 
@@ -11,6 +13,7 @@ import lombok.Getter;
 public class State implements Visitable {
 
   String name;
+  Sensor sensor;
   List<Transition> transitions;
 
   public State(){

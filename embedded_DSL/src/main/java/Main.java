@@ -12,9 +12,10 @@ public class Main {
                 arduino("monPremierCode")
                     .setup(sensor("led",2))
                     .setup(actuator("button",3))
+
                     .stateTable()
-                        .state("on").when("button").isHigh().thenState("off")
-                        .state("off").when("button").isHigh().thenState("on")
+                        .state("on","led").when("button").isHigh().thenState("off","led")
+                        .state("off","led").when("button").isHigh().thenState("on","led")
                     .endStateTable()
                 .build();
 

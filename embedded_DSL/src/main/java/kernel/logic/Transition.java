@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Data
 public class Transition implements Visitable {
-
+  State source;
   String sensor;
-  BoolExpression condition;
+  String condition;
   State destination;
 
   public void accept(Visitor visitor) {
