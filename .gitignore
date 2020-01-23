@@ -148,3 +148,6 @@ fabric.properties
 
 **/*.pyc
 venv
+
+**/target/**/*
+embedded_DSL/DSL.iml
