@@ -4,19 +4,21 @@ Model:
 ;
 
 Brick:
-    Actuator | Sensor | Lcd
+    'ACTUATOR' name=ID child=Actuator |
+    'SENSOR' name=ID  child=Sensor |
+    'LCD' name=ID child=Lcd
 ;
 
 Actuator:
-    'ACTUATOR' name=ID pin=INT
+    pin=INT
 ;
 
 Sensor:
-    'SENSOR' name=ID pin=INT
+    pin=INT
 ;
 
 Lcd:
-    'LCD' name=ID 'BUS' bus_id=INT
+    'BUS' bus_id=INT
 ;
 
 DigitalValue:

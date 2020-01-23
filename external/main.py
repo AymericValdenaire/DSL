@@ -4,32 +4,38 @@ import sys
 
 
 class Brick:
-    def __init__(self, parent):
+    def __init__(self, parent, name, child):
         self.parent = parent
+        self.name = name
+        self.child = child
+
+    def setup_code(self):
+        return self.child.setup_code()
+
+    def __str__(self):
+        return str(self.child)
 
 class Actuator:
-    def __init__(self, parent, name, pin):
+    def __init__(self, parent, pin):
         self.parent = parent
-        self.name = name
         self.pin = pin
 
     def setup_code(self):
-        return "pinMode({}, OUTPUT);".format(self.name)
+        return "pinMode({}, OUTPUT);".format(self.parent.name)
 
     def __str__(self):
-        return "int {} = {};".format(self.name, self.pin)
+        return "int {} = {};".format(self.parent.name, self.pin)
 
 class Sensor:
-    def __init__(self, parent, name, pin):
+    def __init__(self, parent, pin):
         self.parent = parent
-        self.name = name
         self.pin = pin
 
     def setup_code(self):
-        return "pinMode({}, INPUT);".format(self.name)
+        return "pinMode({}, INPUT);".format(self.parent.name)
 
     def __str__(self):
-        return "int {} = {};".format(self.name, self.pin)
+        return "int {} = {};".format(self.parent.name, self.pin)
 
 class DigitalValue:
     def __init__(self, parent, value):
@@ -111,9 +117,8 @@ class Bexpr:
         return 'digitalRead({}) {} {}'.format(self.var, self.op, self.value)
 
 class Lcd:
-    def __init__(self, parent, name,bus_id):
+    def __init__(self, parent,bus_id):
         self.parent = parent
-        self.name = name
         self.bus_id = bus_id
 
     def get_bus_pins(self):
@@ -122,10 +127,10 @@ class Lcd:
         if self.bus_id == 2:
             return '10, 11, 12, 13, 14, 15, 16'
         else:
-            raise ValueError('Invalid Bus for lcd {} must be 1 or 2'.format(self.name))
+            raise ValueError('Invalid Bus for lcd {} must be 1 or 2'.format(self.parent.name))
 
     def setup_code(self):
-        return "{}.begin(16, 2);".format(self.name)
+        return "{}.begin(16, 2);".format(self.parent.name)
 
     def __str__(self):
         return 'LiquidCrystal lcd({});'.format(self.get_bus_pins())
@@ -176,7 +181,7 @@ classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action,
 mmodel = tx.metamodel_from_file('grammar.tx', classes=classes)
 
 if len(sys.argv) < 2 :
-    print(mmodel.model_from_file('samples/lcd.aml'))
+    print(mmodel.model_from_file('tests/condition.aml'))
 else:
 
 
