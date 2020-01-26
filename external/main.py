@@ -55,11 +55,16 @@ class Action:
     def __str__(self):
         if self.type == "SET":
             return 'digitalWrite({}, {});\n'.format(self.var, self.value)
+
         if self.type == "PRINT":
             return '{lcd_name}.setCursor(0, 0);\n' \
                    '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var,value=self.value.ljust(16))
+
         if self.type == "CLEAR":
-            return '{lcd_name}.clear();\n'.format(lcd_name=self.var)
+            return '\n{lcd_name}.clear();\n'.format(lcd_name=self.var)
+
+        if self.type == "WAIT":
+            return 'delay({ms});\n'.format(ms=self.value)
 
 class Transition:
     def __init__(self, parent, cond, next_state):
@@ -68,6 +73,9 @@ class Transition:
         self.next_state = next_state
 
     def __str__(self):
+        if self.cond.empty :
+            return "{next_state}();".format(next_state = self.next_state)
+
         transition = open('templates/transition.amlt').read()
         return transition.format(condition=self.cond,
                                  next_state=self.next_state,
@@ -80,19 +88,31 @@ class State:
         self.name = name
         self.exprs = exprs
 
+        self.model_freq = self.parent.__dict__['_txa_freq']
+        self.max_state_sleep = int(1000 * (1 / self.model_freq )) if self.model_freq  > 0 else None
+
+        action_exprs = list(filter(lambda e: type(e) is Action, self.exprs))
+        self.sleep_count_in_expr = sum([e.value if e.type == 'WAIT' else 0 for e in action_exprs])
+
     def __str__(self):
+        freq_sleep = ""
+        if self.model_freq > 0:
+            freq_sleep = "delay({});\n".format(self.max_state_sleep - self.sleep_count_in_expr)
         state = open('templates/state.amlt').read()
-        return state.format(name=self.name, code='\t'.join([str(expr) for expr in self.exprs]))
+        return state.format(name=self.name,freq_sleep=freq_sleep, code='\t'.join([str(expr) for expr in self.exprs]))
 
 class Condition:
-    def __init__(self,parent, l, r, op, single):
+    def __init__(self,parent, l, r, op, single, empty):
         self.parent = parent
         self.l = l
         self.r = r
         self.op = op
         self.single = single
+        self.empty = empty
 
     def __str__(self):
+        if self.empty:
+            return "true"
         if type(self.single) == Bexpr:
             return str(self.single)
         return '{} {} {}'.format(self.l, self.op, self.r)
@@ -137,9 +157,12 @@ class Lcd:
 
 
 class Model(object):
-    def __init__(self, bricks, states):
+    def __init__(self, bricks, states, freq):
         self.bricks = bricks
         self.states = states
+        self.freq = freq
+
+        self.max_state_sleep = int(1000 * (1 / freq)) if freq > 0 else None
 
         self.init_state = self.generate_loop_code()
 
@@ -181,7 +204,7 @@ classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action,
 mmodel = tx.metamodel_from_file('grammar.tx', classes=classes)
 
 if len(sys.argv) < 2 :
-    print(mmodel.model_from_file('tests/condition.aml'))
+    print(mmodel.model_from_file('samples/alarm.aml'))
 else:
 
 

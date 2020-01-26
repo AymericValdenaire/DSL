@@ -1,0 +1,28 @@
+FREQUENCY 0.5
+
+ACTUATOR led 9
+ACTUATOR buzzer 10
+
+INIT on {
+    SET led OFF
+    SET buzzer OFF
+    -> off
+}
+
+off {
+    SET led ON
+    SET buzzer ON
+    WAIT 100
+    SET led OFF
+    SET buzzer OFF
+    WAIT 100
+    SET led ON
+    SET buzzer ON
+    WAIT 100
+    SET led OFF
+    SET buzzer OFF
+    WAIT 100
+    SET led ON
+    SET buzzer ON
+    -> on
+}

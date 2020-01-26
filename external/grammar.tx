@@ -1,4 +1,5 @@
 Model:
+    ("FREQUENCY" freq=FLOAT)?
     bricks*=Brick
     states*=State
 ;
@@ -28,6 +29,7 @@ DigitalValue:
 Action:
     type='SET' var=ID value=DigitalValue |
     type='PRINT' var=ID value=STRING |
+    type='WAIT' value=INT |
     type='CLEAR' var=ID
 ;
 
@@ -49,7 +51,8 @@ Condition:
 
     l=Bexpr op=Bop r=Condition |
     l=Bexpr op=Bop r=Bexpr |
-    single=Bexpr
+    single=Bexpr |
+    empty?=""
 ;
 
 Bop:

@@ -1,4 +1,5 @@
 void {name}()
 {{
+    {freq_sleep}
     {code}
 }}
