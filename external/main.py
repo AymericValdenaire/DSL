@@ -1,5 +1,4 @@
 import textx as tx
-import sys
 import os
 
 
@@ -46,7 +45,7 @@ class DigitalValue:
         return 'HIGH' if self.value == 'ON' else "LOW"
 
 class Action:
-    def __init__(self, parent,type, var, value):
+    def __init__(self, parent, type, var, value):
         self.parent = parent
         self.type = type
         self.var = var
@@ -72,14 +71,22 @@ class Transition:
         self.cond = cond
         self.next_state = next_state
 
-    def __str__(self):
-        if self.cond.empty :
-            return "{next_state}();".format(next_state = self.next_state)
+    def generate_code(self, delay_before_next_state):
+        if delay_before_next_state is not None and delay_before_next_state > 0:
+            delay_instr = 'delay({});\n\t\t'.format(delay_before_next_state)
+        else:
+            delay_instr = ''
+
+        if self.cond.empty:
+            return "{delay_instr}\n\t{next_state}();".format(
+                delay_instr=delay_instr,
+                next_state=self.next_state)
 
         transition = open('templates/transition.amlt').read()
         return transition.format(condition=self.cond,
                                  next_state=self.next_state,
-                                 current_state_name=self.parent.name)
+                                 current_state_name=self.parent.name,
+                                 delay_instr=delay_instr)
 
 class State:
     def __init__(self, parent, is_init_state, name,exprs):
@@ -89,17 +96,30 @@ class State:
         self.exprs = exprs
 
         self.model_freq = self.parent.__dict__['_txa_freq']
-        self.max_state_sleep = int(1000 * (1 / self.model_freq )) if self.model_freq  > 0 else None
+        self.max_state_sleep = int(1000 * (1 / self.model_freq)) if self.model_freq > 0 else None
 
         action_exprs = list(filter(lambda e: type(e) is Action, self.exprs))
         self.sleep_count_in_expr = sum([e.value if e.type == 'WAIT' else 0 for e in action_exprs])
 
+
     def __str__(self):
-        freq_sleep = ""
-        if self.model_freq > 0:
-            freq_sleep = "delay({});\n".format(self.max_state_sleep - self.sleep_count_in_expr)
-        state = open('templates/state.amlt').read()
-        return state.format(name=self.name,freq_sleep=freq_sleep, code='\t'.join([str(expr) for expr in self.exprs]))
+            state = open('templates/state.amlt').read()
+
+            time_to_sleep_before_next_state = self.max_state_sleep
+            state_inner_code = ''
+            for expr in self.exprs:
+                if type(expr) is Action:
+                    if expr.type == "WAIT" and self.max_state_sleep is not None:
+                        time_to_sleep_before_next_state -= expr.value
+                    state_inner_code += '\t' + str(expr)
+                if type(expr) is Transition:
+                    state_inner_code += '\t' + expr.generate_code(time_to_sleep_before_next_state)
+
+
+            if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0 :
+                print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,int(1000 / self.model_freq), self.name))
+
+            return state.format(name=self.name, code=state_inner_code)
 
 class Condition:
     def __init__(self,parent, l, r, op, single, empty):
@@ -169,7 +189,7 @@ class Model(object):
     def generate_includes(self):
         out = set()
         for e in self.bricks:
-            if type(e) == Lcd:
+            if type(e.child) == Lcd:
                 out.add("LiquidCrystal.h")
         return '\n'.join(["#include <{}>".format(e) for e in out])
 
@@ -196,12 +216,12 @@ class Model(object):
                                                 self.init_state)
 
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
 
     classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
 
     meta_model = tx.metamodel_from_file('grammar.tx', classes=classes)
-    try :
+    try:
         os.mkdir('out')
     except FileExistsError:
         pass
