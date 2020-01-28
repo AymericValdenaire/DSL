@@ -1,6 +1,6 @@
 import textx as tx
 import sys
-
+import os
 
 
 class Brick:
@@ -196,30 +196,20 @@ class Model(object):
                                                 self.init_state)
 
 
-def cname(o):
-    return o.__class__.__name__
+if __name__ == '__main__' :
 
-classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
+    classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
 
-mmodel = tx.metamodel_from_file('grammar.tx', classes=classes)
+    meta_model = tx.metamodel_from_file('grammar.tx', classes=classes)
+    try :
+        os.mkdir('out')
+    except FileExistsError:
+        pass
 
-if len(sys.argv) < 2 :
-    print(mmodel.model_from_file('samples/alarm.aml'))
-else:
+    for file_name in os.listdir('samples'):
+        print("Translating {}".format(file_name))
+        model = meta_model.model_from_file('samples/{}'.format(file_name))
 
-
-    if len(sys.argv) > 1:
-        model = mmodel.model_from_file(sys.argv[1])
-        print(model)
-        exit(0)
-
-    data = sys.stdin.readlines()
-    if len(data) > 0:
-
-        for e in data:
-
-            e = e.replace('\n', '')
-            output_name = e.split('/')[-1].replace('.aml', '.ino')
-            output_f = open('out/' + output_name, 'w')
-            model = mmodel.model_from_file(e)
-            print(model, file=output_f)
+        out = open('out/{}'.format(file_name.replace('.aml', '.ino')), 'w')
+        print(model, file=out)
+        out.close()
