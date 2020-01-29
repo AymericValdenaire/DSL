@@ -1,8 +1,5 @@
 boolean guard =  millis() - time > debounce;
     if ({condition}  && guard) {{
         time = millis();
-        {delay_instr}{next_state}();
-    }}
-    else {{
-        {current_state_name}();
+        {delay_instr}{next_state}
     }}

@@ -1,4 +1,5 @@
 void {name}()
 {{
-{code}
+{code}  // No transition, loop on {name} state
+    {name}();
 }}

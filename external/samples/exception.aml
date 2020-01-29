@@ -1,0 +1,8 @@
+SENSOR button 9
+SENSOR button_2 10
+
+ACTUATOR led 12
+
+INIT double_door {
+    button == ON AND button_2 == ON -> ERROR 3
+}

@@ -2,7 +2,7 @@ LCD lcd BUS 1
 SENSOR btn 9
 
 INIT off {
-    PRINT lcd "OFF"
+    PRINT lcd "push button :="
     btn == ON -> on
 }
 

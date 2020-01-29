@@ -1,12 +1,27 @@
 import textx as tx
 import os
 
+ID_REGISTRY = dict()
+READABLE_BRICK = dict()
 
 class Brick:
     def __init__(self, parent, name, child):
         self.parent = parent
         self.name = name
         self.child = child
+
+        if self.name in ID_REGISTRY and type(self.parent) is Model:
+            print('[ERROR] ID "{}" already declared'.format(self.name))
+            exit(1)
+        else:
+            ID_REGISTRY[self.name] = self
+
+        if type(self.child) in [Serial, Sensor]:
+            if self.name in READABLE_BRICK and type(self.parent) is Model:
+                print('[ERROR] ID "{}" already declared'.format(self.name))
+                exit(1)
+            else:
+                READABLE_BRICK[self.name] = self.child
 
     def setup_code(self):
         return self.child.setup_code()
@@ -36,6 +51,20 @@ class Sensor:
     def __str__(self):
         return "int {} = {};".format(self.parent.name, self.pin)
 
+    def generate_read_code(self):
+        return 'digitalRead({})'.format(self.pin)
+
+class Serial:
+    def __init__(self, parent, baudrate):
+        self.parent = parent
+        self.baudrate = baudrate
+
+    def setup_code(self):
+        return "Serial.begin({});".format(self.baudrate)
+
+    def __str__(self):
+        return "int {}_bytestream = 0;".format(self.parent.name)
+
 class DigitalValue:
     def __init__(self, parent, value):
         self.parent=parent
@@ -56,8 +85,33 @@ class Action:
             return 'digitalWrite({}, {});\n'.format(self.var, self.value)
 
         if self.type == "PRINT":
-            return '{lcd_name}.setCursor(0, 0);\n' \
-                   '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var,value=self.value.ljust(16))
+            if type(ID_REGISTRY[self.var].child) is Lcd:
+                if type(self.value) is str:
+                    return '{lcd_name}.setCursor(0, 0);\n' \
+                           '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var, value=self.value.ljust(16))
+                else:
+                    if self.value in READABLE_BRICK:
+                        return '{lcd_name}.setCursor(0, 0);\n' \
+                               '\t{lcd_name}.print(prettyDigitalRead({value}));\n'.format(lcd_name=self.var, value=READABLE_BRICK[self.value].generate_read_code())
+                    else:
+                        return 'Serial.println("{}");\n'.format(self.value.ljust(16))
+
+            if type(ID_REGISTRY[self.var].child) is Serial:
+                if self.value in READABLE_BRICK:
+                    return 'Serial.print(prettyDigitalRead({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
+                else:
+                    return 'Serial.print("{}");\n'.format(self.value.ljust(16))
+            else:
+                print("[ERROR] Unsupported brick type for PRINT : ",type(ID_REGISTRY[self.var].child))
+
+        if self.type == "PRINTLN":
+            if type(ID_REGISTRY[self.var].child) is Serial:
+                if self.value in READABLE_BRICK:
+                    return 'Serial.println(prettyDigitalRead({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
+                else:
+                    return 'Serial.println("{}");\n'.format(self.value.ljust(16))
+            else:
+                print("[ERROR] Unsupported brick type for PRINTLN : ",type(ID_REGISTRY[self.var].child))
 
         if self.type == "CLEAR":
             return '\n{lcd_name}.clear();\n'.format(lcd_name=self.var)
@@ -77,16 +131,28 @@ class Transition:
         else:
             delay_instr = ''
 
+        next_state = self.next_state
+        if type(next_state) is not Exception:
+            next_state += '();'
+
         if self.cond.empty:
-            return "{delay_instr}\n\t{next_state}();".format(
+            return "{delay_instr}\n\t{next_state}".format(
                 delay_instr=delay_instr,
-                next_state=self.next_state)
+                next_state=next_state)
 
         transition = open('templates/transition.amlt').read()
         return transition.format(condition=self.cond,
-                                 next_state=self.next_state,
-                                 current_state_name=self.parent.name,
+                                 next_state=next_state,
                                  delay_instr=delay_instr)
+
+class Exception:
+    def __init__(self, parent, value):
+        self.parent = parent
+        self.value = value
+
+    def __str__(self):
+        return 'error({});'.format(self.value)
+
 
 class State:
     def __init__(self, parent, is_init_state, name,exprs):
@@ -114,7 +180,6 @@ class State:
                     state_inner_code += '\t' + str(expr)
                 if type(expr) is Transition:
                     state_inner_code += '\t' + expr.generate_code(time_to_sleep_before_next_state)
-
 
             if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0 :
                 print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,int(1000 / self.model_freq), self.name))
@@ -154,8 +219,20 @@ class Bexpr:
         self.value = value
 
     def __str__(self):
-        return 'digitalRead({}) {} {}'.format(self.var, self.op, self.value)
+        if type(ID_REGISTRY[self.var].child) == Sensor:
+            return '{} {} {}'.format(ID_REGISTRY[self.var].child.generate_read_code(), self.op, self.value)
 
+        if type(ID_REGISTRY[self.var].child) == Serial:
+            if type(self.value) is not str:
+                print('[ERROR] Serial can only be compared with strings')
+            if self.op == '==':
+                return 'Serial.readString().indexOf("{}") >= 0'.format(self.value)
+            else:
+                print('[ERROR] Unsupported operator "{}" with serial read'.format(self.op))
+                exit(1)
+        else:
+            print('[ERROR] Unsupported type within condition : {}'.format(type(self.var)))
+            exit(1)
 class Lcd:
     def __init__(self, parent,bus_id):
         self.parent = parent
@@ -218,7 +295,7 @@ class Model(object):
 
 if __name__ == '__main__':
 
-    classes=[Model,Brick, Actuator, Sensor, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
+    classes=[Model,Brick,Exception, Actuator, Sensor,Serial, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
 
     meta_model = tx.metamodel_from_file('grammar.tx', classes=classes)
     try:
@@ -227,6 +304,8 @@ if __name__ == '__main__':
         pass
 
     for file_name in os.listdir('samples'):
+        ID_REGISTRY = dict()
+        READABLE_BRICK = dict()
         print("Translating {}".format(file_name))
         model = meta_model.model_from_file('samples/{}'.format(file_name))
 

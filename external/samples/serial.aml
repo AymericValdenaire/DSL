@@ -1,0 +1,17 @@
+ACTUATOR led 10
+ACTUATOR buzzer 11
+SERIAL serial BAUDRATE 9600
+
+INIT led_on {
+    PRINTLN serial "In state led_on type \\"test\\" to change state"
+    SET buzzer OFF
+    SET led ON
+    serial == "test" -> buzzer_on
+}
+
+buzzer_on {
+    SET led OFF
+    SET buzzer ON
+    PRINT serial led
+    serial == "test" -> led_on
+}

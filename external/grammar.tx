@@ -7,7 +7,8 @@ Model:
 Brick:
     'ACTUATOR' name=ID child=Actuator |
     'SENSOR' name=ID  child=Sensor |
-    'LCD' name=ID child=Lcd
+    'LCD' name=ID child=Lcd |
+    'SERIAL' name=ID child=Serial
 ;
 
 Actuator:
@@ -22,18 +23,32 @@ Lcd:
     'BUS' bus_id=INT
 ;
 
+Serial:
+    'BAUDRATE' baudrate=INT
+;
+
+
 DigitalValue:
     value='ON' | value='OFF'
 ;
 
 Action:
     type='SET' var=ID value=DigitalValue |
+    type='PRINTLN' var=ID value=ID |
+    type='PRINTLN' var=ID value=STRING |
+    type='PRINT' var=ID value=ID |
     type='PRINT' var=ID value=STRING |
     type='WAIT' value=INT |
-    type='CLEAR' var=ID
+    type='CLEAR' var=ID |
+    Exception
+;
+
+Exception:
+    'ERROR' value=INT
 ;
 
 Transition:
+    cond=Condition '->' next_state=Exception |
     cond=Condition '->' next_state=ID
 ;
 
@@ -60,5 +75,6 @@ Bop:
 ;
 
 Bexpr:
-    var=ID op='==' value=DigitalValue
+    var=ID op='==' value=DigitalValue |
+    var=ID op='==' value=STRING
 ;

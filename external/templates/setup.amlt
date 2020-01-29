@@ -1,2 +1,29 @@
-void setup() {{{setup_code}
+
+void error(int n)
+{{
+    for(int c = 0 ; c != n ; c++)
+    {{
+        digitalWrite(12, HIGH);
+        delay(200);
+        digitalWrite(12, LOW);
+        delay(200);
+    }}
+    delay(200 * n);
+    error(n);
+}}
+
+String prettyDigitalRead(int value)
+{{
+    if (value == 0)
+    {{
+        return "ON";
+    }}
+    return "OFF";
+}}
+
+void setup()
+{{{setup_code}
+
+    // Used for Exceptions
+    pinMode(12, OUTPUT);
 }}
