@@ -12,11 +12,11 @@ Brick:
 ;
 
 Actuator:
-    pin=INT
+    pin=INT is_analogic?="ANALOGIC"
 ;
 
 Sensor:
-    pin=INT
+    pin=INT is_analogic?="ANALOGIC"
 ;
 
 Lcd:
@@ -34,6 +34,7 @@ DigitalValue:
 
 Action:
     type='SET' var=ID value=DigitalValue |
+    type='SET' var=ID value=ID |
     type='PRINTLN' var=ID value=ID |
     type='PRINTLN' var=ID value=STRING |
     type='PRINT' var=ID value=ID |
@@ -75,6 +76,11 @@ Bop:
 ;
 
 Bexpr:
-    var=ID op='==' value=DigitalValue |
-    var=ID op='==' value=STRING
+    var=ID op=CompOp value=DigitalValue |
+    var=ID op=CompOp value=STRING |
+    var=ID op=CompOp value=FLOAT
+;
+
+CompOp:
+    '==' | '>=' | '<=' | '!='
 ;

@@ -30,9 +30,10 @@ class Brick:
         return str(self.child)
 
 class Actuator:
-    def __init__(self, parent, pin):
+    def __init__(self, parent, pin, is_analogic):
         self.parent = parent
         self.pin = pin
+        self.is_analogic = is_analogic
 
     def setup_code(self):
         return "pinMode({}, OUTPUT);".format(self.parent.name)
@@ -40,10 +41,13 @@ class Actuator:
     def __str__(self):
         return "int {} = {};".format(self.parent.name, self.pin)
 
+
+
 class Sensor:
-    def __init__(self, parent, pin):
+    def __init__(self, parent, pin, is_analogic):
         self.parent = parent
         self.pin = pin
+        self.is_analogic = is_analogic
 
     def setup_code(self):
         return "pinMode({}, INPUT);".format(self.parent.name)
@@ -52,7 +56,23 @@ class Sensor:
         return "int {} = {};".format(self.parent.name, self.pin)
 
     def generate_read_code(self):
+        if self.is_analogic:
+            return 'analogRead({})'.format(self.pin)
         return 'digitalRead({})'.format(self.pin)
+
+    def generateLCDprint(self, lcd_name):
+        if self.is_analogic:
+            return '{lcd_name}.setCursor(0, 0);\n' \
+                   '\t{lcd_name}.print(prettyAnalogPrint("{name}",{value}));\n'.format(
+                name=self.parent.name,
+                lcd_name=lcd_name,
+                value=self.generate_read_code())
+        else :
+            return '{lcd_name}.setCursor(0, 0);\n' \
+                   '\t{lcd_name}.print(prettyDigitalPrint("{name}", {value}));\n'.format(
+                name=self.parent.name,
+                lcd_name=lcd_name,
+                value=self.generate_read_code())
 
 class Serial:
     def __init__(self, parent, baudrate):
@@ -82,23 +102,26 @@ class Action:
 
     def __str__(self):
         if self.type == "SET":
-            return 'digitalWrite({}, {});\n'.format(self.var, self.value)
+            if ID_REGISTRY[self.var].child.is_analogic:
+                if self.value in READABLE_BRICK:
+                    return 'analogWrite({}, {});\n'.format(self.var, READABLE_BRICK[self.value].generate_read_code())
+                return 'analogWrite({}, {});\n'.format(self.var, self.value)
+            else:
+                if self.value in READABLE_BRICK:
+                    return 'digitalWrite({}, {});\n'.format(self.var, READABLE_BRICK[self.value].generate_read_code())
+                return 'digitalWrite({}, {});\n'.format(self.var, self.value)
 
         if self.type == "PRINT":
             if type(ID_REGISTRY[self.var].child) is Lcd:
-                if type(self.value) is str:
+                if self.value in READABLE_BRICK:
+                    return READABLE_BRICK[self.value].generateLCDprint(self.var)
+                else :
                     return '{lcd_name}.setCursor(0, 0);\n' \
                            '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var, value=self.value.ljust(16))
-                else:
-                    if self.value in READABLE_BRICK:
-                        return '{lcd_name}.setCursor(0, 0);\n' \
-                               '\t{lcd_name}.print(prettyDigitalRead({value}));\n'.format(lcd_name=self.var, value=READABLE_BRICK[self.value].generate_read_code())
-                    else:
-                        return 'Serial.println("{}");\n'.format(self.value.ljust(16))
 
             if type(ID_REGISTRY[self.var].child) is Serial:
                 if self.value in READABLE_BRICK:
-                    return 'Serial.print(prettyDigitalRead({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
+                    return 'Serial.print(prettyDigitalPrint({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
                 else:
                     return 'Serial.print("{}");\n'.format(self.value.ljust(16))
             else:
@@ -107,7 +130,7 @@ class Action:
         if self.type == "PRINTLN":
             if type(ID_REGISTRY[self.var].child) is Serial:
                 if self.value in READABLE_BRICK:
-                    return 'Serial.println(prettyDigitalRead({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
+                    return 'Serial.println(prettyDigitalPrint({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
                 else:
                     return 'Serial.println("{}");\n'.format(self.value.ljust(16))
             else:
@@ -128,13 +151,13 @@ class Transition:
     def generate_code(self, delay_before_next_state):
         if delay_before_next_state is not None and delay_before_next_state > 0:
             delay_instr = 'delay({});\n\t\t'.format(delay_before_next_state)
+
         else:
             delay_instr = ''
 
         next_state = self.next_state
         if type(next_state) is not Exception:
             next_state += '();'
-
         if self.cond.empty:
             return "{delay_instr}\n\t{next_state}".format(
                 delay_instr=delay_instr,
@@ -170,7 +193,7 @@ class State:
 
     def __str__(self):
             state = open('templates/state.amlt').read()
-
+            no_transition=True
             time_to_sleep_before_next_state = self.max_state_sleep
             state_inner_code = ''
             for expr in self.exprs:
@@ -179,10 +202,14 @@ class State:
                         time_to_sleep_before_next_state -= expr.value
                     state_inner_code += '\t' + str(expr)
                 if type(expr) is Transition:
+                    no_transition=False
                     state_inner_code += '\t' + expr.generate_code(time_to_sleep_before_next_state)
 
             if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0 :
                 print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,int(1000 / self.model_freq), self.name))
+
+            if no_transition:
+                state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
 
             return state.format(name=self.name, code=state_inner_code)
 

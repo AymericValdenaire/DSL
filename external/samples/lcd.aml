@@ -1,12 +1,8 @@
+FREQUENCY 5
+
 LCD lcd BUS 1
-SENSOR btn 9
+SENSOR temp 1 ANALOGIC
 
-INIT off {
-    PRINT lcd "push button :="
-    btn == ON -> on
-}
-
-on {
-    PRINT lcd "ON"
-    btn == ON -> off
+INIT print_temp {
+    PRINT lcd temp
 }

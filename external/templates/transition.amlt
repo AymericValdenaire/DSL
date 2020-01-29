@@ -1,4 +1,4 @@
-boolean guard =  millis() - time > debounce;
+    guard =  millis() - time > debounce;
     if ({condition}  && guard) {{
         time = millis();
         {delay_instr}{next_state}

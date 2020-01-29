@@ -1,4 +1,4 @@
-
+boolean guard;
 void error(int n)
 {{
     for(int c = 0 ; c != n ; c++)
@@ -12,13 +12,18 @@ void error(int n)
     error(n);
 }}
 
-String prettyDigitalRead(int value)
+String prettyDigitalRead(String name, int value)
 {{
     if (value == 0)
     {{
-        return "ON";
+        return (name + " := ON");
     }}
-    return "OFF";
+    return (name + " := OFF");
+}}
+
+String prettyAnalogPrint(String name, float value)
+{{
+    return (name + " := "+ value);
 }}
 
 void setup()

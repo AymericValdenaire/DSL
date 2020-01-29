@@ -1,0 +1,21 @@
+SENSOR radio_button 1 ANALOGIC
+
+ACTUATOR led_2 10
+ACTUATOR led 9 ANALOGIC
+
+INIT double_door {
+    SET led radio_button
+
+    radio_button >= 500 -> enable_led
+    radio_button <= 500 -> dead_led
+}
+
+dead_led {
+    SET led_2 OFF
+    -> double_door
+    }
+
+enable_led {
+    SET led_2 ON
+    -> double_door
+}
