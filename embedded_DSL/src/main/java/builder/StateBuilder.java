@@ -1,6 +1,6 @@
 package builder;
 
-import builder.bool.BoolExpression;
+import builder.bool.BoolExpressionBuilder;
 import builder.bool.BoolInstance;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +8,16 @@ import kernel.ArduinoApp;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+@Getter(AccessLevel.PROTECTED)
 /**
  * Permet de construire un état
  */
 public class StateBuilder implements BoolInstance{
 
-  @Getter(AccessLevel.PROTECTED)
   StatesBuilder parent;
-
   String name;
   List<BrickSetterBuilder> brickSetterBuilders = new ArrayList<>();
-  List<BoolExpression> boolExpressions = new ArrayList<>();
+  List<BoolExpressionBuilder> boolExpressions = new ArrayList<>();
 
   public StateBuilder(StatesBuilder parent, String name) {
     this.parent = parent;
@@ -40,8 +39,8 @@ public class StateBuilder implements BoolInstance{
    * Permet d'initialiser une boolean expression
    * @return BoolExpression
    */
-  public BoolExpression when() {
-    BoolExpression boolExpression = new BoolExpression(this);
+  public BoolExpressionBuilder when() {
+    BoolExpressionBuilder boolExpression = new BoolExpressionBuilder(this);
     boolExpressions.add(boolExpression);
     return boolExpression;
   }
@@ -56,11 +55,11 @@ public class StateBuilder implements BoolInstance{
   }
 
   /**
-   * Permet de build le arduino sans avoir a faire de end-state/end-states
+   * Permet de d'initialiser la state machine
    * @return ArduinoApp
    */
-  public ArduinoApp build(){
-    return parent.getParent().build();
+  public StatesBuilder initState(String stateName) throws Exception {
+    return parent.setInit(stateName);
   }
 
   @Override

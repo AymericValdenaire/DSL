@@ -7,9 +7,9 @@ import builder.StateBuilder;
  * Permet de définir la condition d'une BoolExpression
  */
 public class BoolSetterBuilder implements BoolInstance{
-  BoolExpression parent;
+  BoolExpressionBuilder parent;
 
-  public BoolSetterBuilder(BoolExpression parent) {
+  public BoolSetterBuilder(BoolExpressionBuilder parent) {
     this.parent = parent;
   }
 

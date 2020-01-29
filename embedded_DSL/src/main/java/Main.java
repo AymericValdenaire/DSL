@@ -13,7 +13,7 @@ import static builder.ArduinoBuilder.*;
 
 public class Main {
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws Exception {
         HashMap<String, Generator> arduinoAppGenerated = new HashMap<>();
         ArduinoApp arduinoApp;
         Generator generator;
@@ -53,7 +53,8 @@ public class Main {
                         .state("off")
                             .set("test").toLow()
                             .when().ifIsEqual("button", "1").thenSet("button").toHigh()
-                    .build();
+                    .initState("off")
+                .build();
 
         generator = new Generator();
         arduinoApp.accept(generator);

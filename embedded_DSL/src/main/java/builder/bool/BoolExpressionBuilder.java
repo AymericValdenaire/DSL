@@ -10,7 +10,7 @@ import org.graalvm.compiler.asm.sparc.SPARCAssembler.Br;
 /**
  * Permet de créer des expressions booléennes
  */
-public class BoolExpression {
+public class BoolExpressionBuilder {
 
   StateBuilder stateBuilder;
   String brickName;
@@ -19,7 +19,7 @@ public class BoolExpression {
   @Setter(AccessLevel.PROTECTED)
   BrickSetterBuilder action;
 
-  public BoolExpression(StateBuilder stateBuilder) {
+  public BoolExpressionBuilder(StateBuilder stateBuilder) {
     this.stateBuilder = stateBuilder;
   }
 

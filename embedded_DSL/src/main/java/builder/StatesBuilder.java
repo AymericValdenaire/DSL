@@ -1,6 +1,7 @@
 package builder;
 
 import java.util.List;
+import kernel.ArduinoApp;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ public class StatesBuilder {
   private ArduinoBuilder parent;
 
   private List<StateBuilder> states;
+  private StateBuilder initialState;
 
   public StatesBuilder(ArduinoBuilder parent) {
     this.parent = parent;
@@ -27,4 +29,18 @@ public class StatesBuilder {
     this.states.add(stateBuilder);
     return stateBuilder;
   }
+
+  protected StatesBuilder setInit(String stateName) throws Exception {
+    this.initialState = states.stream()
+        .filter(state -> state.getName().equals(stateName))
+        .findFirst()
+        .orElseThrow(() -> new Exception("State " + stateName + " not found"));
+
+    return this;
+  }
+
+  public ArduinoApp build() {
+    return this.parent.build();
+  }
+
 }
