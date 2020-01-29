@@ -208,7 +208,7 @@ class State:
             if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0 :
                 print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,int(1000 / self.model_freq), self.name))
 
-            if no_transition:
+            if no_transition and time_to_sleep_before_next_state is not None:
                 state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
 
             return state.format(name=self.name, code=state_inner_code)

@@ -1,0 +1,6 @@
+ACTUATOR buzzer 9 ANALOGIC
+SENSOR rotary 1 ANALOGIC
+
+INIT print_temp {
+    SET buzzer rotary
+}
