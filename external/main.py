@@ -82,9 +82,6 @@ class Serial:
     def setup_code(self):
         return "Serial.begin({});".format(self.baudrate)
 
-    def __str__(self):
-        return "int {}_bytestream = 0;".format(self.parent.name)
-
 class DigitalValue:
     def __init__(self, parent, value):
         self.parent=parent
