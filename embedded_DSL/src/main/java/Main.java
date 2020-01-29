@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import kernel.ArduinoApp;
 import kernel.generator.Generator;
 
@@ -21,6 +25,16 @@ public class Main {
         Generator generator = new Generator();
         arduinoApp.accept(generator);
         System.out.println(generator.getGeneratedCode());
+
+        try {
+            new File("out/").mkdir();
+
+            PrintWriter writer = new PrintWriter("out/the-file-name.txt", "UTF-8");
+            writer.print(generator.getGeneratedCode());
+            writer.close();
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
