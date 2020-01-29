@@ -5,7 +5,9 @@ import kernel.model.Actuator;
 import kernel.model.Brick;
 import kernel.model.Lcd;
 import kernel.model.Sensor;
+import lombok.Getter;
 
+@Getter
 public class ArduinoBuilder {
 
     private ArduinoApp arduinoApp;

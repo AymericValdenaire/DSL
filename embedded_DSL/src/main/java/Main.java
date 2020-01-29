@@ -29,7 +29,7 @@ public class Main {
         try {
             new File("out/").mkdir();
 
-            PrintWriter writer = new PrintWriter("out/the-file-name.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter("out/" + arduinoApp.getName() + ".ino", "UTF-8");
             writer.print(generator.getGeneratedCode());
             writer.close();
         } catch (UnsupportedEncodingException | FileNotFoundException e) {
