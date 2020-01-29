@@ -1,5 +1,6 @@
 package builder;
 
+import builder.bool.BoolExpression;
 import builder.bool.BoolInstance;
 import java.util.List;
 import kernel.ArduinoApp;

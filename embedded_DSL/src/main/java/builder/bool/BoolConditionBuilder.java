@@ -1,6 +1,5 @@
 package builder.bool;
 
-import builder.BoolExpression;
 import builder.BrickSetterBuilder;
 import builder.StateBuilder;
 

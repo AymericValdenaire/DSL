@@ -1,5 +1,6 @@
-package builder;
+package builder.bool;
 
+import builder.StateBuilder;
 import builder.bool.BoolConditionBuilder;
 
 public class BoolExpression {

@@ -9,6 +9,7 @@ import kernel.model.Sensor;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class TransitionTableBuilder {
 
     private ArduinoBuilder parent;
