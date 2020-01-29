@@ -40,21 +40,19 @@ public class Main {
         }
          */
 
-        // Todo : manque les SET dans les states
         arduinoApp =
                 arduino("scenario1")
                     .setup(sensor("button", 10))
                     .setup(actuator("led", 11))
                     .setup(actuator("buzzer", 9))
-
                     .states()
                         .state("on")
                             .set("test").toHigh()
                             .set("test").toLow()
-                            .when().iff(true).thenSet("test").toLow()
+                            .when().ifIsEqual("button", "1").thenSet("button").toLow()
                         .state("off")
                             .set("test").toLow()
-                            .when().iff(true).thenSet("blbl").toHigh()
+                            .when().ifIsEqual("button", "1").thenSet("button").toHigh()
                     .build();
 
         generator = new Generator();
@@ -62,9 +60,10 @@ public class Main {
         arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
         // ----------------
-        // TEST CODE2
+        // OLD
         // ----------------
 
+        /*
         arduinoApp =
             arduino("monPremierCode2")
                 .setup(sensor("led",2))
@@ -80,6 +79,8 @@ public class Main {
         generator = new Generator();
         arduinoApp.accept(generator);
         arduinoAppGenerated.put(arduinoApp.getName(), generator);
+        */
+
 
 
         try {
