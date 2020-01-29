@@ -7,7 +7,6 @@ import kernel.logic.Transition;
 import kernel.model.Actuator;
 import kernel.model.Brick;
 import kernel.model.DigitalValue;
-import kernel.model.Model;
 import kernel.model.Sensor;
 import kernel.model.Serial;
 
@@ -20,6 +19,5 @@ public abstract class Visitor<T> {
     public abstract void visit(BoolExpression boolExpression);
     public abstract void visit(Serial serial);
     public abstract void visit(DigitalValue digitalValue);
-    public abstract void visit(Model model);
 }
 
