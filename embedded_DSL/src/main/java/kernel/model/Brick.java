@@ -5,13 +5,7 @@ import kernel.generator.Visitor;
 import lombok.Data;
 
 @Data
-public abstract class Brick implements Visitable {
+public abstract class Brick implements Visitable, Representable {
 
     final String name;
-
-    public abstract void accept(Visitor visitor);
-
-    public abstract String declarationVarCode();
-
-    public abstract String initCode();
 }
