@@ -66,6 +66,10 @@ public class ArduinoBuilder {
         return new TransitionTableBuilder(this);
     }
 
+    public StatesBuilder states() {
+        return new StatesBuilder(this);
+    }
+
     public ArduinoApp getArduinoApp() {
         return arduinoApp;
     }
