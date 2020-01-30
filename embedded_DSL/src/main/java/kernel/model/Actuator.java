@@ -4,8 +4,8 @@ import kernel.generator.Visitor;
 
 public class Actuator extends Brick {
 
-    final int pin;
-    final Boolean isAnalogic;
+    private final int pin;
+    private final Boolean isAnalogic;
 
     public Actuator(String name, int pin, Boolean isAnalogic) {
         super(name);

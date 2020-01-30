@@ -3,8 +3,8 @@ package kernel.model;
 import kernel.generator.Visitor;
 
 public class Sensor extends Brick {
-    final int pin;
-    final Boolean isAnalogic;
+    private final int pin;
+    private final Boolean isAnalogic;
 
     public Sensor(String name, int pin, Boolean isAnalogic) {
         super(name);

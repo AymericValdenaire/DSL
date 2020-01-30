@@ -257,6 +257,7 @@ class Bexpr:
         else:
             print('[ERROR] Unsupported type within condition : {}'.format(type(self.var)))
             exit(1)
+            
 class Lcd:
     def __init__(self, parent,bus_id):
         self.parent = parent

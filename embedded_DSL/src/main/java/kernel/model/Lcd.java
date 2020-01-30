@@ -2,8 +2,8 @@ package kernel.model;
 
 import kernel.generator.Visitor;
 
-public class Lcd  extends Brick {
-    final int bus_id;
+public class Lcd extends Brick {
+    private final int bus_id;
 
     private String getBusPin() {
         switch (this.bus_id){
@@ -33,6 +33,6 @@ public class Lcd  extends Brick {
 
     @Override
     public String initCode() {
-        return String.format("\t%s.begin(16, 2);\n",this.name);
+        return String.format("\t%s.begin(16, 2);\n", name);
     }
 }

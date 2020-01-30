@@ -1,10 +1,9 @@
 package kernel.model;
 
-import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 
 public class Serial extends Brick {
-  final int baudrate;
+  private final int baudrate;
 
   public Serial(String name, int baudrate) {
     super(name);

@@ -2,15 +2,43 @@ package kernel.logic;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import lombok.Data;
+import kernel.model.Brick;
+import kernel.model.DigitalValue;
 import lombok.Getter;
 
-@Data
+@Getter
 public class BoolExpression implements Visitable {
 
-  String expression;
+  final String var;
+  final BoolOperator operator;
+  final Brick brick;
+  final DigitalValue digitalValue;
+
+  public BoolExpression(String var, BoolOperator operator, Brick brick) {
+    this.var = var;
+    this.operator = operator;
+    this.brick = brick;
+  }
+
+  public BoolExpression(String var, BoolOperator operator, DigitalValue digitalValue) {
+    this.var = var;
+    this.operator = operator;
+    this.digitalValue = digitalValue;
+  }
 
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }
+
+  @Override
+  public String initCode() {
+    return "";
+  }
+
+  @Override
+  public String declarationVarCode() {
+
+  }
+
+
 }

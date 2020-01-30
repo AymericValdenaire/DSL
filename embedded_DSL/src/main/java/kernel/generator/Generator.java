@@ -33,8 +33,6 @@ public class Generator extends Visitor<StringBuilder>{
       builder.append(String.format(" == digitalRead(%s) && ",state.getSensor().getName()));
       state.getTransitions().get(i).accept(this);
     }
-
-
   }
 
   @Override

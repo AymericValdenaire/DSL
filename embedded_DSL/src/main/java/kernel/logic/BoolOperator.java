@@ -1,17 +1,14 @@
-package kernel.model;
+package kernel.logic;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import lombok.Data;
 
+public class BoolOperator implements Visitable {
 
-@Data
-public class DigitalValue implements Visitable {
+  final String operator;
 
-  private final String value;
-
-  public DigitalValue(String value) {
-    this.value = value;
+  public BoolOperator(String operator) {
+    this.operator = operator;
   }
 
   @Override
@@ -26,6 +23,6 @@ public class DigitalValue implements Visitable {
 
   @Override
   public String declarationVarCode() {
-    return value;
+    return operator;
   }
 }
