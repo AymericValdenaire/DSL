@@ -2,6 +2,10 @@ package builder;
 
 import builder.bool.BoolInstance;
 
+/**
+ * Permet de set des états au bricks
+ * @param <T> Instance de BoolInstance
+ */
 public class BrickSetterBuilder<T extends BoolInstance> {
 
   T parent;
@@ -22,7 +26,7 @@ public class BrickSetterBuilder<T extends BoolInstance> {
     return parent.getStateBuilder();
   }
 
-  private StateBuilder goUp() {
+  public StateBuilder goUp() {
     //parent.local.getActions().add(this.local);
     return parent.getStateBuilder();
   }

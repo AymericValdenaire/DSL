@@ -13,7 +13,7 @@ import static builder.ArduinoBuilder.*;
 
 public class Main {
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws Exception {
         HashMap<String, Generator> arduinoAppGenerated = new HashMap<>();
         ArduinoApp arduinoApp;
         Generator generator;
@@ -40,31 +40,31 @@ public class Main {
         }
          */
 
-        // Todo : manque les SET dans les states
         arduinoApp =
                 arduino("scenario1")
                     .setup(sensor("button", 10))
                     .setup(actuator("led", 11))
                     .setup(actuator("buzzer", 9))
-
                     .states()
                         .state("on")
                             .set("test").toHigh()
                             .set("test").toLow()
-                            .when().iff(true).thenSet("test").toLow()
+                            .when().ifIsEqual("button", "1").thenSet("button").toLow()
                         .state("off")
                             .set("test").toLow()
-                            .when().iff(true).thenSet("blbl").toHigh()
-                    .build();
+                            .when().ifIsEqual("button", "1").thenSet("button").toHigh()
+                    .initState("off")
+                .build();
 
         generator = new Generator();
         arduinoApp.accept(generator);
         arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
         // ----------------
-        // TEST CODE2
+        // OLD
         // ----------------
 
+        /*
         arduinoApp =
             arduino("monPremierCode2")
                 .setup(sensor("led",2))
@@ -80,6 +80,8 @@ public class Main {
         generator = new Generator();
         arduinoApp.accept(generator);
         arduinoAppGenerated.put(arduinoApp.getName(), generator);
+        */
+
 
 
         try {
