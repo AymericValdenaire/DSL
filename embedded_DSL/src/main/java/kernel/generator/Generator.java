@@ -1,7 +1,6 @@
 package kernel.generator;
 
 import kernel.ArduinoApp;
-import kernel.logic.BoolExpression;
 import kernel.logic.State;
 import kernel.logic.statements.action.Assignement;
 import kernel.logic.statements.transition.Transition;
@@ -58,11 +57,6 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Transition transition) {
-
-  }
-
-  @Override
-  public void visit(BoolExpression boolExpression) {
 
   }
 

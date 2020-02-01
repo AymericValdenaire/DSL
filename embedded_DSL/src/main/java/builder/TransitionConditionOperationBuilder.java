@@ -1,7 +1,7 @@
 package builder;
 
 /**
- * Permet de définir la condition d'une BoolExpression
+ * Permet de définir la condition d'une transition
  */
 public class TransitionConditionOperationBuilder {
 
@@ -18,7 +18,7 @@ public class TransitionConditionOperationBuilder {
   /**
    * To add a and condition
    *
-   * @return BoolExpressionBuilder
+   * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder and() {
     return parent;
@@ -27,7 +27,7 @@ public class TransitionConditionOperationBuilder {
   /**
    * To add a or condition
    *
-   * @return BoolExpressionBuilder
+   * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder or() {
     return parent;

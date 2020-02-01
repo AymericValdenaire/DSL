@@ -1,20 +1,16 @@
 package builder;
 
 import static builder.ArduinoBuilder.analogicActuators;
-import static builder.ArduinoBuilder.analogicSensor;
-import static builder.ArduinoBuilder.analogicSensors;
-import static builder.ArduinoBuilder.digitalActuator;
 import static builder.ArduinoBuilder.digitalActuators;
 
 import builder.exception.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
+import kernel.logic.State;
 import kernel.logic.statements.action.Assignement;
-import kernel.model.brick.Brick;
 import kernel.model.brick.actuator.Actuator;
 import lombok.AccessLevel;
 import lombok.Getter;
-import kernel.logic.State;
 
 @Getter(AccessLevel.PROTECTED)
 /**
@@ -54,6 +50,11 @@ public class BrickSetterBuilder {
 
   public StateBuilder goUp() {
     //parent.local.getActions().add(this.locxal);
+    return parent;
+  }
+
+  public StateBuilder to(String action) {
+    state.getAssignements().add(new Assignement(actuator, action));
     return parent;
   }
 
