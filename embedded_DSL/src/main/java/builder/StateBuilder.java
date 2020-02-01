@@ -2,8 +2,7 @@ package builder;
 
 import builder.bool.BoolExpressionBuilder;
 import builder.bool.BoolInstance;
-import java.util.ArrayList;
-import java.util.List;
+import builder.exception.ValidationException;
 import kernel.logic.State;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,7 +28,7 @@ public class StateBuilder implements BoolInstance {
    * @param name string brick name
    * @return BrickSetterBuilder
    */
-  public BrickSetterBuilder set(String name) {
+  public BrickSetterBuilder set(String name) throws ValidationException {
     return new BrickSetterBuilder(this, name);
   }
 

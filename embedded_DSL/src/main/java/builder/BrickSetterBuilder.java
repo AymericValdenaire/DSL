@@ -1,6 +1,8 @@
 package builder;
 
 import builder.bool.BoolInstance;
+import builder.exception.ValidationException;
+import kernel.model.brick.Brick;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -12,11 +14,22 @@ import lombok.Getter;
 public class BrickSetterBuilder<T extends BoolInstance> {
 
   private T parent;
-  private String brick;
+  private Brick brick;
 
-  public BrickSetterBuilder(T parent, String brick) {
+
+  public BrickSetterBuilder(T parent, String brickName) throws ValidationException {
     this.parent = parent;
-    this.brick = brick;
+
+    this.brick = parent
+        .getStateBuilder()
+        .getParent()
+        .getParent()
+        .getArduinoApp()
+        .getBricks()
+        .stream()
+        .filter(brick -> brick.getName().equals(brickName))
+        .findFirst()
+        .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is not found"));
   }
 
   public StateBuilder toHigh() {

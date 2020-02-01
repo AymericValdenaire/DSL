@@ -2,6 +2,7 @@ package builder.bool;
 
 import builder.BrickSetterBuilder;
 import builder.StateBuilder;
+import builder.exception.ValidationException;
 
 /**
  * Permet de définir la condition d'une BoolExpression
@@ -17,7 +18,7 @@ public class BoolSetterBuilder implements BoolInstance {
   /**
    * Permet de set quand
    */
-  public BrickSetterBuilder thenSet(String name) {
+  public BrickSetterBuilder thenSet(String name) throws ValidationException {
     BrickSetterBuilder setter = new BrickSetterBuilder(this, name);
     this.parent.setAction(setter);
     return setter;

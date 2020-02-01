@@ -2,6 +2,7 @@ package builder.bool;
 
 import builder.BrickSetterBuilder;
 import builder.StateBuilder;
+import builder.exception.ValidationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,17 +11,16 @@ import lombok.Setter;
 /**
  * Permet de créer des expressions booléennes
  */
-public class BoolExpressionBuilder {
+public class BoolExpressionBuilder implements BoolInstance{
 
-  private StateBuilder stateBuilder;
-  private String brickName;
+  private StateBuilder parent;
   private String value;
 
   @Setter(AccessLevel.PROTECTED)
   BrickSetterBuilder action;
 
   public BoolExpressionBuilder(StateBuilder stateBuilder) {
-    this.stateBuilder = stateBuilder;
+    this.parent = stateBuilder;
   }
 
   /**
@@ -30,13 +30,14 @@ public class BoolExpressionBuilder {
    * @param value int
    * @return BoolSetterBuilder
    */
-  public BoolSetterBuilder ifIsEqual(String brickName, String value) {
-    this.brickName = brickName;
+  public BoolSetterBuilder ifIsEqual(String brickName, String value) throws ValidationException {
+    this.action = new BrickSetterBuilder(this, brickName);
     this.value = value;
     return new BoolSetterBuilder(this);
   }
 
-  protected StateBuilder getStateBuilder() {
-    return this.stateBuilder;
+  @Override
+  public StateBuilder getStateBuilder() {
+    return this.parent;
   }
 }
