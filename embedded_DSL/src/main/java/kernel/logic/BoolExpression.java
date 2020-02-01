@@ -16,12 +16,14 @@ public class BoolExpression implements Visitable {
 
   public BoolExpression(String var, BoolOperator operator, Brick brick) {
     this.var = var;
+    this.digitalValue = null;
     this.operator = operator;
     this.brick = brick;
   }
 
   public BoolExpression(String var, BoolOperator operator, DigitalValue digitalValue) {
     this.var = var;
+    this.brick = null;
     this.operator = operator;
     this.digitalValue = digitalValue;
   }
@@ -37,7 +39,7 @@ public class BoolExpression implements Visitable {
 
   @Override
   public String declarationVarCode() {
-
+    return null;
   }
 
 

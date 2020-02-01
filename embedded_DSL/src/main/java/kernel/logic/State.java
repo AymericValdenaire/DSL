@@ -20,4 +20,14 @@ public class State implements Visitable {
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }
+
+  @Override
+  public String initCode() {
+    return null;
+  }
+
+  @Override
+  public String declarationVarCode() {
+    return null;
+  }
 }

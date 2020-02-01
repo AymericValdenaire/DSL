@@ -26,6 +26,15 @@ public class ArduinoApp implements Visitable {
     visitor.visit(this);
   }
 
+  @Override
+  public String initCode() {
+    return null;
+  }
+
+  @Override
+  public String declarationVarCode() {
+    return null;
+  }
 
 
 }
