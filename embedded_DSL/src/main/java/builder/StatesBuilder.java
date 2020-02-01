@@ -10,6 +10,7 @@ import lombok.Getter;
  * Permet d'initialiser une liste d'états
  */
 public class StatesBuilder {
+
   @Getter(AccessLevel.PROTECTED)
   private ArduinoBuilder parent;
 
@@ -23,8 +24,8 @@ public class StatesBuilder {
 
   /**
    * Permet d'initialiser un nouvel état
+   *
    * @param name string nom de l'état
-   * @return
    */
   public StateBuilder state(String name) {
     StateBuilder stateBuilder = new StateBuilder(this, name);

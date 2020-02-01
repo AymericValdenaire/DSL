@@ -1,15 +1,18 @@
 package builder;
 
 import builder.bool.BoolInstance;
+import lombok.AccessLevel;
+import lombok.Getter;
 
+@Getter(AccessLevel.PROTECTED)
 /**
  * Permet de set des états au bricks
  * @param <T> Instance de BoolInstance
  */
 public class BrickSetterBuilder<T extends BoolInstance> {
 
-  T parent;
-  String brick;
+  private T parent;
+  private String brick;
 
   public BrickSetterBuilder(T parent, String brick) {
     this.parent = parent;

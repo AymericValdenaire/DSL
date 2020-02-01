@@ -1,26 +1,26 @@
+import static builder.ArduinoBuilder.actuator;
+import static builder.ArduinoBuilder.arduino;
+import static builder.ArduinoBuilder.sensor;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import kernel.ArduinoApp;
 import kernel.generator.Generator;
 
-import static builder.ArduinoBuilder.*;
-
 public class Main {
 
-    public static void main (String[] args) throws Exception {
-        HashMap<String, Generator> arduinoAppGenerated = new HashMap<>();
-        ArduinoApp arduinoApp;
-        Generator generator;
+  public static void main(String[] args) throws Exception {
+    HashMap<String, Generator> arduinoAppGenerated = new HashMap<>();
+    ArduinoApp arduinoApp;
+    Generator generator;
 
-        // ----------------
-        // SCENARIO 1
-        // ----------------
+    // ----------------
+    // SCENARIO 1
+    // ----------------
 
         /*
         SENSOR button 10
@@ -40,29 +40,29 @@ public class Main {
         }
          */
 
-        arduinoApp =
-                arduino("scenario1")
-                    .setup(sensor("button", 10))
-                    .setup(actuator("led", 11))
-                    .setup(actuator("buzzer", 9))
-                    .states()
-                        .state("on")
-                            .set("test").toHigh()
-                            .set("test").toLow()
-                            .when().ifIsEqual("button", "1").thenSet("button").toLow()
-                        .state("off")
-                            .set("test").toLow()
-                            .when().ifIsEqual("button", "1").thenSet("button").toHigh()
-                    .initState("off")
-                .build();
+    arduinoApp =
+        arduino("scenario1")
+            .setup(sensor("button", 10))
+            .setup(actuator("led", 11))
+            .setup(actuator("buzzer", 9))
+            .states()
+            .state("on")
+            .set("test").toHigh()
+            .set("test").toLow()
+            .when().ifIsEqual("button", "1").thenSet("button").toLow()
+            .state("off")
+            .set("test").toLow()
+            .when().ifIsEqual("button", "1").thenSet("button").toHigh()
+            .initState("off")
+            .build();
 
-        generator = new Generator();
-        arduinoApp.accept(generator);
-        arduinoAppGenerated.put(arduinoApp.getName(), generator);
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
-        // ----------------
-        // OLD
-        // ----------------
+    // ----------------
+    // OLD
+    // ----------------
 
         /*
         arduinoApp =
@@ -82,20 +82,18 @@ public class Main {
         arduinoAppGenerated.put(arduinoApp.getName(), generator);
         */
 
+    try {
+      new File("out/").mkdir();
 
+      for (Map.Entry<String, Generator> entry : arduinoAppGenerated.entrySet()) {
+        PrintWriter writer = new PrintWriter("out/" + entry.getKey() + ".ino", "UTF-8");
+        writer.print(entry.getValue().getGeneratedCode());
+        writer.close();
+      }
 
-        try {
-            new File("out/").mkdir();
-
-            for (Map.Entry<String, Generator> entry : arduinoAppGenerated.entrySet()) {
-                PrintWriter writer = new PrintWriter("out/" + entry.getKey() + ".ino", "UTF-8");
-                writer.print(entry.getValue().getGeneratedCode());
-                writer.close();
-            }
-
-        } catch (UnsupportedEncodingException | FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    } catch (UnsupportedEncodingException | FileNotFoundException e) {
+      e.printStackTrace();
     }
+  }
 
 }

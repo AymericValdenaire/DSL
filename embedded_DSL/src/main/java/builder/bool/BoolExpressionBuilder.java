@@ -3,17 +3,18 @@ package builder.bool;
 import builder.BrickSetterBuilder;
 import builder.StateBuilder;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
-
+@Getter(AccessLevel.PROTECTED)
 /**
  * Permet de créer des expressions booléennes
  */
 public class BoolExpressionBuilder {
 
-  StateBuilder stateBuilder;
-  String brickName;
-  String value;
+  private StateBuilder stateBuilder;
+  private String brickName;
+  private String value;
 
   @Setter(AccessLevel.PROTECTED)
   BrickSetterBuilder action;
@@ -24,6 +25,7 @@ public class BoolExpressionBuilder {
 
   /**
    * Permet de définir la condition
+   *
    * @param brickName String
    * @param value int
    * @return BoolSetterBuilder
@@ -34,7 +36,7 @@ public class BoolExpressionBuilder {
     return new BoolSetterBuilder(this);
   }
 
-  public StateBuilder getStateBuilder(){
+  protected StateBuilder getStateBuilder() {
     return this.stateBuilder;
   }
 }

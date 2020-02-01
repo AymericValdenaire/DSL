@@ -6,8 +6,9 @@ import builder.StateBuilder;
 /**
  * Permet de définir la condition d'une BoolExpression
  */
-public class BoolSetterBuilder implements BoolInstance{
-  BoolExpressionBuilder parent;
+public class BoolSetterBuilder implements BoolInstance {
+
+  private BoolExpressionBuilder parent;
 
   public BoolSetterBuilder(BoolExpressionBuilder parent) {
     this.parent = parent;
@@ -15,8 +16,6 @@ public class BoolSetterBuilder implements BoolInstance{
 
   /**
    * Permet de set quand
-   * @param name
-   * @return
    */
   public BrickSetterBuilder thenSet(String name) {
     BrickSetterBuilder setter = new BrickSetterBuilder(this, name);
