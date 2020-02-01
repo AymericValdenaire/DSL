@@ -1,6 +1,8 @@
-ACTUATOR buzzer 9 ANALOGIC
-SENSOR rotary 1 ANALOGIC
+INIT STATE print_temp
 
-INIT print_temp {
-    SET buzzer rotary
+DIGITAL ACTUATOR buzzer 9
+ANALOG SENSOR rotary 1
+
+STATE print_temp {
+    buzzer = rotary
 }

@@ -1,12 +1,14 @@
-SENSOR btn 9
-ACTUATOR led 11
+INIT STATE off
 
-INIT off {
-    SET led OFF
-    btn == ON -> on
+DIGITAL SENSOR btn 9
+DIGITAL ACTUATOR led 11
+
+STATE off {
+    led = OFF
+    btn == ON => STATE on
 }
 
-on {
-    SET led ON
-    btn == ON -> off
+STATE on {
+    led = ON
+    btn == ON => STATE off
 }

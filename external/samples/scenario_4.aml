@@ -1,19 +1,21 @@
-SENSOR btn 9
-ACTUATOR led 10
-ACTUATOR buzzer 11
+INIT STATE off
 
-INIT off {
-    SET led OFF
-    btn == ON -> only_buzzer
+ANALOG SENSOR btn 9
+DIGITAL ACTUATOR led 10
+DIGITAL ACTUATOR buzzer 11
+
+STATE off {
+    led = OFF
+    btn == ON => STATE only_buzzer
 }
 
-only_buzzer {
-    SET buzzer ON
-    btn == ON -> only_led
+STATE only_buzzer {
+    buzzer = ON
+    btn == ON => STATE only_led
 }
 
-only_led {
-    SET buzzer OFF
-    SET led ON
-    btn == ON -> off
+STATE only_led {
+    buzzer = OFF
+    led = ON
+    btn == ON => STATE off
 }

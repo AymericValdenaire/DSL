@@ -1,13 +1,15 @@
-SENSOR btn_1 9
-SENSOR btn_2 10
-ACTUATOR buzzer 11
+INIT STATE off
 
-INIT off {
-    SET buzzer OFF
-    btn_1 == ON AND btn_2 == ON -> on
+ANALOG SENSOR btn_1 9
+ANALOG SENSOR btn_2 10
+DIGITAL ACTUATOR buzzer 11
+
+STATE off {
+    buzzer = OFF
+    btn_1 == ON && btn_2 == ON => STATE on
 }
 
-on {
-    SET buzzer ON
-    btn_1 == OFF OR btn_2 == OFF -> off
+STATE on {
+    buzzer = ON
+    btn_1 == OFF||btn_2 == OFF => STATE off
 }

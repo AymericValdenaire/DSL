@@ -1,4 +1,6 @@
 
+long time = 0;
+long debounce = 200;
 
 boolean guard;
 void error(int n)

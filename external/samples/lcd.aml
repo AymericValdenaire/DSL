@@ -1,8 +1,10 @@
 FREQUENCY 0.5
+INIT STATE print_temp
 
-LCD lcd BUS 1
-SENSOR temp 1 ANALOGIC
+LiquidCrystal lcd 2 3 4 5 6 7 8 size[16,2]
 
-INIT print_temp {
+ANALOG SENSOR temp 1
+
+STATE print_temp {
     PRINT lcd temp
 }

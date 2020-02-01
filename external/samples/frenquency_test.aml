@@ -1,17 +1,18 @@
 FREQUENCY 2
+INIT STATE led_on
 
-ACTUATOR led 10
-ACTUATOR buzzer 11
+DIGITAL ACTUATOR led 10
+DIGITAL ACTUATOR buzzer 11
 
-INIT led_on {
-    SET buzzer OFF
+STATE led_on {
+    buzzer = OFF
     WAIT 250
-    SET led ON
-    -> buzzer_on
+    led = ON
+    => STATE buzzer_on
 }
 
-buzzer_on {
-    SET led OFF
-    SET buzzer ON
-    -> led_on
+STATE buzzer_on {
+    led = OFF
+    buzzer = ON
+    => STATE led_on
 }

@@ -1,17 +1,17 @@
 Model:
-    'INIT' 'STATE' init_state=[State]
-    ((serial=Serial)?
+    (('INIT' 'STATE' init_state=[State])
+    (serial=Serial)?
     ('FREQUENCY' frequency=FLOAT)?)#
     bricks+=Brick
     states+=State
 ;
 
 DigitalValue:
-    'ON' | 'OFF'
+    value='ON' | value='OFF'
 ;
 
 Brick:
-    Sensor | Actuator
+    Sensor | Actuator | Serial
 ;
 
 Sensor:
@@ -19,7 +19,7 @@ Sensor:
 ;
 
 Actuator:
-    AnalogicActuator | DigitalActuator
+    AnalogicActuator | DigitalActuator | LiquidCrystal
 ;
 
 AnalogicSensor :
@@ -31,7 +31,7 @@ DigitalSensor :
 ;
 
 AnalogicActuator :
-    'ANALOG' 'ACTUATOR' name=ID pin=INT | 'LiquidCrystal' name=ID pin+=INT
+    'ANALOG' 'ACTUATOR' name=ID pin=INT
 ;
 
 DigitalActuator :
@@ -39,7 +39,7 @@ DigitalActuator :
 ;
 
 LiquidCrystal :
-    'LiquidCrystal' name=ID width=INT'x'height=INT pin+=INT
+    'LiquidCrystal' name=ID  pin+=INT 'size[' matrix_size*=INT[','] ']'
 ;
 
 Serial :
@@ -58,68 +58,62 @@ Statements :
 ;
 
 Action :
-    Assignment | AssignmentFromBrick | Print | Wait
+    Assignment | Print | Wait
 ;
 
 Print:
-    (cmd='PRINT' | cmd='PRINTLN') serial=[Serial] msg=STRING |
-    (cmd='PRINT' | cmd='PRINTLN') serial=[Serial] msg=[Brick]
+    cmd='PRINT' output=[PrintableDevice] from_brick=[Brick] |
+    cmd='PRINT' serial=[PrintableDevice] msg=STRING
 ;
+
+PrintableDevice:
+    Serial | LiquidCrystal
+    ;
 
 Wait:
     'WAIT' milli=INT
 ;
 
 Transition:
+    condition=Condition '=>' exception=Exception |
     condition=Condition '=>' 'STATE' next_state=[State] |
     '=>' 'STATE' next_state=[State] |
-    '=>' Exception
+    '=>' exception=Exception
 ;
 
 Assignment :
-    var=[Brick] '=' new_value=INT |
-    var=[AnalogicalActuator] '=' new_value=FLOAT
-;
-
-AssignmentFromBrick:
-    var=[DigitalActuator] '=' new_value=[DigitalSensor]
+    var=[Actuator] '=' value=DigitalValue |
+    var=[Actuator] '=' value=INT |
+    var_analog=[AnalogicActuator] '=' value=FLOAT |
+    var=[Actuator] '=' new_value=[Sensor]
 ;
 
 Exception:
     'ERROR' value=INT
 ;
 
-// Condition:
-//    l=[Sensor] op=Operators r=[Sensor] boolOp=BooleanOperators cond=Condition |
-//    l=[Sensor] op=Operators r=Comparable boolOp=BooleanOperators cond=Condition |
-//    l=[Sensor] op=Operators r=[Sensor] |
-//    l=[Sensor] op=Operators r=Comparable
-//;
-
 Condition:
-
     l=ConditionTerm op=BooleanOperators r=Condition |
     l=ConditionTerm op=BooleanOperators r=ConditionTerm |
-    ConditionTerm
+    l=ConditionTerm
 ;
 
 ConditionTerm:
-    l=[Sensor] op=Operators r=Comparable |
-    l=[Sensor] op=Operators r=DigitalValue |
-    l=[Sensor] op=Operators r=[Sensor] |
-    DigitalValue
+
+    l=[Brick] op=Operators r=Comparable |
+    l=[Brick] op=Operators r=DigitalValue
 ;
 
 Comparable:
-    value=INT|
-    value=FLOAT|
+    value=INT |
+    value=FLOAT |
     value=STRING
 ;
 
 Operators:
-    '==' | '!=' | ">=" | "<="
+    '==' | '!=' | '>=' | '<='
 ;
 
 BooleanOperators:
-    "&&" | "||"
+    '&&' | '||'
 ;
