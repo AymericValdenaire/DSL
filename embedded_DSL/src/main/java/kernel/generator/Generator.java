@@ -8,7 +8,7 @@ import kernel.logic.State;
 import kernel.logic.statements.action.Assignement;
 import kernel.logic.statements.action.AssignementFromBrick;
 import kernel.logic.statements.action.Print;
-import kernel.logic.statements.action.Serial;
+import kernel.model.brick.Serial;
 import kernel.logic.statements.transition.Transition;
 import kernel.model.DigitalValue;
 import kernel.model.brick.Brick;
@@ -23,8 +23,8 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Brick brick) {
-    builder.insert(0, brick.declarationVarCode());
-    builder.append(brick.initCode());
+    builder.insert(0, brick.generateCode());
+    builder.append(brick.generateSetupCode());
   }
 
   @Override

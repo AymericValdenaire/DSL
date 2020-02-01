@@ -3,7 +3,7 @@ package builder;
 import kernel.ArduinoApp;
 import kernel.model.brick.actuator.Actuator;
 import kernel.model.brick.Brick;
-import kernel.model.Lcd;
+import kernel.model.brick.Lcd;
 import kernel.model.brick.sensor.Sensor;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -16,12 +16,12 @@ public abstract class Brick implements Visitable {
     }
 
     @Override
-    public String initCode() {
+    public String generateSetupCode() {
         return String.format("def brick %s = %d;", name, pin);
     }
 
     @Override
-    public String declarationVarCode(){
+    public String generateCode(){
         return String.format("\nint %s = %d;", name, pin);
     }
 

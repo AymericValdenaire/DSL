@@ -9,19 +9,19 @@ import lombok.Getter;
 @Getter
 public class BoolExpression implements Visitable {
 
-  final String var;
-  final BoolOperator operator;
-  final Brick brick;
-  final DigitalValue digitalValue;
+  private final String var;
+  private final String operator;
+  private final Brick brick;
+  private final DigitalValue digitalValue;
 
-  public BoolExpression(String var, BoolOperator operator, Brick brick) {
+  public BoolExpression(String var, String operator, Brick brick) {
     this.var = var;
     this.digitalValue = null;
     this.operator = operator;
     this.brick = brick;
   }
 
-  public BoolExpression(String var, BoolOperator operator, DigitalValue digitalValue) {
+  public BoolExpression(String var, String operator, DigitalValue digitalValue) {
     this.var = var;
     this.brick = null;
     this.operator = operator;
@@ -33,12 +33,12 @@ public class BoolExpression implements Visitable {
   }
 
   @Override
-  public String initCode() {
+  public String generateSetupCode() {
     return "";
   }
 
   @Override
-  public String declarationVarCode() {
+  public String generateCode() {
     return null;
   }
 

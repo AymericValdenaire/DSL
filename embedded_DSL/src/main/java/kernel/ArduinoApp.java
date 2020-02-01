@@ -25,12 +25,12 @@ public class ArduinoApp implements Visitable {
   }
 
   @Override
-  public String initCode() {
+  public String generateSetupCode() {
     return null;
   }
 
   @Override
-  public String declarationVarCode() {
+  public String generateCode() {
     return null;
   }
 

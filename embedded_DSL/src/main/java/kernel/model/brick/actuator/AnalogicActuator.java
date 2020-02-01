@@ -1,0 +1,19 @@
+package kernel.model.brick.actuator;
+
+public class AnalogicActuator extends Actuator{
+
+  public AnalogicActuator(String name, int pin) {
+    super(name, pin);
+  }
+
+  @Override
+  public String generateCode() {
+    return String.format("analogRead(%s)", name);
+  }
+
+  @Override
+  public String generateAssignementCode() {
+    return String.format("analogWrite(%s, %s);", name);
+  }
+
+}

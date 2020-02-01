@@ -1,30 +1,19 @@
 package kernel.logic.statements.action;
 
-import kernel.generator.Visitable;
-import kernel.generator.Visitor;
+import kernel.model.brick.actuator.Actuator;
 
 public class Assignement extends Action {
 
-    private String var;
-    private String new_value;
+    private Actuator var;
+    private Object value;
 
-    public Assignement(String var, String new_value){
+    public Assignement(Actuator var, Object value){
         this.var = var;
-        this.new_value = new_value;
+        this.value = value;
     }
 
     @Override
-    public void accept(Visitor visitor) {
-            visitor.visit(this);
-    }
-
-    @Override
-    public String initCode() {
-        return null;
-    }
-
-    @Override
-    public String declarationVarCode() {
-        return null;
+    public String generateCode() {
+        return String.format(var.generateAssignementCode(), value.toString());
     }
 }

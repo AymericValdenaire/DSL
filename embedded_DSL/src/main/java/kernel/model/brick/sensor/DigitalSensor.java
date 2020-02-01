@@ -6,7 +6,8 @@ public class DigitalSensor extends Sensor{
     super(name, pin);
   }
 
-  public String readCode() {
+  @Override
+  public String generateCode() {
     return String.format("digitalRead(%s)", name);
   }
 

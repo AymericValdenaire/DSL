@@ -1,14 +1,15 @@
-package kernel.model;
+package kernel.logic.statements.transition;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import lombok.Data;
+import lombok.Getter;
 
-public class DigitalValue implements Visitable {
+@Getter
+public class Exception implements Visitable {
 
-  private final String value;
+  private int value;
 
-  public DigitalValue(String value) {
+  public Exception(int value){
     this.value = value;
   }
 
@@ -24,6 +25,7 @@ public class DigitalValue implements Visitable {
 
   @Override
   public String generateCode() {
-    return value;
+    return String.format("error(%d)", value);
   }
+
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import kernel.logic.statements.action.Assignement;
 import kernel.logic.statements.transition.Transition;
 import kernel.model.brick.sensor.Sensor;
 import lombok.Data;
@@ -14,6 +15,8 @@ public class State implements Visitable {
   String name;
   Sensor sensor;
   List<Transition> transitions;
+  List<Assignement> assignements;
+  List<BoolExpression> boolExpressions;
 
   public State(){
     transitions = new ArrayList<>();
@@ -23,12 +26,12 @@ public class State implements Visitable {
   }
 
   @Override
-  public String initCode() {
+  public String generateSetupCode() {
     return null;
   }
 
   @Override
-  public String declarationVarCode() {
+  public String generateCode() {
     return null;
   }
 }
