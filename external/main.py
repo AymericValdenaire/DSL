@@ -1,169 +1,192 @@
+from abc import abstractmethod, ABC, ABCMeta
+
 import textx as tx
 import os
 
 ID_REGISTRY = dict()
 READABLE_BRICK = dict()
 
-class Brick:
-    def __init__(self, parent, name, child):
+
+class Model(object):
+    def __init__(self, bricks, states, init_state, serial, frequency):
+        self.bricks = bricks
+        self.states = states
+        self.init_state = init_state
+        self.serial = serial
+        self.frequency = frequency
+
+        self.max_state_sleep = int(1000 * (1 / frequency)) if frequency > 0 else None
+
+    def generate_loop_code(self):
+        return 'void loop() {{ {init_state}(); }}'.format(init_state=self.init_state.name)
+
+    def generate_var_init_code(self):
+        return ''.join([e.generate_var_init_code() for e in self.bricks])
+
+    def generate_setup_code(self):
+        setup = open("templates/setup.amlt", 'r').read()
+        return setup.format(setup_code='\n\t' + '\n\t'.join([e.generate_setup_code() for e in self.bricks]))
+
+    def generate_states_code(self):
+        return '\n'.join([str(e) for e in self.states])
+
+    def generate_includes(self):
+        return '\n'.join("#include <{}.h>\n".join(e.dependencies()) for e in self.bricks)
+
+    def __str__(self):
+        out = open("header.txt", 'r').read()
+        out += self.generate_includes()
+        out += self.generate_var_init_code()
+        out += self.generate_setup_code()
+        out += self.generate_states_code()
+        out += self.generate_loop_code()
+        return out
+
+
+class Brick(object):
+    def __init__(self, parent, name, pin):
+        self.parent = parent
+        self.pin = pin
+        self.name = name
+
+    def generate_var_init_code(self):
+        return 'int {} = {};'.format(self.name, self.pin)
+
+    def dependencies(self):
+        return ""
+
+class Sensor(Brick):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return 'pinMode({}, INPUT);'.format(self.name, self.pin)
+
+
+class Actuator(Brick):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return 'pinMode({}, OUTPUT);'.format(self.name, self.pin)
+
+
+class AnalogicSensor(Sensor):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return super().generate_setup_code()
+
+    def inline_read_code(self):
+        return 'analogRead({})'.format(self.name)
+
+    def __str__(self):
+        return 'analogRead({})'.format(self.name)
+
+
+
+class DigitalSensor(Sensor):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return super().generate_setup_code()
+
+    def inline_read_code(self):
+        return 'digitalRead({})'.format(self.name)
+
+    def __str__(self):
+        return 'digitalRead({})'.format(self.name)
+
+
+class DigitalActuator(Actuator):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return super().generate_setup_code()
+
+    def assignment_code(self):
+        return 'digitalWrite({})'.format(self.name)
+
+
+class AnalogicActuator(Actuator):
+    def __init__(self, parent, name, pin):
+        super().__init__(parent, name, pin)
+
+    def generate_setup_code(self):
+        return super().generate_setup_code()
+
+    def __str__(self):
+        return 'analogRead({})'.format(self.name)
+
+
+class LiquidCrystal:
+    def __init__(self, parent, name, pin, matrix_size):
+        self.matrix_size = matrix_size
+        self.pin = pin
         self.parent = parent
         self.name = name
-        self.child = child
 
-        if self.name in ID_REGISTRY and type(self.parent) is Model:
-            print('[ERROR] ID "{}" already declared'.format(self.name))
-            exit(1)
-        else:
-            ID_REGISTRY[self.name] = self
+    def generate_var_init_code(self):
+        return '\t\n{}.begin({}, {});'.format(self.name, self.matrix_size[0], self.matrix_size[1])
 
-        if type(self.child) in [Serial, Sensor]:
-            if self.name in READABLE_BRICK and type(self.parent) is Model:
-                print('[ERROR] ID "{}" already declared'.format(self.name))
-                exit(1)
-            else:
-                READABLE_BRICK[self.name] = self.child
+    def generate_setup_code(self):
+        return 'LiquidCrystal {}({});'.format(self.name, ','.join([str(e) for e in self.pin]))
 
-    def setup_code(self):
-        return self.child.setup_code()
-
-    def __str__(self):
-        return str(self.child)
-
-class Actuator:
-    def __init__(self, parent, pin, is_analogic):
-        self.parent = parent
-        self.pin = pin
-        self.is_analogic = is_analogic
-
-    def setup_code(self):
-        return "pinMode({}, OUTPUT);".format(self.parent.name)
-
-    def __str__(self):
-        return "int {} = {};".format(self.parent.name, self.pin)
-
-
-
-class Sensor:
-    def __init__(self, parent, pin, is_analogic):
-        self.parent = parent
-        self.pin = pin
-        self.is_analogic = is_analogic
-
-    def setup_code(self):
-        return "pinMode({}, INPUT);".format(self.parent.name)
-
-    def __str__(self):
-        return "int {} = {};".format(self.parent.name, self.pin)
-
-    def generate_read_code(self):
-        if self.is_analogic:
-            return 'analogRead({})'.format(self.pin)
-        return 'digitalRead({})'.format(self.pin)
-
-    def generateLCDprint(self, lcd_name):
-        if self.is_analogic:
-            return '{lcd_name}.setCursor(0, 0);\n' \
-                   '\t{lcd_name}.print(prettyAnalogPrint("{name}",{value}));\n'.format(
-                name=self.parent.name,
-                lcd_name=lcd_name,
-                value=self.generate_read_code())
-        else :
-            return '{lcd_name}.setCursor(0, 0);\n' \
-                   '\t{lcd_name}.print(prettyDigitalPrint("{name}", {value}));\n'.format(
-                name=self.parent.name,
-                lcd_name=lcd_name,
-                value=self.generate_read_code())
-
-class Serial:
-    def __init__(self, parent, baudrate):
-        self.parent = parent
-        self.baudrate = baudrate
-
-    def setup_code(self):
-        return "Serial.begin({});".format(self.baudrate)
-
-class DigitalValue:
-    def __init__(self, parent, value):
-        self.parent=parent
-        self.value=value
-
-    def __str__(self):
-        return 'HIGH' if self.value == 'ON' else "LOW"
+    def dependencies(self):
+        return ['LiquidCrystal']
 
 class Action:
-    def __init__(self, parent, type, var, value):
+    def __init__(self, parent):
         self.parent = parent
-        self.type = type
-        self.var = var
-        self.value = value
+
+
+class Wait:
+    def __init__(self, parent, milli):
+        self.parent = parent
+        self.milli = milli
 
     def __str__(self):
-        if self.type == "SET":
-            if ID_REGISTRY[self.var].child.is_analogic:
-                if self.value in READABLE_BRICK:
-                    return 'analogWrite({}, {});\n'.format(self.var, READABLE_BRICK[self.value].generate_read_code())
-                return 'analogWrite({}, {});\n'.format(self.var, self.value)
-            else:
-                if self.value in READABLE_BRICK:
-                    return 'digitalWrite({}, {});\n'.format(self.var, READABLE_BRICK[self.value].generate_read_code())
-                return 'digitalWrite({}, {});\n'.format(self.var, self.value)
+        return "\n\tdelay({});".format(self.milli)
 
-        if self.type == "PRINT":
-            if type(ID_REGISTRY[self.var].child) is Lcd:
-                if self.value in READABLE_BRICK:
-                    return READABLE_BRICK[self.value].generateLCDprint(self.var)
-                else :
-                    return '{lcd_name}.setCursor(0, 0);\n' \
-                           '\t{lcd_name}.print("{value}");\n'.format(lcd_name=self.var, value=self.value.ljust(16))
 
-            if type(ID_REGISTRY[self.var].child) is Serial:
-                if self.value in READABLE_BRICK:
-                    return 'Serial.print(prettyDigitalPrint({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
-                else:
-                    return 'Serial.print("{}");\n'.format(self.value.ljust(16))
-            else:
-                print("[ERROR] Unsupported brick type for PRINT : ",type(ID_REGISTRY[self.var].child))
-
-        if self.type == "PRINTLN":
-            if type(ID_REGISTRY[self.var].child) is Serial:
-                if self.value in READABLE_BRICK:
-                    return 'Serial.println(prettyDigitalPrint({}));\n'.format(READABLE_BRICK[self.value].generate_read_code())
-                else:
-                    return 'Serial.println("{}");\n'.format(self.value.ljust(16))
-            else:
-                print("[ERROR] Unsupported brick type for PRINTLN : ",type(ID_REGISTRY[self.var].child))
-
-        if self.type == "CLEAR":
-            return '\n{lcd_name}.clear();\n'.format(lcd_name=self.var)
-
-        if self.type == "WAIT":
-            return 'delay({ms});\n'.format(ms=self.value)
-
-class Transition:
-    def __init__(self, parent, cond, next_state):
+class State:
+    def __init__(self, parent, name, statements):
         self.parent = parent
-        self.cond = cond
-        self.next_state = next_state
+        self.statements = statements
+        self.name = name
+        self.model_freq = self.parent._txa_frequency
+        self.max_state_sleep = int(1000 * (1 / self.model_freq)) if self.model_freq > 0 else None
 
-    def generate_code(self, delay_before_next_state):
-        if delay_before_next_state is not None and delay_before_next_state > 0:
-            delay_instr = 'delay({});\n\t\t'.format(delay_before_next_state)
+        action_exprs = list(filter(lambda e: type(e) is Wait, self.statements))
+        self.sleep_count_in_expr = sum([e.milli for e in action_exprs])
 
-        else:
-            delay_instr = ''
+    def __str__(self):
+        state = open('templates/state.amlt').read()
+        no_transition = True
+        time_to_sleep_before_next_state = self.max_state_sleep
+        state_inner_code = ''
+        for expr in self.statements:
+            if type(expr) is Wait and self.max_state_sleep is not None:
+                time_to_sleep_before_next_state -= expr.milli
+            if type(expr) is Transition:
+                no_transition = False
+                state_inner_code += '\n\t' + expr.generate_code(time_to_sleep_before_next_state)
+            else:
+                state_inner_code += '\n\t' + str(expr)
 
-        next_state = self.next_state
-        if type(next_state) is not Exception:
-            next_state += '();'
-        if self.cond.empty:
-            return "{delay_instr}\n\t{next_state}".format(
-                delay_instr=delay_instr,
-                next_state=next_state)
+        if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0:
+            print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,
+                                                                                              int(
+                                                                                                  1000 / self.model_freq),
+                                                                                              self.name))
 
-        transition = open('templates/transition.amlt').read()
-        return transition.format(condition=self.cond,
-                                 next_state=next_state,
-                                 delay_instr=delay_instr)
+        if no_transition:
+            state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
+
+        return state.format(name=self.name, code=state_inner_code)
 
 class Exception:
     def __init__(self, parent, value):
@@ -173,156 +196,140 @@ class Exception:
     def __str__(self):
         return 'error({});'.format(self.value)
 
-
-class State:
-    def __init__(self, parent, is_init_state, name,exprs):
+class Transition:
+    def __init__(self, parent, condition, next_state, exception):
         self.parent = parent
-        self.is_init_state = is_init_state
-        self.name = name
-        self.exprs = exprs
+        self.condition = condition
+        self.next_state = next_state
+        self.exception = exception
 
-        self.model_freq = self.parent.__dict__['_txa_freq']
-        self.max_state_sleep = int(1000 * (1 / self.model_freq)) if self.model_freq > 0 else None
+    def generate_code(self, delay_before_next_state):
+        if delay_before_next_state is not None and delay_before_next_state > 0:
+            delay_instr = 'delay({});\n\t\t'.format(delay_before_next_state)
 
-        action_exprs = list(filter(lambda e: type(e) is Action, self.exprs))
-        self.sleep_count_in_expr = sum([e.value if e.type == 'WAIT' else 0 for e in action_exprs])
+        else:
+            delay_instr = ''
+        if self.exception is not None:
+            next_state = self.exception
+        else :
+            next_state = self.next_state.name
+        if type(next_state) is not Exception:
+            next_state += '();'
 
+        if self.condition is None:
+            return "{delay_instr}\n\t{next_state}".format(
+                delay_instr=delay_instr,
+                next_state=next_state)
+
+        transition = open('templates/transition.amlt').read()
+        return transition.format(condition=self.condition,
+                                 next_state=next_state,
+                                 delay_instr=delay_instr)
+
+
+class Goto:
+    def __init__(self, parent, next_state):
+        self.parent = parent
+        self.next_state = next_state
 
     def __str__(self):
-            state = open('templates/state.amlt').read()
-            no_transition=True
-            time_to_sleep_before_next_state = self.max_state_sleep
-            state_inner_code = ''
-            for expr in self.exprs:
-                if type(expr) is Action:
-                    if expr.type == "WAIT" and self.max_state_sleep is not None:
-                        time_to_sleep_before_next_state -= expr.value
-                    state_inner_code += '\t' + str(expr)
-                if type(expr) is Transition:
-                    no_transition=False
-                    state_inner_code += '\t' + expr.generate_code(time_to_sleep_before_next_state)
+        return '{}();'.format(self.next_state.name)
 
-            if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state < 0 :
-                print('[WARNING] Total wait actions {}ms exceed period {}ms in state "{}"'.format(self.sleep_count_in_expr,int(1000 / self.model_freq), self.name))
 
-            if no_transition and time_to_sleep_before_next_state is not None:
-                state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
-
-            return state.format(name=self.name, code=state_inner_code)
-
-class Condition:
-    def __init__(self,parent, l, r, op, single, empty):
+class DigitalValue:
+    def __init__(self, parent, value):
         self.parent = parent
-        self.l = l
-        self.r = r
-        self.op = op
-        self.single = single
-        self.empty = empty
-
-    def __str__(self):
-        if self.empty:
-            return "true"
-        if type(self.single) == Bexpr:
-            return str(self.single)
-        return '{} {} {}'.format(self.l, self.op, self.r)
-
-class Bop:
-    def __init__(self,parent, token):
-        self.parent = parent
-        self.token = token
-
-    def __str__(self):
-        ops = {'AND': '&&', 'OR': '||'}
-        return ops[self.token]
-
-class Bexpr:
-    def __init__(self, parent, var,op, value):
-        self.parent = parent
-        self.var = var
-        self.op = op
         self.value = value
 
     def __str__(self):
-        if type(ID_REGISTRY[self.var].child) == Sensor:
-            return '{} {} {}'.format(ID_REGISTRY[self.var].child.generate_read_code(), self.op, self.value)
+        return 'HIGH' if self.value == 'ON' else 'LOW'
 
-        if type(ID_REGISTRY[self.var].child) == Serial:
-            if type(self.value) is not str:
-                print('[ERROR] Serial can only be compared with strings')
-            if self.op == '==':
-                return 'Serial.readString().indexOf("{}") >= 0'.format(self.value)
-            else:
-                print('[ERROR] Unsupported operator "{}" with serial read'.format(self.op))
-                exit(1)
-        else:
-            print('[ERROR] Unsupported type within condition : {}'.format(type(self.var)))
-            exit(1)
-            
-class Lcd:
-    def __init__(self, parent,bus_id):
+
+class Assignment:
+    def __init__(self, parent, var,var_analog, new_value, value):
         self.parent = parent
-        self.bus_id = bus_id
+        self.var = var
+        self.new_value = new_value
+        self.value = value
+        self.var_analog = var_analog
 
-    def get_bus_pins(self):
-        if self.bus_id == 1:
-            return '2, 3, 4, 5, 6, 7, 8'
-        if self.bus_id == 2:
-            return '10, 11, 12, 13, 14, 15, 16'
+        if self.new_value is not None:
+            self.value = self.new_value
+        if self.var_analog is not None :
+            self.value = self.var_analog
+
+    def __str__(self):
+        if self.var is AnalogicActuator:
+            return "analogWrite({}, {});".format(self.var.name, self.value)
         else:
-            raise ValueError('Invalid Bus for lcd {} must be 1 or 2'.format(self.parent.name))
-
-    def setup_code(self):
-        return "{}.begin(16, 2);".format(self.parent.name)
-
-    def __str__(self):
-        return 'LiquidCrystal lcd({});'.format(self.get_bus_pins())
+            return "digitalWrite({}, {});".format(self.var.name, self.value)
 
 
-class Model(object):
-    def __init__(self, bricks, states, freq):
-        self.bricks = bricks
-        self.states = states
-        self.freq = freq
-
-        self.max_state_sleep = int(1000 * (1 / freq)) if freq > 0 else None
-
-        self.init_state = self.generate_loop_code()
-
-    def generate_includes(self):
-        out = set()
-        for e in self.bricks:
-            if type(e.child) == Lcd:
-                out.add("LiquidCrystal.h")
-        return '\n'.join(["#include <{}>".format(e) for e in out])
-
-    def generate_setup_code(self):
-        setup = open("templates/setup.amlt", 'r').read()
-        return setup.format(setup_code='\n\t' + '\n\t'.join([e.setup_code() for e in self.bricks]))
-
-    def generate_loop_code(self):
-        init_states = list(map(lambda e: e.name,
-                               list(filter(lambda e: e.is_init_state, self.states))))
-        if len(init_states) != 1:
-            raise SyntaxError("Invalid number of initial state")
-
-        return 'void loop() {{ {init_state}(); }}'.format(init_state=init_states[0])
+class AssignmentFromBrick:
+    def __init__(self, parent, var, new_value):
+        self.parent = parent
+        self.var = var
+        self.new_value = new_value
 
     def __str__(self):
+        if type(self.new_value) is DigitalValue:
+            return '{} = {};'.format(self.var.assignment_code(), self.new_value)
+        else:
+            return '{} = {};'.format(self.var.assignment_code(), self.new_value)
 
-        header = open("header.txt", 'r').read()
-        return "{}\n{}\n{}\n{}\n{}\n{}".format(header,
-                                               self.generate_includes(),
-                                                '\n'.join([str(brick) for brick in self.bricks]),
-                                                self.generate_setup_code(),
-                                                '\n'.join([str(state) for state in self.states]),
-                                                self.init_state)
 
+class Comparable:
+    def __init__(self, parent, value):
+        self.parent = parent
+        self.value = value
+
+    def __str__(self):
+        return '{}'.format(self.value)
+
+
+class Condition:
+    def __init__(self, parent, l, op, r):
+        self.parent = parent
+        self.l = l
+        self.op = op
+        self.r = r
+
+    def __str__(self):
+        if self.op is None:
+            return str(self.l)
+        return '{} {} {}'.format(self.l, self.op, self.r)
+
+
+class ConditionTerm:
+    def __init__(self, parent, l, op, r):
+        self.parent = parent
+        self.l = l
+        self.op = op
+        self.r = r
+
+    def __str__(self):
+        return '{} {} {}'.format(self.l, self.op, self.r)
+
+class Serial:
+    def __init__(self, parent, name, baudrate):
+        self.parent = parent
+        self.name = name
+        self.baudrate = baudrate
+
+type_builtins = {
+    'ON': DigitalValue(None, 'ON'),
+    'OFF': DigitalValue(None, 'OFF')
+}
 
 if __name__ == '__main__':
 
-    classes=[Model,Brick,Exception, Actuator, Sensor,Serial, DigitalValue, State, Transition, Action, Condition, Bop, Bexpr, Lcd]
+    classes = [Model, ConditionTerm, Transition, Wait, Action, Assignment,
+               AssignmentFromBrick,
+               Condition, Comparable,
+               Brick, State,Serial, DigitalValue,Exception, LiquidCrystal, DigitalSensor, AnalogicActuator,DigitalActuator, AnalogicSensor,
+               Goto]
 
-    meta_model = tx.metamodel_from_file('grammar.tx', classes=classes)
+    meta_model = tx.metamodel_from_file('grammar.tx', classes=classes, builtins=type_builtins)
     try:
         os.mkdir('out')
     except FileExistsError:

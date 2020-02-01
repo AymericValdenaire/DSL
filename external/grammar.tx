@@ -1,86 +1,119 @@
 Model:
-    ("FREQUENCY" freq=FLOAT)?
-    bricks*=Brick
-    states*=State
+    (('INIT' 'STATE' init_state=[State])
+    (serial=Serial)?
+    ('FREQUENCY' frequency=FLOAT)?)#
+    bricks+=Brick
+    states+=State
 ;
-
-Brick:
-    'ACTUATOR' name=ID child=Actuator |
-    'SENSOR' name=ID  child=Sensor |
-    'LCD' name=ID child=Lcd |
-    'SERIAL' name=ID child=Serial
-;
-
-Actuator:
-    pin=INT is_analogic?="ANALOGIC"
-;
-
-Sensor:
-    pin=INT is_analogic?="ANALOGIC"
-;
-
-Lcd:
-    'BUS' bus_id=INT
-;
-
-Serial:
-    'BAUDRATE' baudrate=INT
-;
-
 
 DigitalValue:
     value='ON' | value='OFF'
 ;
 
-Action:
-    type='SET' var=ID value=DigitalValue |
-    type='SET' var=ID value=ID |
-    type='PRINTLN' var=ID value=ID |
-    type='PRINTLN' var=ID value=STRING |
-    type='PRINT' var=ID value=ID |
-    type='PRINT' var=ID value=STRING |
-    type='WAIT' value=INT |
-    type='CLEAR' var=ID |
-    Exception
+Brick:
+    Sensor | Actuator | Serial
+;
+
+Sensor:
+    AnalogicSensor | DigitalSensor
+;
+
+Actuator:
+    AnalogicActuator | DigitalActuator | LiquidCrystal
+;
+
+AnalogicSensor :
+    'ANALOG' 'SENSOR' name=ID pin=INT
+;
+
+DigitalSensor :
+    'DIGITAL' 'SENSOR' name=ID pin=INT
+;
+
+AnalogicActuator :
+    'ANALOG' 'ACTUATOR' name=ID pin=INT
+;
+
+DigitalActuator :
+    'DIGITAL' 'ACTUATOR' name=ID pin=INT
+;
+
+LiquidCrystal :
+    'LiquidCrystal' name=ID  pin+=INT 'size[' matrix_size*=INT[','] ']'
+;
+
+Serial :
+    'SERIAL' name=ID 'BAUDRATE' baudrate=INT
+;
+
+State:
+    'STATE' name=ID '{'
+        statements*=Statements
+    '}'
+;
+
+Statements :
+    Action |
+    Transition
+;
+
+Action :
+    Assignment | Print | Wait
+;
+
+Print:
+    cmd='PRINT' output=[PrintableDevice] from_brick=[Brick] |
+    cmd='PRINT' serial=[PrintableDevice] msg=STRING
+;
+
+PrintableDevice:
+    Serial | LiquidCrystal
+    ;
+
+Wait:
+    'WAIT' milli=INT
+;
+
+Transition:
+    condition=Condition '=>' exception=Exception |
+    condition=Condition '=>' 'STATE' next_state=[State] |
+    '=>' 'STATE' next_state=[State] |
+    '=>' exception=Exception
+;
+
+Assignment :
+    var=[Actuator] '=' value=DigitalValue |
+    var=[Actuator] '=' value=INT |
+    var_analog=[AnalogicActuator] '=' value=FLOAT |
+    var=[Actuator] '=' new_value=[Sensor]
 ;
 
 Exception:
     'ERROR' value=INT
 ;
 
-Transition:
-    cond=Condition '->' next_state=Exception |
-    cond=Condition '->' next_state=ID
-;
-
-State:
-    is_init_state?='INIT' name=ID '{'
-    exprs*=Exprs
-    '}'
-;
-
-Exprs:
-    Action | Transition
-;
-
 Condition:
-
-    l=Bexpr op=Bop r=Condition |
-    l=Bexpr op=Bop r=Bexpr |
-    single=Bexpr |
-    empty?=""
+    l=ConditionTerm op=BooleanOperators r=Condition |
+    l=ConditionTerm op=BooleanOperators r=ConditionTerm |
+    l=ConditionTerm
 ;
 
-Bop:
-    token='AND' | token='OR'
+ConditionTerm:
+
+    l=[Brick] op=Operators r=Comparable |
+    l=[Brick] op=Operators r=DigitalValue
 ;
 
-Bexpr:
-    var=ID op=CompOp value=DigitalValue |
-    var=ID op=CompOp value=STRING |
-    var=ID op=CompOp value=FLOAT
+Comparable:
+    value=INT |
+    value=FLOAT |
+    value=STRING
 ;
 
-CompOp:
-    '==' | '>=' | '<=' | '!='
+Operators:
+    '==' | '!=' | '>=' | '<='
+;
+
+BooleanOperators:
+    '&&' | '||'
 ;
