@@ -1,5 +1,6 @@
 package builder;
 
+import java.util.ArrayList;
 import java.util.List;
 import kernel.ArduinoApp;
 import lombok.AccessLevel;
@@ -16,6 +17,7 @@ public class StatesBuilder {
   private StateBuilder initialState;
 
   public StatesBuilder(ArduinoBuilder parent) {
+    this.states = new ArrayList<>();
     this.parent = parent;
   }
 

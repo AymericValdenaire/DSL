@@ -17,10 +17,10 @@ public class TransitionBuilder {
     public TransitionBuilder(TransitionTableBuilder parent, State state){
         this.parent = parent;
         this.transition = new Transition();
-        this.transition.setSource(state);
+
         state.getTransitions().add(this.transition);
     }
-
+/*
     public TransitionBuilder when(String sensor){
         transition.setSensor(sensor);
         return this;
@@ -58,5 +58,5 @@ public class TransitionBuilder {
             }
         }
         throw new IllegalArgumentException("Illegal sensor name");
-    }
+    }*/
 }

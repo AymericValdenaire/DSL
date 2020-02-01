@@ -1,9 +1,16 @@
 package kernel.generator;
 
 import kernel.ArduinoApp;
+import kernel.logic.AbstractBoolExpression;
 import kernel.logic.BoolExpression;
+import kernel.logic.BoolOperator;
 import kernel.logic.State;
+import kernel.logic.statements.action.Assignement;
+import kernel.logic.statements.action.AssignementFromBrick;
+import kernel.logic.statements.action.Print;
+import kernel.logic.statements.action.Serial;
 import kernel.logic.statements.transition.Transition;
+import kernel.model.DigitalValue;
 import kernel.model.brick.Brick;
 
 public class Generator extends Visitor<StringBuilder>{
@@ -56,19 +63,46 @@ public class Generator extends Visitor<StringBuilder>{
   @Override
   public void visit(Transition transition) {
 
-    builder.append(String.format("digitalRead(%s) == %s ) { \n",transition.getSensor(),transition.getCondition()));
 
-    builder.append(String.format("digitalWrite( %s, ",transition.getDestination().getSensor().getName()));
-    if(transition.getDestination().getName().equals("on")) {
-      builder.append("HIGH");
-    }else if(transition.getDestination().getName().equals("off")){
-      builder.append("LOW");
-    }
-    builder.append(" ); \n}\n");
   }
 
   @Override
   public void visit(BoolExpression boolExpression) {
+
+  }
+
+  @Override
+  public void visit(BoolOperator boolOperator) {
+
+  }
+
+  @Override
+  public void visit(DigitalValue digitalValue) {
+
+  }
+
+  @Override
+  public void visit(AbstractBoolExpression abstractBoolExpression) {
+
+  }
+
+  @Override
+  public void visit(Serial serial) {
+
+  }
+
+  @Override
+  public void visit(Print print) {
+
+  }
+
+  @Override
+  public void visit(AssignementFromBrick assignementFromBrick) {
+
+  }
+
+  @Override
+  public void visit(Assignement assignement) {
 
   }
 

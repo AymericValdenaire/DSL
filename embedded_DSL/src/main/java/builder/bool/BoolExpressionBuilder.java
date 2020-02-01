@@ -33,4 +33,8 @@ public class BoolExpressionBuilder {
     this.value = value;
     return new BoolSetterBuilder(this);
   }
+
+  public StateBuilder getStateBuilder(){
+    return this.stateBuilder;
+  }
 }

@@ -18,7 +18,7 @@ public class Lcd extends Brick {
     }
 
     public Lcd(String name, int busId){
-        super(name);
+        super(name, busId);
         this.bus_id = busId;
     }
 

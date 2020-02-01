@@ -26,6 +26,6 @@ public class BoolSetterBuilder implements BoolInstance{
 
   @Override
   public StateBuilder getStateBuilder() {
-    return null;
+    return parent.getStateBuilder();
   }
 }
