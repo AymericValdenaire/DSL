@@ -7,7 +7,7 @@ public class AnalogicSensor extends Sensor {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("analogRead(%s)", name);
   }
 

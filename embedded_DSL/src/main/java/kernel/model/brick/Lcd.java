@@ -27,7 +27,7 @@ public class Lcd extends Brick {
     }
 
     @Override
-    public String generateCode() {
+    public String toString() {
         return String.format("LiquidCrystal lcd(%s);\n", getBusPin());
     }
 

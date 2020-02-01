@@ -13,7 +13,7 @@ public class Assignement extends Action {
     }
 
     @Override
-    public String generateCode() {
+    public String toString() {
         return String.format(var.generateAssignementCode(), value.toString());
     }
 }

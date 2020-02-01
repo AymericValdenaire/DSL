@@ -21,7 +21,7 @@ public abstract class Brick implements Visitable {
     }
 
     @Override
-    public String generateCode(){
+    public String toString(){
         return String.format("\nint %s = %d;", name, pin);
     }
 

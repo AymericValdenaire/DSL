@@ -7,7 +7,7 @@ public class DigitalSensor extends Sensor{
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("digitalRead(%s)", name);
   }
 

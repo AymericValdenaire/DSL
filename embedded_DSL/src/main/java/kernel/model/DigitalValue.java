@@ -22,7 +22,7 @@ public class DigitalValue implements Visitable {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return value;
   }
 }

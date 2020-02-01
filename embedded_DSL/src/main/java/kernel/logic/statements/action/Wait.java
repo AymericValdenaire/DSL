@@ -11,7 +11,7 @@ public class Wait extends Action{
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("\n\tdelay(%d);", milli);
   }
 

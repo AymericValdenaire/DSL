@@ -19,7 +19,7 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Brick brick) {
-    builder.insert(0, brick.generateCode());
+    builder.insert(0, brick.toString());
     builder.append(brick.generateSetupCode());
   }
 

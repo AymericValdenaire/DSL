@@ -7,7 +7,7 @@ public class AnalogicActuator extends Actuator{
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("analogRead(%s)", name);
   }
 

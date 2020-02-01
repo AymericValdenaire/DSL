@@ -34,7 +34,7 @@ public class State implements Visitable {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return null;
   }
 }

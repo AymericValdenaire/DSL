@@ -24,7 +24,7 @@ public class Exception implements Visitable {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("error(%d)", value);
   }
 

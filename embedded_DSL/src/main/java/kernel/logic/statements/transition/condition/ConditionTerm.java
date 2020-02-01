@@ -1,10 +1,12 @@
-package kernel.logic.statements.transition.condition.term;
+package kernel.logic.statements.transition.condition;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
+import lombok.Getter;
 
+@Getter
 public class ConditionTerm implements Visitable {
 
   private final Object right;
@@ -34,11 +36,11 @@ public class ConditionTerm implements Visitable {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     if (operator == null) {
-      return String.format("%s.indexOf(\"%s\") >= 0");
+      return left.toString();
     } else {
-      return String.format("%s %s %s", left.generateCode(), operator, right.toString());
+      return String.format("%s %s %s", left.toString(), operator, right.toString());
     }
   }
 

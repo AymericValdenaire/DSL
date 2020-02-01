@@ -7,7 +7,7 @@ public class DigitalActuator extends Actuator{
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return String.format("digitalWrite(%s)", name);
   }
 

@@ -38,7 +38,7 @@ public class BoolExpression implements Visitable {
   }
 
   @Override
-  public String generateCode() {
+  public String toString() {
     return null;
   }
 
