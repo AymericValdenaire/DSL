@@ -18,7 +18,7 @@ public class Serial extends Brick {
 
     @Override
     public String generateCode() {
-        return "";
+        return "Serial.readString()";
     }
 
 }
