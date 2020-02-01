@@ -1,0 +1,125 @@
+Model:
+    'INIT' 'STATE' init_state=[State]
+    ((serial=Serial)?
+    ('FREQUENCY' frequency=FLOAT)?)#
+    bricks+=Brick
+    states+=State
+;
+
+DigitalValue:
+    'ON' | 'OFF'
+;
+
+Brick:
+    Sensor | Actuator
+;
+
+Sensor:
+    AnalogicSensor | DigitalSensor
+;
+
+Actuator:
+    AnalogicActuator | DigitalActuator
+;
+
+AnalogicSensor :
+    'ANALOG' 'SENSOR' name=ID pin=INT
+;
+
+DigitalSensor :
+    'DIGITAL' 'SENSOR' name=ID pin=INT
+;
+
+AnalogicActuator :
+    'ANALOG' 'ACTUATOR' name=ID pin=INT | 'LiquidCrystal' name=ID pin+=INT
+;
+
+DigitalActuator :
+    'DIGITAL' 'ACTUATOR' name=ID pin=INT
+;
+
+LiquidCrystal :
+    'LiquidCrystal' name=ID width=INT'x'height=INT pin+=INT
+;
+
+Serial :
+    'SERIAL' name=ID 'BAUDRATE' baudrate=INT
+;
+
+State:
+    'STATE' name=ID '{'
+        statements*=Statements
+    '}'
+;
+
+Statements :
+    Action |
+    Transition
+;
+
+Action :
+    Assignment | AssignmentFromBrick | Print | Wait
+;
+
+Print:
+    (cmd='PRINT' | cmd='PRINTLN') serial=[Serial] msg=STRING |
+    (cmd='PRINT' | cmd='PRINTLN') serial=[Serial] msg=[Brick]
+;
+
+Wait:
+    'WAIT' milli=INT
+;
+
+Transition:
+    condition=Condition '=>' 'STATE' next_state=[State] |
+    '=>' 'STATE' next_state=[State] |
+    '=>' Exception
+;
+
+Assignment :
+    var=[Brick] '=' new_value=INT |
+    var=[AnalogicalActuator] '=' new_value=FLOAT
+;
+
+AssignmentFromBrick:
+    var=[DigitalActuator] '=' new_value=[DigitalSensor]
+;
+
+Exception:
+    'ERROR' value=INT
+;
+
+// Condition:
+//    l=[Sensor] op=Operators r=[Sensor] boolOp=BooleanOperators cond=Condition |
+//    l=[Sensor] op=Operators r=Comparable boolOp=BooleanOperators cond=Condition |
+//    l=[Sensor] op=Operators r=[Sensor] |
+//    l=[Sensor] op=Operators r=Comparable
+//;
+
+Condition:
+
+    l=ConditionTerm op=BooleanOperators r=Condition |
+    l=ConditionTerm op=BooleanOperators r=ConditionTerm |
+    ConditionTerm
+;
+
+ConditionTerm:
+    l=[Sensor] op=Operators r=Comparable |
+    l=[Sensor] op=Operators r=DigitalValue |
+    l=[Sensor] op=Operators r=[Sensor] |
+    DigitalValue
+;
+
+Comparable:
+    value=INT|
+    value=FLOAT|
+    value=STRING
+;
+
+Operators:
+    '==' | '!=' | ">=" | "<="
+;
+
+BooleanOperators:
+    "&&" | "||"
+;

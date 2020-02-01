@@ -1,3 +1,5 @@
+
+
 boolean guard;
 void error(int n)
 {{
