@@ -3,6 +3,7 @@ package builder;
 import java.util.ArrayList;
 import java.util.List;
 import kernel.ArduinoApp;
+import kernel.logic.State;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -14,8 +15,8 @@ public class StatesBuilder {
   @Getter(AccessLevel.PROTECTED)
   private ArduinoBuilder parent;
 
-  private List<StateBuilder> states;
-  private StateBuilder initialState;
+  private List<State> states;
+  private State initialState;
 
   public StatesBuilder(ArduinoBuilder parent) {
     this.states = new ArrayList<>();
@@ -28,9 +29,9 @@ public class StatesBuilder {
    * @param name string nom de l'état
    */
   public StateBuilder state(String name) {
-    StateBuilder stateBuilder = new StateBuilder(this, name);
-    this.states.add(stateBuilder);
-    return stateBuilder;
+    State state = new State();
+    state.setName(name);
+    return new StateBuilder(this, state);
   }
 
   protected StatesBuilder setInit(String stateName) throws Exception {

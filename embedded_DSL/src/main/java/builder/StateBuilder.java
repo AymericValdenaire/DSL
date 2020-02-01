@@ -4,6 +4,7 @@ import builder.bool.BoolExpressionBuilder;
 import builder.bool.BoolInstance;
 import java.util.ArrayList;
 import java.util.List;
+import kernel.logic.State;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -14,13 +15,12 @@ import lombok.Getter;
 public class StateBuilder implements BoolInstance {
 
   private StatesBuilder parent;
-  private String name;
-  private List<BrickSetterBuilder> brickSetterBuilders = new ArrayList<>();
-  private List<BoolExpressionBuilder> boolExpressions = new ArrayList<>();
+  private State currentState;
 
-  public StateBuilder(StatesBuilder parent, String name) {
+
+  public StateBuilder(StatesBuilder parent, State state) {
     this.parent = parent;
-    this.name = name;
+    this.currentState = state;
   }
 
   /**
@@ -30,9 +30,7 @@ public class StateBuilder implements BoolInstance {
    * @return BrickSetterBuilder
    */
   public BrickSetterBuilder set(String name) {
-    BrickSetterBuilder brick = new BrickSetterBuilder(this, name);
-    this.brickSetterBuilders.add(brick);
-    return brick;
+    return new BrickSetterBuilder(this, name);
   }
 
   /**
@@ -41,9 +39,7 @@ public class StateBuilder implements BoolInstance {
    * @return BoolExpression
    */
   public BoolExpressionBuilder when() {
-    BoolExpressionBuilder boolExpression = new BoolExpressionBuilder(this);
-    boolExpressions.add(boolExpression);
-    return boolExpression;
+    return new BoolExpressionBuilder(this);
   }
 
   /**
