@@ -1,10 +1,10 @@
 package builder;
 
 import kernel.ArduinoApp;
-import kernel.model.Actuator;
+import kernel.model.actuator.Actuator;
 import kernel.model.Brick;
 import kernel.model.Lcd;
-import kernel.model.Sensor;
+import kernel.model.sensor.Sensor;
 import lombok.Getter;
 
 @Getter

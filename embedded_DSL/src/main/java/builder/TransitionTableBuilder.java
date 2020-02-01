@@ -1,12 +1,9 @@
 package builder;
 
 import kernel.logic.State;
-import kernel.logic.Transition;
-import kernel.model.Actuator;
 import kernel.model.Brick;
-import kernel.model.Sensor;
+import kernel.model.sensor.Sensor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
