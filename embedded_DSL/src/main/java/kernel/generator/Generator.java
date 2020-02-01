@@ -3,7 +3,7 @@ package kernel.generator;
 import kernel.ArduinoApp;
 import kernel.logic.BoolExpression;
 import kernel.logic.State;
-import kernel.logic.Transition;
+import kernel.logic.statements.transition.Transition;
 import kernel.model.brick.Brick;
 
 public class Generator extends Visitor<StringBuilder>{

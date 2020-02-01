@@ -1,4 +1,4 @@
-package kernel.logic;
+package kernel.logic.statements.action;
 
 public class Action {
 

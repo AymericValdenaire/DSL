@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import kernel.logic.statements.transition.Transition;
 import kernel.model.brick.sensor.Sensor;
 import lombok.Data;
 

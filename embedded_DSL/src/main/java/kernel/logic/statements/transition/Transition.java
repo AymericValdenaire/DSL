@@ -1,7 +1,8 @@
-package kernel.logic;
+package kernel.logic.statements.transition;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import kernel.logic.State;
 import lombok.Data;
 import lombok.Getter;
 
