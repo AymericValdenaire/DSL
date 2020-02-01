@@ -9,13 +9,13 @@ import lombok.Getter;
 /**
  * Permet de créer des expressions booléennes
  */
-public class BoolExpressionBuilder {
+public class TransitionConditionBuilder {
 
   private StateBuilder parent;
   private String value;
   private Brick brick;
 
-  public BoolExpressionBuilder(StateBuilder stateBuilder) {
+  public TransitionConditionBuilder(StateBuilder stateBuilder) {
     this.parent = stateBuilder;
   }
 
@@ -26,7 +26,7 @@ public class BoolExpressionBuilder {
    * @param value int
    * @return BoolSetterBuilder
    */
-  public BoolTransitionBuilder ifIsEqual(String brickName, String value) throws ValidationException {
+  public TransitionConditionOperationBuilder ifIsEqual(String brickName, String value) throws ValidationException {
     this.brick = parent
         .getParent()
         .getParent()
@@ -37,6 +37,6 @@ public class BoolExpressionBuilder {
         .findFirst()
         .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is invalid"));
     this.value = value;
-    return new BoolTransitionBuilder(this);
+    return new TransitionConditionOperationBuilder(this);
   }
 }

@@ -48,6 +48,7 @@ public class Main {
               .states()
                 .state("on")
                   .set("test").toHigh()
+                  .sleep(10)
                   .set("test").toLow()
                   .when().ifIsEqual("button", "1").and().ifIsEqual("button", "1").thenGoToState("off")
                 .state("off")

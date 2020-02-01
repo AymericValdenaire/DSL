@@ -29,13 +29,17 @@ public class StateBuilder {
     return new BrickSetterBuilder(this, name, this.currentState);
   }
 
+  public StateBuilder sleep(int time) {
+    return this;
+  }
+
   /**
    * Permet d'initialiser une boolean expression
    *
    * @return BoolExpression
    */
-  public BoolExpressionBuilder when() {
-    return new BoolExpressionBuilder(this);
+  public TransitionConditionBuilder when() {
+    return new TransitionConditionBuilder(this);
   }
 
   /**

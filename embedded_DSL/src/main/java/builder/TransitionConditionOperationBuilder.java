@@ -3,11 +3,11 @@ package builder;
 /**
  * Permet de définir la condition d'une BoolExpression
  */
-public class BoolTransitionBuilder {
+public class TransitionConditionOperationBuilder {
 
-  private BoolExpressionBuilder parent;
+  private TransitionConditionBuilder parent;
 
-  public BoolTransitionBuilder(BoolExpressionBuilder parent) {
+  public TransitionConditionOperationBuilder(TransitionConditionBuilder parent) {
     this.parent = parent;
   }
 
@@ -20,7 +20,7 @@ public class BoolTransitionBuilder {
    *
    * @return BoolExpressionBuilder
    */
-  public BoolExpressionBuilder and() {
+  public TransitionConditionBuilder and() {
     return parent;
   }
 
@@ -29,7 +29,7 @@ public class BoolTransitionBuilder {
    *
    * @return BoolExpressionBuilder
    */
-  public BoolExpressionBuilder or() {
+  public TransitionConditionBuilder or() {
     return parent;
   }
 

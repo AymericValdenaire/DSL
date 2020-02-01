@@ -103,10 +103,6 @@ public class ArduinoBuilder {
       }
   }
 
-  public TransitionTableBuilder stateTable() {
-    return new TransitionTableBuilder(this);
-  }
-
   public StatesBuilder states() {
     return new StatesBuilder(this);
   }
