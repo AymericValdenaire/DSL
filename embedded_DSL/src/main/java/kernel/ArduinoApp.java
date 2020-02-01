@@ -13,6 +13,7 @@ public class ArduinoApp implements Visitable {
 
   private List<Brick> bricks;
   private List<State> stateMachine;
+  private State intialState;
   private String name;
 
   public ArduinoApp(){

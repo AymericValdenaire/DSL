@@ -16,8 +16,6 @@ public class StatesBuilder {
   @Getter(AccessLevel.PROTECTED)
   private ArduinoBuilder parent;
 
-  private State initialState;
-
   public StatesBuilder(ArduinoBuilder parent) {
     this.parent = parent;
   }
@@ -43,12 +41,13 @@ public class StatesBuilder {
    *
    * @return ArduinoApp
    */
-  public StatesBuilder initState(String stateName) throws Exception {
-    this.initialState = this.parent.getArduinoApp().getStateMachine().stream()
-        .filter(state -> state.getName().equals(stateName))
-        .findFirst()
-        .orElseThrow(() -> new Exception("State " + stateName + " not found"));
-
+  public StatesBuilder initState(String stateName) throws ValidationException {
+    this.parent.getArduinoApp().setIntialState(
+          this.parent.getArduinoApp().getStateMachine().stream()
+          .filter(state -> state.getName().equals(stateName))
+          .findFirst()
+          .orElseThrow(() -> new ValidationException("State " + stateName + " not found"))
+        );
     return this;
   }
 
