@@ -10,16 +10,15 @@ import lombok.Getter;
  * Permet de set des états au bricks
  * @param <T> Instance de BoolInstance
  */
-public class BrickSetterBuilder<T extends BoolInstance> {
+public class BrickSetterBuilder {
 
-  private T parent;
+  private StateBuilder parent;
   private Brick brick;
 
-  public BrickSetterBuilder(T parent, String brickName) throws ValidationException {
+  public BrickSetterBuilder(StateBuilder parent, String brickName) throws ValidationException {
     this.parent = parent;
 
     this.brick = parent
-        .getStateBuilder()
         .getParent()
         .getParent()
         .getArduinoApp()
@@ -32,17 +31,17 @@ public class BrickSetterBuilder<T extends BoolInstance> {
 
   public StateBuilder toHigh() {
     //local.setValue(SIGNAL.HIGH);
-    return parent.getStateBuilder();
+    return parent;
   }
 
   public StateBuilder toLow() {
     //local.setValue(SIGNAL.LOW);
-    return parent.getStateBuilder();
+    return parent;
   }
 
   public StateBuilder goUp() {
     //parent.local.getActions().add(this.local);
-    return parent.getStateBuilder();
+    return parent;
   }
 
 }

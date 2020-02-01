@@ -1,26 +1,14 @@
 package builder;
 
-import builder.exception.ValidationException;
-
 /**
  * Permet de définir la condition d'une BoolExpression
  */
-public class BoolTransitionBuilder implements BoolInstance {
+public class BoolTransitionBuilder {
 
   private BoolExpressionBuilder parent;
 
   public BoolTransitionBuilder(BoolExpressionBuilder parent) {
     this.parent = parent;
-  }
-
-  @Deprecated
-  /**
-   * Permet de set quand
-   */
-  public BrickSetterBuilder thenSet(String name) throws ValidationException {
-    BrickSetterBuilder setter = new BrickSetterBuilder(this, name);
-    this.parent.setAction(setter);
-    return setter;
   }
 
   public StatesBuilder thenGoToState(String stateName) {
@@ -45,8 +33,4 @@ public class BoolTransitionBuilder implements BoolInstance {
     return parent;
   }
 
-  @Override
-  public StateBuilder getStateBuilder() {
-    return parent.getStateBuilder();
-  }
 }

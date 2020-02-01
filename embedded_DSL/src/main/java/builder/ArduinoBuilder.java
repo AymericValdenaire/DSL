@@ -28,7 +28,6 @@ public class ArduinoBuilder {
     return arduinoBuilder;
   }
 
-
   public ArduinoApp build() {
     return arduinoApp;
   }

@@ -9,7 +9,7 @@ import lombok.Getter;
 /**
  * Permet de construire un état
  */
-public class StateBuilder implements BoolInstance {
+public class StateBuilder {
 
   private StatesBuilder parent;
   private State currentState;
@@ -48,8 +48,4 @@ public class StateBuilder implements BoolInstance {
     return parent.state(name);
   }
 
-  @Override
-  public StateBuilder getStateBuilder() {
-    return this;
-  }
 }
