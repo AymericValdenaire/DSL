@@ -25,13 +25,20 @@ class Model(object):
 
     def generate_setup_code(self):
         setup = open("templates/setup.amlt", 'r').read()
-        return setup.format(setup_code='\n\t' + '\n\t'.join([e.generate_setup_code() for e in self.bricks]))
+
+        serial_code = self.serial.generate_setup_code() if self.serial is not None else ''
+
+        return setup.format(setup_code='\n\t' + serial_code +'\n\t'.join([e.generate_setup_code() for e in self.bricks]))
 
     def generate_states_code(self):
         return '\n'.join([str(e) for e in self.states])
 
     def generate_includes(self):
-        return '\n'.join("#include <{}.h>\n".join(e.dependencies()) for e in self.bricks)
+        includes = ""
+        for e in self.bricks:
+            for k in e.dependencies():
+                includes += "#include <{}.h>\n".format(k)
+        return includes
 
     def __str__(self):
         out = open("header.txt", 'r').read()
@@ -82,7 +89,7 @@ class AnalogicSensor(Sensor):
         return 'analogRead({})'.format(self.name)
 
     def __str__(self):
-        return 'analogRead({})'.format(self.name)
+        return '{}'.format(self.name)
 
 
 
@@ -97,7 +104,8 @@ class DigitalSensor(Sensor):
         return 'digitalRead({})'.format(self.name)
 
     def __str__(self):
-        return 'digitalRead({})'.format(self.name)
+        return '{}'.format(self.name)
+
 
 
 class DigitalActuator(Actuator):
@@ -109,6 +117,9 @@ class DigitalActuator(Actuator):
 
     def assignment_code(self):
         return 'digitalWrite({})'.format(self.name)
+
+    def __str__(self):
+        return self.name
 
 
 class AnalogicActuator(Actuator):
@@ -130,10 +141,10 @@ class LiquidCrystal:
         self.name = name
 
     def generate_var_init_code(self):
-        return '\t\n{}.begin({}, {});'.format(self.name, self.matrix_size[0], self.matrix_size[1])
+        return 'LiquidCrystal {}({});'.format(self.name, ','.join([str(e) for e in self.pin]))
 
     def generate_setup_code(self):
-        return 'LiquidCrystal {}({});'.format(self.name, ','.join([str(e) for e in self.pin]))
+        return '\t\n{}.begin({}, {});'.format(self.name, self.matrix_size[0], self.matrix_size[1])
 
     def dependencies(self):
         return ['LiquidCrystal']
@@ -226,6 +237,30 @@ class Transition:
                                  next_state=next_state,
                                  delay_instr=delay_instr)
 
+class Print:
+    def __init__(self, parent, cmd, output, serial, from_brick, msg):
+        self.parent = parent
+        self.cmd = cmd
+        self.output = output
+        self.serial = serial
+        self.from_brick = from_brick
+        self.msg = msg
+
+    def __str__(self):
+        # LCD mode
+        cmd = 'print' if self.cmd == "PRINT" else "println"
+        if self.output is not None:
+            payload = "prettyDigitalPrint(\"{}\",{})".format(self.from_brick.name,self.from_brick.inline_read_code())\
+                if self.from_brick is not None else "\"" + self.msg.ljust(self.output.size[0]) + "\""
+
+            return '{lcd_name}.setCursor(0, 0);\n' \
+                '\t{lcd_name}.{cmd}({payload});\n'.format(lcd_name=self.output.name,cmd=cmd, payload=payload)
+
+        if self.serial is not None:
+            payload = "prettyDigitalPrint(\"{}\",{})".format(self.from_brick.name, self.from_brick.inline_read_code()) if self.from_brick is not None else "\"" + self.msg + "\""
+
+            return 'Serial.{cmd}({payload});\n'.format(cmd=cmd, payload=payload)
+
 
 class Goto:
     def __init__(self, parent, next_state):
@@ -254,8 +289,8 @@ class Assignment:
         self.var_analog = var_analog
 
         if self.new_value is not None:
-            self.value = self.new_value
-        if self.var_analog is not None :
+            self.value = self.new_value.inline_read_code()
+        if self.var_analog is not None:
             self.value = self.var_analog
 
     def __str__(self):
@@ -297,24 +332,35 @@ class Condition:
     def __str__(self):
         if self.op is None:
             return str(self.l)
+
         return '{} {} {}'.format(self.l, self.op, self.r)
 
 
 class ConditionTerm:
-    def __init__(self, parent, l, op, r):
+    def __init__(self, parent, l, op, r, serial):
         self.parent = parent
         self.l = l
         self.op = op
         self.r = r
+        self.serial = serial
 
     def __str__(self):
-        return '{} {} {}'.format(self.l, self.op, self.r)
+        if self.serial:
+            return '{}.indexOf("{}") >= 0'.format(self.serial.inline_read_code(), self.r)
+
+        return '{} {} {}'.format(self.l.inline_read_code(), self.op, self.r)
 
 class Serial:
     def __init__(self, parent, name, baudrate):
         self.parent = parent
         self.name = name
         self.baudrate = baudrate
+
+    def generate_setup_code(self):
+        return 'Serial.begin({});'.format(self.baudrate)
+
+    def inline_read_code(self):
+        return 'Serial.readString()'
 
 type_builtins = {
     'ON': DigitalValue(None, 'ON'),
@@ -323,7 +369,7 @@ type_builtins = {
 
 if __name__ == '__main__':
 
-    classes = [Model, ConditionTerm, Transition, Wait, Action, Assignment,
+    classes = [Model,Print, ConditionTerm, Transition, Wait, Action, Assignment,
                AssignmentFromBrick,
                Condition, Comparable,
                Brick, State,Serial, DigitalValue,Exception, LiquidCrystal, DigitalSensor, AnalogicActuator,DigitalActuator, AnalogicSensor,

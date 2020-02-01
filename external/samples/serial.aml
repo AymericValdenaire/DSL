@@ -6,7 +6,7 @@ DIGITAL ACTUATOR led 10
 DIGITAL ACTUATOR buzzer 11
 
 STATE led_on {
-    PRINT serial "test"
+    PRINTLN serial "led := ON"
     buzzer = OFF
     led = ON
     serial == "test" => STATE buzzer_on
@@ -15,6 +15,6 @@ STATE led_on {
 STATE buzzer_on {
     led = OFF
     buzzer = ON
-    PRINT serial led
+    PRINTLN serial "led := OFF"
     serial == "test" => STATE led_on
 }
