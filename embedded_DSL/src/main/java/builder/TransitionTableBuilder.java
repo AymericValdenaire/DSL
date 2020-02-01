@@ -1,10 +1,9 @@
 package builder;
 
+import java.util.List;
 import kernel.logic.State;
 import kernel.model.brick.Brick;
 import kernel.model.brick.sensor.Sensor;
-
-import java.util.List;
 
 @Deprecated
 public class TransitionTableBuilder {
@@ -24,7 +23,7 @@ public class TransitionTableBuilder {
             // si l'état existe deja c a d que l'on a un nom d'etat et un sensor
             // identique alors on retourne un transitionbuilder
             if (value.getName().equals(state) && value.getSensor().getName().equals(sensor)) {
-                return new TransitionBuilder(this,value);
+                //return new TransitionBuilder(this,value);
             }
         }
         //si l'etat n'existe pas on le défini et on l'ajoute a notre liste
@@ -35,7 +34,7 @@ public class TransitionTableBuilder {
                 new_State.setSensor((Sensor)brick);
                 new_State.setName(state);
                 getStates().add(new_State);
-                return new TransitionBuilder(this,new_State);
+                //return new TransitionBuilder(this,new_State);
             }
         }
         throw new IllegalArgumentException("Illegal sensor name");

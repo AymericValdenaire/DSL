@@ -1,6 +1,6 @@
-import static builder.ArduinoBuilder.actuator;
+import static builder.ArduinoBuilder.analogicActuator;
+import static builder.ArduinoBuilder.analogicSensor;
 import static builder.ArduinoBuilder.arduino;
-import static builder.ArduinoBuilder.sensor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,9 +42,9 @@ public class Main {
 
     arduinoApp =
         arduino("scenario1")
-            .setup(sensor("button", 10))
-            .setup(actuator("led", 11))
-            .setup(actuator("buzzer", 9))
+            .setup(analogicSensor("button", 10))
+            .setup(analogicActuator("led", 11))
+            .setup(analogicActuator("buzzer", 9))
               .states()
                 .state("on")
                   .set("test").toHigh()

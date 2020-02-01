@@ -2,8 +2,8 @@ package kernel.logic;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import kernel.model.brick.Brick;
 import kernel.model.DigitalValue;
+import kernel.model.brick.Brick;
 import lombok.Getter;
 
 @Getter

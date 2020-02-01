@@ -1,11 +1,6 @@
 package builder;
 
-import kernel.logic.State;
 import kernel.logic.statements.transition.Transition;
-import kernel.model.brick.Brick;
-import kernel.model.brick.sensor.Sensor;
-
-import java.util.List;
 
 @Deprecated
 public class TransitionBuilder {
@@ -14,12 +9,12 @@ public class TransitionBuilder {
     private String state;
     private Transition transition;
 
-    public TransitionBuilder(TransitionTableBuilder parent, State state){
+    /*public TransitionBuilder(TransitionTableBuilder parent, State state){
         this.parent = parent;
         this.transition = new Transition();
 
         state.getTransitions().add(this.transition);
-    }
+    }*/
 /*
     public TransitionBuilder when(String sensor){
         transition.setSensor(sensor);

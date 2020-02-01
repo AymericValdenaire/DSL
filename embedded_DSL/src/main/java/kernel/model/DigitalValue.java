@@ -2,7 +2,6 @@ package kernel.model;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import lombok.Data;
 
 public class DigitalValue implements Visitable {
 

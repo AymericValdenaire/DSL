@@ -1,10 +1,13 @@
 package builder;
 
 import kernel.ArduinoApp;
-import kernel.model.brick.actuator.Actuator;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Lcd;
-import kernel.model.brick.sensor.Sensor;
+import kernel.model.brick.Serial;
+import kernel.model.brick.actuator.AnalogicActuator;
+import kernel.model.brick.actuator.DigitalActuator;
+import kernel.model.brick.sensor.AnalogicSensor;
+import kernel.model.brick.sensor.DigitalSensor;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -37,19 +40,32 @@ public class ArduinoBuilder {
     return this;
   }
 
-  public static Brick sensor(String name, int pin) {
-
+  public static Brick analogicSensor(String name, int pin) {
     verifyArgument(name, pin);
-    return new Sensor(name, pin);
+    return new AnalogicSensor(name, pin);
   }
 
-  public static Brick actuator(String name, int pin) {
+  public static Brick digitalSensor(String name, int pin) {
     verifyArgument(name, pin);
-    return new Actuator(name, pin);
+    return new DigitalSensor(name, pin);
   }
 
-  public static Lcd lcd(String name, int busId) {
+  public static Brick analogicActuator(String name, int pin) {
+    verifyArgument(name, pin);
+    return new AnalogicActuator(name, pin);
+  }
+
+  public static Brick digitalActuator(String name, int pin) {
+    verifyArgument(name, pin);
+    return new DigitalActuator(name, pin);
+  }
+
+  public static Brick lcd(String name, int busId) {
     return new Lcd(name, busId);
+  }
+
+  public static Brick serial(String name, int baudrate) {
+    return new Serial(name, baudrate);
   }
 
   // TODO Should not be here but in accept() method, check params on visit
