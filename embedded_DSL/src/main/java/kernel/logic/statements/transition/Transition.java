@@ -3,11 +3,11 @@ package kernel.logic.statements.transition;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import kernel.logic.State;
+import kernel.logic.statements.Statement;
 import lombok.Data;
 import lombok.Getter;
 
-@Data
-public class Transition implements Visitable {
+public class Transition extends Statement {
 
   String condition;
   State destination;
