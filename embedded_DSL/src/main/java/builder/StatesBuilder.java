@@ -34,7 +34,12 @@ public class StatesBuilder {
     return new StateBuilder(this, state);
   }
 
-  protected StatesBuilder setInit(String stateName) throws Exception {
+  /**
+   * Permet de d'initialiser la state machine
+   *
+   * @return ArduinoApp
+   */
+  public StatesBuilder initState(String stateName) throws Exception {
     this.initialState = states.stream()
         .filter(state -> state.getName().equals(stateName))
         .findFirst()

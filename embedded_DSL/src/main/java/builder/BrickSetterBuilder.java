@@ -1,6 +1,5 @@
 package builder;
 
-import builder.bool.BoolInstance;
 import builder.exception.ValidationException;
 import kernel.model.brick.Brick;
 import lombok.AccessLevel;
@@ -15,7 +14,6 @@ public class BrickSetterBuilder<T extends BoolInstance> {
 
   private T parent;
   private Brick brick;
-
 
   public BrickSetterBuilder(T parent, String brickName) throws ValidationException {
     this.parent = parent;

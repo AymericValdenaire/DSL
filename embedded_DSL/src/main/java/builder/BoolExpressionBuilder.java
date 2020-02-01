@@ -1,11 +1,8 @@
-package builder.bool;
+package builder;
 
-import builder.BrickSetterBuilder;
-import builder.StateBuilder;
 import builder.exception.ValidationException;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter(AccessLevel.PROTECTED)
 /**
@@ -15,9 +12,7 @@ public class BoolExpressionBuilder implements BoolInstance{
 
   private StateBuilder parent;
   private String value;
-
-  @Setter(AccessLevel.PROTECTED)
-  BrickSetterBuilder action;
+  private BrickSetterBuilder action;
 
   public BoolExpressionBuilder(StateBuilder stateBuilder) {
     this.parent = stateBuilder;
@@ -30,10 +25,10 @@ public class BoolExpressionBuilder implements BoolInstance{
    * @param value int
    * @return BoolSetterBuilder
    */
-  public BoolSetterBuilder ifIsEqual(String brickName, String value) throws ValidationException {
+  public BoolTransitionBuilder ifIsEqual(String brickName, String value) throws ValidationException {
     this.action = new BrickSetterBuilder(this, brickName);
     this.value = value;
-    return new BoolSetterBuilder(this);
+    return new BoolTransitionBuilder(this);
   }
 
   @Override

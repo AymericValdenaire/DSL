@@ -1,7 +1,5 @@
 package builder;
 
-import builder.bool.BoolExpressionBuilder;
-import builder.bool.BoolInstance;
 import builder.exception.ValidationException;
 import kernel.logic.State;
 import lombok.AccessLevel;
@@ -15,7 +13,6 @@ public class StateBuilder implements BoolInstance {
 
   private StatesBuilder parent;
   private State currentState;
-
 
   public StateBuilder(StatesBuilder parent, State state) {
     this.parent = parent;
@@ -49,15 +46,6 @@ public class StateBuilder implements BoolInstance {
    */
   public StateBuilder state(String name) {
     return parent.state(name);
-  }
-
-  /**
-   * Permet de d'initialiser la state machine
-   *
-   * @return ArduinoApp
-   */
-  public StatesBuilder initState(String stateName) throws Exception {
-    return parent.setInit(stateName);
   }
 
   @Override

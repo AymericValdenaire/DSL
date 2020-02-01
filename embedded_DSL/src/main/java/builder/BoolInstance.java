@@ -1,6 +1,4 @@
-package builder.bool;
-
-import builder.StateBuilder;
+package builder;
 
 public interface BoolInstance {
   StateBuilder getStateBuilder();
