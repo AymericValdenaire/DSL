@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public abstract class Brick implements Visitable {
 
-    private final String name;
-    private final int pin;
+    protected final String name;
+    protected final int pin;
 
     public Brick(String name, int pin) {
         this.name = name;
