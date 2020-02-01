@@ -1,9 +1,20 @@
 package builder;
 
+import static builder.ArduinoBuilder.analogicActuators;
+import static builder.ArduinoBuilder.analogicSensor;
+import static builder.ArduinoBuilder.analogicSensors;
+import static builder.ArduinoBuilder.digitalActuator;
+import static builder.ArduinoBuilder.digitalActuators;
+
 import builder.exception.ValidationException;
+import java.util.ArrayList;
+import java.util.List;
+import kernel.logic.statements.action.Assignement;
 import kernel.model.brick.Brick;
+import kernel.model.brick.actuator.Actuator;
 import lombok.AccessLevel;
 import lombok.Getter;
+import kernel.logic.State;
 
 @Getter(AccessLevel.PROTECTED)
 /**
@@ -13,34 +24,36 @@ import lombok.Getter;
 public class BrickSetterBuilder {
 
   private StateBuilder parent;
-  private Brick brick;
+  private Actuator actuator;
+  private State state;
 
-  public BrickSetterBuilder(StateBuilder parent, String brickName) throws ValidationException {
+  public BrickSetterBuilder(StateBuilder parent, String actuatorName, State state) throws ValidationException {
     this.parent = parent;
+    this.state = state;
 
-    this.brick = parent
-        .getParent()
-        .getParent()
-        .getArduinoApp()
-        .getBricks()
+    List<Actuator> actuators = new ArrayList<>();
+    actuators.addAll(analogicActuators);
+    actuators.addAll(digitalActuators);
+
+    this.actuator = actuators
         .stream()
-        .filter(brick -> brick.getName().equals(brickName))
+        .filter(actuator -> actuator.getName().equals(actuatorName))
         .findFirst()
-        .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is not found"));
+        .orElseThrow(() -> new ValidationException("Brick of name " + actuatorName + " is not found or is not a actuator"));
   }
 
   public StateBuilder toHigh() {
-    //local.setValue(SIGNAL.HIGH);
+    state.getAssignements().add(new Assignement(actuator, Signal.HIGH));
     return parent;
   }
 
   public StateBuilder toLow() {
-    //local.setValue(SIGNAL.LOW);
+    state.getAssignements().add(new Assignement(actuator, Signal.LOW));
     return parent;
   }
 
   public StateBuilder goUp() {
-    //parent.local.getActions().add(this.local);
+    //parent.local.getActions().add(this.locxal);
     return parent;
   }
 

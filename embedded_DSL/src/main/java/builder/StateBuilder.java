@@ -26,7 +26,7 @@ public class StateBuilder {
    * @return BrickSetterBuilder
    */
   public BrickSetterBuilder set(String name) throws ValidationException {
-    return new BrickSetterBuilder(this, name);
+    return new BrickSetterBuilder(this, name, this.currentState);
   }
 
   /**
@@ -44,7 +44,7 @@ public class StateBuilder {
    * @param name string state name
    * @return StateBuilder
    */
-  public StateBuilder state(String name) {
+  public StateBuilder state(String name) throws ValidationException {
     return parent.state(name);
   }
 

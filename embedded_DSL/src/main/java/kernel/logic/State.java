@@ -20,7 +20,10 @@ public class State implements Visitable {
 
   public State(){
     transitions = new ArrayList<>();
+    assignements = new ArrayList<>();
+    boolExpressions = new ArrayList<>();
   }
+
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }

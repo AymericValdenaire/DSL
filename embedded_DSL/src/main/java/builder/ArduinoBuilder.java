@@ -1,20 +1,33 @@
 package builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import kernel.ArduinoApp;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Lcd;
 import kernel.model.brick.Serial;
+import kernel.model.brick.actuator.Actuator;
 import kernel.model.brick.actuator.AnalogicActuator;
 import kernel.model.brick.actuator.DigitalActuator;
 import kernel.model.brick.sensor.AnalogicSensor;
 import kernel.model.brick.sensor.DigitalSensor;
+import kernel.model.brick.sensor.Sensor;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public class ArduinoBuilder {
 
   private ArduinoApp arduinoApp;
+  protected static List<Actuator> analogicActuators = new ArrayList<>();
+  protected static List<Actuator> digitalActuators = new ArrayList<>();
+  protected static List<Sensor> analogicSensors = new ArrayList<>();
+  protected static List<Sensor> digitalSensors = new ArrayList<>();
+  protected static List<Lcd> lcds = new ArrayList<>();
+  protected static List<Serial> serials = new ArrayList<>();
+
 
   public ArduinoBuilder() {
 
@@ -42,30 +55,42 @@ public class ArduinoBuilder {
 
   public static Brick analogicSensor(String name, int pin) {
     verifyArgument(name, pin);
-    return new AnalogicSensor(name, pin);
+    AnalogicSensor analogicSensor =  new AnalogicSensor(name, pin);
+    analogicSensors.add(analogicSensor);
+    return analogicSensor;
   }
 
   public static Brick digitalSensor(String name, int pin) {
     verifyArgument(name, pin);
-    return new DigitalSensor(name, pin);
+    DigitalSensor digitalSensor = new DigitalSensor(name, pin);
+    digitalSensors.add(digitalSensor);
+    return digitalSensor;
   }
 
   public static Brick analogicActuator(String name, int pin) {
     verifyArgument(name, pin);
-    return new AnalogicActuator(name, pin);
+    AnalogicActuator analogicActuator = new AnalogicActuator(name, pin);
+    analogicActuators.add(analogicActuator);
+    return analogicActuator;
   }
 
   public static Brick digitalActuator(String name, int pin) {
     verifyArgument(name, pin);
-    return new DigitalActuator(name, pin);
+    DigitalActuator digitalActuator = new DigitalActuator(name, pin);
+    digitalActuators.add(digitalActuator);
+    return digitalActuator;
   }
 
   public static Brick lcd(String name, int busId) {
-    return new Lcd(name, busId);
+    Lcd lcd = new Lcd(name, busId);
+    lcds.add(lcd);
+    return lcd;
   }
 
   public static Brick serial(String name, int baudrate) {
-    return new Serial(name, baudrate);
+    Serial serial = new Serial(name, baudrate);
+    serials.add(serial);
+    return serial;
   }
 
   // TODO Should not be here but in accept() method, check params on visit
