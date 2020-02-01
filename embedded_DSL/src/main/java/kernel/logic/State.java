@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import kernel.model.sensor.Sensor;
+import kernel.model.brick.sensor.Sensor;
 import lombok.Data;
 
 @Data

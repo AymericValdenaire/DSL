@@ -6,7 +6,7 @@ import kernel.logic.BoolExpression;
 import kernel.logic.BoolOperator;
 import kernel.logic.State;
 import kernel.logic.Transition;
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 import kernel.model.DigitalValue;
 
 public abstract class Visitor<T> {

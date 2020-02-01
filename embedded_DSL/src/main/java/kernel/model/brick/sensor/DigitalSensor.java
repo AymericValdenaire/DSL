@@ -1,4 +1,4 @@
-package kernel.model.sensor;
+package kernel.model.brick.sensor;
 
 public class DigitalSensor extends Sensor{
 

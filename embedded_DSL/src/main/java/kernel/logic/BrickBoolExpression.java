@@ -1,6 +1,6 @@
 package kernel.logic;
 
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 
 public class BrickBoolExpression extends AbstractBoolExpression{
 

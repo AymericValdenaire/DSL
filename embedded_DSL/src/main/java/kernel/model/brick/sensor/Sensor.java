@@ -1,6 +1,6 @@
-package kernel.model.sensor;
+package kernel.model.brick.sensor;
 
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 
 public class Sensor extends Brick {
 

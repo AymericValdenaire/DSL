@@ -1,7 +1,6 @@
-package kernel.model.actuator;
+package kernel.model.brick.actuator;
 
-import kernel.generator.Visitor;
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 
 public class Actuator extends Brick {
 

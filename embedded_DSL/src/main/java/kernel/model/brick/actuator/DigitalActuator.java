@@ -1,4 +1,4 @@
-package kernel.model.actuator;
+package kernel.model.brick.actuator;
 
 public class DigitalActuator extends Actuator{
 

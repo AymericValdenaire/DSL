@@ -4,8 +4,6 @@ import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import lombok.Data;
 
-
-@Data
 public class DigitalValue implements Visitable {
 
   private final String value;

@@ -1,6 +1,7 @@
 package kernel.model;
 
 import kernel.generator.Visitor;
+import kernel.model.brick.Brick;
 
 public class Lcd extends Brick {
     private final int bus_id;

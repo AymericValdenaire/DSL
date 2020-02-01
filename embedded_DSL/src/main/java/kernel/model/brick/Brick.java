@@ -1,4 +1,4 @@
-package kernel.model;
+package kernel.model.brick;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;

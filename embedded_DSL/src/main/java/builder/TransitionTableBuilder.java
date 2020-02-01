@@ -1,8 +1,8 @@
 package builder;
 
 import kernel.logic.State;
-import kernel.model.Brick;
-import kernel.model.sensor.Sensor;
+import kernel.model.brick.Brick;
+import kernel.model.brick.sensor.Sensor;
 
 import java.util.List;
 

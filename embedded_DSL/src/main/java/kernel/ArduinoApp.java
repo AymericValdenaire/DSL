@@ -5,10 +5,8 @@ import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import kernel.logic.State;
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class ArduinoApp implements Visitable {

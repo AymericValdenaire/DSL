@@ -2,7 +2,6 @@ package builder.bool;
 
 import builder.BrickSetterBuilder;
 import builder.StateBuilder;
-import kernel.model.Brick;
 import lombok.AccessLevel;
 import lombok.Setter;
 

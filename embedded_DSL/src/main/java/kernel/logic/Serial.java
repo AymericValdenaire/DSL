@@ -2,6 +2,7 @@ package kernel.logic;
 
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import kernel.model.brick.Brick;
 
 public class Serial implements Visitable {
 

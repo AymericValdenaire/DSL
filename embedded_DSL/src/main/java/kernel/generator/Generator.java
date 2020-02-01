@@ -4,7 +4,7 @@ import kernel.ArduinoApp;
 import kernel.logic.BoolExpression;
 import kernel.logic.State;
 import kernel.logic.Transition;
-import kernel.model.Brick;
+import kernel.model.brick.Brick;
 
 public class Generator extends Visitor<StringBuilder>{
 
