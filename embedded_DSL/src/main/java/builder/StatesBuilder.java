@@ -1,8 +1,6 @@
 package builder;
 
 import builder.exception.ValidationException;
-import java.util.ArrayList;
-import java.util.List;
 import kernel.ArduinoApp;
 import kernel.logic.State;
 import lombok.AccessLevel;

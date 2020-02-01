@@ -36,7 +36,7 @@ public class StateBuilder {
   /**
    * Permet d'initialiser une boolean expression
    *
-   * @return BoolExpression
+   * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder when() {
     return new TransitionConditionBuilder(this);

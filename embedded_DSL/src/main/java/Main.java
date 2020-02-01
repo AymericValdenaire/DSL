@@ -1,6 +1,8 @@
 import static builder.ArduinoBuilder.analogicActuator;
 import static builder.ArduinoBuilder.analogicSensor;
 import static builder.ArduinoBuilder.arduino;
+import static builder.ArduinoBuilder.digitalActuator;
+import static builder.ArduinoBuilder.digitalSensor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,24 +24,32 @@ public class Main {
     // SCENARIO 1
     // ----------------
 
-        /*
-        SENSOR button 10
-        ACTUATOR led 11
-        ACTUATOR buzzer 9
+    arduinoApp =
+        arduino("scenario1")
+            .setup(digitalSensor("button", 10))
+            .setup(digitalActuator("led", 11))
+            .setup(digitalActuator("buzzer", 9))
+              .states()
+                .state("off")
+                  .set("led").toLow()
+                  .set("buzzer").toLow()
+                  .when().ifIsEqual("button", "ON").thenGoToState("on")
+                .state("on")
+                  .set("led").toHigh()
+                  .set("buzzer").toHigh()
+                  .when().ifIsEqual("button", "OFF").thenGoToState("off")
+              .initState("off")
+          .build();
 
-        INIT off {
-            SET led OFF
-            SET buzzer OFF
-            button == ON -> on
-        }
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
-        on {
-            SET led ON
-            SET buzzer ON
-            button == OFF -> off
-        }
-         */
+    // ----------------
+    // BUILDER TEST
+    // ----------------
 
+    /*
     arduinoApp =
         arduino("scenario1")
             .setup(analogicSensor("button", 10))
@@ -59,29 +69,8 @@ public class Main {
 
     generator = new Generator();
     arduinoApp.accept(generator);
-    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);*/
 
-    // ----------------
-    // OLD
-    // ----------------
-
-        /*
-        arduinoApp =
-            arduino("monPremierCode2")
-                .setup(sensor("led",2))
-                .setup(actuator("button",3))
-                .setup(lcd("lcd_0", 2))
-
-                .stateTable()
-                .state("on","led").when("button").isHigh().thenState("off","led")
-                .state("off","led").when("button").isHigh().thenState("on","led")
-                .endStateTable()
-                .build();
-
-        generator = new Generator();
-        arduinoApp.accept(generator);
-        arduinoAppGenerated.put(arduinoApp.getName(), generator);
-        */
 
     try {
       new File("out/").mkdir();

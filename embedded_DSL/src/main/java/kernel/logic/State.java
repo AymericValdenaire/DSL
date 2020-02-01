@@ -16,12 +16,10 @@ public class State implements Visitable {
   Sensor sensor;
   List<Transition> transitions;
   List<Assignement> assignements;
-  List<BoolExpression> boolExpressions;
 
   public State(){
     transitions = new ArrayList<>();
     assignements = new ArrayList<>();
-    boolExpressions = new ArrayList<>();
   }
 
   public void accept(Visitor visitor) {
