@@ -39,7 +39,7 @@ public class Main {
 
     generator = new Generator();
     arduinoApp.accept(generator);
-    arduinoAppGenerated.put("scenario1", generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
     // ----------------
     // SCENARIO 2
@@ -152,6 +152,7 @@ public class Main {
     generator = new Generator();
     arduinoApp.accept(generator);
     arduinoAppGenerated.put(arduinoApp.getName(), generator);
+
     // ----------------
     // BUILDER TEST
     // ----------------

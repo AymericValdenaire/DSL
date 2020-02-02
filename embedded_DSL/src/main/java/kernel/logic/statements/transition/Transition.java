@@ -19,8 +19,7 @@ public class Transition extends Statement {
     this.exception = exception;
   }
 
-  public Transition() {
-
+  public Transition(){
     this.exception = null;
   }
 
