@@ -62,9 +62,9 @@ public class TransitionConditionBuilder {
         throw new Exception("Greater and Lower condition are not available for serial");
       }
       if(transition.getCondition() == null) {
-        transition.setCondition(new Condition(brick.toString()+"indexOf("+value+")" , ">=", "0"));
+        transition.setCondition(new Condition(brick.toString()+".indexOf("+value+")" , ">=", "0"));
       }else{
-        transition.getCondition().setRight(new Condition(brick.toString()+"indexOf("+value+")" , ">=", "0"));
+        transition.getCondition().setRight(new Condition(brick.toString()+".indexOf("+value+")" , ">=", "0"));
       }
     }else{
       if(transition.getCondition() == null) {
