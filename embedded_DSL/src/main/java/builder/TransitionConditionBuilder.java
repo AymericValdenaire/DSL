@@ -36,7 +36,7 @@ public class TransitionConditionBuilder {
    * @param value int
    * @return BoolSetterBuilder
    */
-  public TransitionConditionOperationBuilder ifIsEqual(String brickName, String value) throws ValidationException {
+  public TransitionConditionOperationBuilder ifIsEqual(String brickName, String value) throws Exception {
     this.brick = parent
         .getParent()
         .getParent()
@@ -47,9 +47,18 @@ public class TransitionConditionBuilder {
         .findFirst()
         .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is invalid"));
     this.value = value;
-
+    switch (value){
+      case "ON":
+        value = "HIGH";
+        break;
+      case "OFF":
+        value = "LOW";
+        break;
+      default:
+        throw new Exception("Bad keyword on condition");
+    }
     if(transition.getCondition() == null) {
-      transition.setCondition(new Condition(brickName , "==", value));
+        transition.setCondition(new Condition(brickName , "==", value));
     }else{
       transition.getCondition().setRight(new Condition(brickName , "==", value));
     }

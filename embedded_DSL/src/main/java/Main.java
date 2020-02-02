@@ -49,7 +49,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-            arduino("scenario1","off")
+            arduino("scenario2","off")
                     .setup(digitalSensor("button1", 10))
                     .setup(digitalSensor("button2", 11))
                     .setup(digitalActuator("buzzer", 9))
@@ -70,7 +70,56 @@ public class Main {
 
     generator = new Generator();
     arduinoApp.accept(generator);
-    arduinoAppGenerated.put("scenario2", generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+    // ----------------
+    // SCENARIO 3
+    // ----------------
+
+    arduinoApp =
+            arduino("scenario3","off")
+                    .setup(digitalSensor("button1", 11))
+                    .setup(digitalActuator("led", 9))
+                    .states()
+                      .state("off")
+                        .set("led").toLow()
+                        .when().ifIsEqual("button1", "ON")
+                    .thenGoToState("on")
+                    .state("on")
+                      .set("led").toHigh()
+                      .when().ifIsEqual("button1", "ON")
+                    .thenGoToState("off")
+                    .build();
+
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+    // ----------------
+    // SCENARIO 4
+    // ----------------
+
+    arduinoApp =
+            arduino("scenario4","off")
+                    .setup(digitalSensor("button1", 10))
+                    .setup(digitalActuator("led", 11))
+                    .setup(digitalActuator("buzzer", 9))
+                    .states()
+                      .state("off")
+                      .set("led").toLow()
+                      .when().ifIsEqual("button1", "ON")
+                      .thenGoToState("only_buzzer")
+                    .state("only_buzzer")
+                      .set("buzzer").toHigh()
+                      .when().ifIsEqual("button1", "ON")
+                      .thenGoToState("only_led")
+                    .state("only_led")
+                      .set("led").toHigh()
+                      .when().ifIsEqual("button1", "ON")
+                      .thenGoToState("off")
+                    .build();
+
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
     // ----------------
     // BUILDER TEST
     // ----------------

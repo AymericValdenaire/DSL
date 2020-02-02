@@ -10,7 +10,7 @@ public abstract class Actuator extends Brick {
 
     @Override
     public String generateSetupCode() {
-        return String.format("\tpinMode(%d, OUTPUT);\n", pin);
+        return String.format("\tpinMode(%s, OUTPUT);\n", name);
     }
 
     public abstract String generateAssignementCode(String value);

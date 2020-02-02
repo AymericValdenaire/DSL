@@ -39,9 +39,9 @@ public class State {
   @Override
   public String toString() {
     String state = "void %s()"
-        + "{\n\n%s} // No transition, loop on {%s} state"
-        + "\t{%s}();\n"
-        + "}";
+        + "{\n\n%s // No transition, loop on {%s} state\n"
+        + "\t%s();\n"
+        + "}\n";
 
     Boolean noTransition = true;
     Integer sleepBeforeNextState = maxStateSleep;

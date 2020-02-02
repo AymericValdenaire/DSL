@@ -23,6 +23,9 @@ public class Condition{
 
   @Override
   public String toString() {
-    return String.format("%s %s %s", left.toString(), operator, right.toString());
+    return String.format("%s %s %s",
+            (left instanceof Condition) ? left.toString() : "digitalRead("+left.toString()+")"
+            , operator
+            , right.toString());
   }
 }

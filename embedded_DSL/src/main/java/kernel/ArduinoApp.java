@@ -60,7 +60,7 @@ public class ArduinoApp implements Visitable {
         + "long time = 0;\n"
         + "long debounce = 200;\n"
         + "\n"
-        + "boolean guard;\n"
+        + "boolean guard;\n\n"
         + "void error(int n)\n"
         + "{\n"
         + "    for(int c = 0 ; c != n ; c++)\n"
@@ -93,12 +93,11 @@ public class ArduinoApp implements Visitable {
         + "\n"
         + "    // Used for Exceptions\n"
         + "    pinMode(12, OUTPUT);\n"
-        + "}", (serial != null) ? serial.generateSetupCode() : "" ));
+        + "", (serial != null) ? serial.generateSetupCode() : "" ));
     for (Brick currentBrick : bricks) {
       stringBuilder.append(currentBrick.generateSetupCode());
     }
     stringBuilder.append( "}");
-    stringBuilder.insert(0,"long time = 0;\nlong debounce = 200;\n");
     return stringBuilder.toString();
   }
 
