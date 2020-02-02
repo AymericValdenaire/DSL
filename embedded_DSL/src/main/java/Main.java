@@ -154,6 +154,27 @@ public class Main {
     arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
     // ----------------
+    // SCENARIO EXCEPTION
+    // ----------------
+
+    arduinoApp =
+            arduino("Exception")
+                    .setup(digitalSensor("button1", 10))
+                    .setup(digitalSensor("button2", 11))
+                    .states()
+                      .state("double_door")
+                        .when().ifIsEqual("button1", "ON")
+                        .and()
+                        .ifIsEqual("button2", "ON")
+                        .thenError(3)
+                      .initState("double_door")
+                    .build();
+
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+
+    // ----------------
     // BUILDER TEST
     // ----------------
 

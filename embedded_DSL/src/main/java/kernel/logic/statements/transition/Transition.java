@@ -11,7 +11,7 @@ public class Transition extends Statement {
 
   private Condition condition;
   private String nextState;
-  private final Exception exception;
+  private Exception exception;
 
   public Transition(Condition condition, String nextState, Exception exception) {
     this.condition = condition;
@@ -34,13 +34,13 @@ public class Transition extends Statement {
     if (this.exception != null) {
       nextState = this.exception.toString();
     } /*else {
-      nextState = exception.toString(); // c'est de la merde ?
+      nextState = exception.toString();
     }*/
-
+/*
     if (nextState.getClass().equals(Exception.class)) {
       nextState += "();";
     }
-
+*/
     if (condition == null) {
       return String.format("{%s}\n\t{%s}", delayInstr, nextState);
     }
@@ -49,10 +49,10 @@ public class Transition extends Statement {
             "guard =  millis() - time > debounce;\n\n"
                     + "    if (%s  && guard) {\n"
                     + "        time = millis();\n"
-                    + "        %s();\n"
+                    + "        %s;\n"
                     + "    }",
             String.format(this.condition.toString()),
-            nextState
+            (this.exception != null) ? nextState  : nextState+"()"
     );
   }
 

@@ -1,5 +1,6 @@
 package builder;
 
+import kernel.logic.statements.transition.Exception;
 import kernel.logic.statements.transition.Transition;
 import kernel.logic.statements.transition.condition.Condition;
 
@@ -21,6 +22,10 @@ public class TransitionConditionOperationBuilder {
     return parent.getParent().getParent();
   }
 
+  public StatesBuilder thenError(int errorType){
+    transition.setException(new Exception(errorType));
+    return parent.getParent().getParent();
+  }
   /**
    * To add a and condition
    *
