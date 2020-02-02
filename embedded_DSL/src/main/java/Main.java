@@ -25,7 +25,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-        arduino("scenario1","off")
+        arduino("scenario1")
             .setup(digitalSensor("button", 10))
             .setup(digitalActuator("led", 11))
             .setup(digitalActuator("buzzer", 9))
@@ -38,6 +38,7 @@ public class Main {
                   .set("led").toHigh()
                   .set("buzzer").toHigh()
                   .when().ifIsEqual("button", "OFF").thenGoToState("off")
+                .initState("off")
           .build();
 
     generator = new Generator();
@@ -49,7 +50,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-            arduino("scenario2","off")
+            arduino("scenario2")
                     .setup(digitalSensor("button1", 10))
                     .setup(digitalSensor("button2", 11))
                     .setup(digitalActuator("buzzer", 9))
@@ -66,6 +67,7 @@ public class Main {
                                 .or()
                                 .ifIsEqual("button2", "OFF")
                         .thenGoToState("off")
+                    .initState("off")
                     .build();
 
     generator = new Generator();
@@ -76,7 +78,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-            arduino("scenario3","off")
+            arduino("scenario3")
                     .setup(digitalSensor("button1", 11))
                     .setup(digitalActuator("led", 9))
                     .states()
@@ -88,6 +90,7 @@ public class Main {
                       .set("led").toHigh()
                       .when().ifIsEqual("button1", "ON")
                     .thenGoToState("off")
+                    .initState("off")
                     .build();
 
     generator = new Generator();
@@ -98,7 +101,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-            arduino("scenario4","off")
+            arduino("scenario4")
                     .setup(digitalSensor("button1", 10))
                     .setup(digitalActuator("led", 11))
                     .setup(digitalActuator("buzzer", 9))
@@ -117,6 +120,7 @@ public class Main {
                       .set("buzzer").toLow()
                       .when().ifIsEqual("button1", "ON")
                       .thenGoToState("off")
+                    .initState("off")
                     .build();
 
     generator = new Generator();

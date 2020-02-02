@@ -31,10 +31,9 @@ public class ArduinoApp implements Visitable {
     this.maxStateSleep = maxStateSleepFloat.intValue();
   }
 
-  public ArduinoApp(String initialState){
+  public ArduinoApp(){
     bricks = new ArrayList<>();
     stateMachine = new ArrayList<>();
-    this.initialState = initialState;
   }
 
   @Override
@@ -43,6 +42,9 @@ public class ArduinoApp implements Visitable {
   }
 
   public String generateLoopCode() {
+   /* if(initialState == null){
+      throw new Exception("you must define an initial state");
+    }*/
     return String.format("\nvoid loop() { %s(); }", initialState);
   }
 

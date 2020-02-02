@@ -39,15 +39,15 @@ public class StatesBuilder {
    *
    * @return ArduinoApp
    */
-  /*public StatesBuilder initState(String stateName) throws ValidationException {
-    this.parent.getArduinoApp().setIntialState(
-          this.parent.getArduinoApp().getStateMachine().stream()
+  public StatesBuilder initState(String stateName) throws ValidationException {
+    this.parent.getArduinoApp().setInitialState(
+            (this.parent.getArduinoApp().getStateMachine().stream()
           .filter(state -> state.getName().equals(stateName))
           .findFirst()
-          .orElseThrow(() -> new ValidationException("State " + stateName + " not found"))
+          .orElseThrow(() -> new ValidationException("State " + stateName + " not found")).getName())
         );
     return this;
-  }*/
+  }
 
   public ArduinoApp build() {
     return this.parent.build();
