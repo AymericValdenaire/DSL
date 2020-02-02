@@ -175,30 +175,28 @@ public class Main {
     arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
     // ----------------
-    // BUILDER TEST
+    // SCENARIO ANALOG
     // ----------------
 
-    /*
     arduinoApp =
-        arduino("scenario1")
-            .setup(analogicSensor("button", 10))
-            .setup(analogicActuator("led", 11))
-            .setup(analogicActuator("buzzer", 9))
-              .states()
-                .state("on")
-                  .set("test").toHigh()
-                  .sleep(10)
-                  .set("test").toLow()
-                  .when().ifIsEqual("button", "1").and().ifIsEqual("button", "1").thenGoToState("off")
-                .state("off")
-                  .set("test").toLow()
-                  .when().ifIsEqual("button", "1").thenGoToState("on")
-              .initState("off")
-            .build();
+            arduino("analogicalBricks")
+                    .setup(analogicSensor("temp", 1))
+                    .setup(digitalActuator("buzzer", 9))
+                    .states()
+                      .state("fire_detection")
+                        .set("buzzer").toLow()
+                        .when().ifIsGreaterThan("temp", "57")
+                      .thenGoToState("fire_detected")
+                      .state("fire_detected")
+                        .set("buzzer").toHigh()
+                        .when().ifIsLowerThan("temp", "57")
+                      .thenGoToState("fire_detection")
+                    .initState("fire_detected")
+                    .build();
 
     generator = new Generator();
     arduinoApp.accept(generator);
-    arduinoAppGenerated.put(arduinoApp.getName(), generator);*/
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
 
 
     try {

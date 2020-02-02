@@ -30,23 +30,16 @@ public class TransitionConditionBuilder {
     this.currentState = state;
   }
 
-  /**
-   * Permet de définir la condition
-   *
-   * @param brickName String
-   * @param value int
-   * @return BoolSetterBuilder
-   */
-  public TransitionConditionOperationBuilder ifIsEqual(String brickName, String value) throws Exception {
+  private TransitionConditionOperationBuilder conditionbuilder(String brickName, String value,String op)throws Exception{
     this.brick = parent
-        .getParent()
-        .getParent()
-        .getArduinoApp()
-        .getBricks()
-        .stream()
-        .filter(brick -> brick.getName().equals(brickName))
-        .findFirst()
-        .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is invalid"));
+            .getParent()
+            .getParent()
+            .getArduinoApp()
+            .getBricks()
+            .stream()
+            .filter(brick -> brick.getName().equals(brickName))
+            .findFirst()
+            .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is invalid"));
     this.value = value;
     switch (value){
       case "ON":
@@ -56,10 +49,18 @@ public class TransitionConditionBuilder {
         value = "LOW";
         break;
       default:
-        value = "\""+value+"\"";
+        try {
+          Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+          value = "\""+value+"\"";
+        }
+
         break;
     }
     if(brick instanceof Serial){
+      if(op.equals(">") || op.equals("<")){
+        throw new Exception("Greater and Lower condition are not available for serial");
+      }
       if(transition.getCondition() == null) {
         transition.setCondition(new Condition(brick.toString()+"indexOf("+value+")" , ">=", "0"));
       }else{
@@ -67,14 +68,31 @@ public class TransitionConditionBuilder {
       }
     }else{
       if(transition.getCondition() == null) {
-        transition.setCondition(new Condition(brick , "==", value));
+        transition.setCondition(new Condition(brick , op, value));
       }else{
-        transition.getCondition().setRight(new Condition(brick , "==", value));
+        transition.getCondition().setRight(new Condition(brick , op, value));
       }
     }
 
     return new TransitionConditionOperationBuilder(this,transition);
   }
+  /**
+   * Permet de définir la condition
+   *
+   * @param brickName String
+   * @param value int
+   * @return BoolSetterBuilder
+   */
+  public TransitionConditionOperationBuilder ifIsEqual(String brickName, String value) throws Exception {
+    return conditionbuilder(brickName, value,"==");
+  }
 
+  public TransitionConditionOperationBuilder ifIsGreaterThan(String brickName, String value) throws Exception {
+    return conditionbuilder(brickName, value, ">");
+  }
+
+  public TransitionConditionOperationBuilder ifIsLowerThan(String brickName, String value) throws Exception {
+    return conditionbuilder(brickName, value, "<");
+  }
 
 }
