@@ -25,7 +25,11 @@ String prettyDigitalRead(String name, int value)
     return (name + " := OFF");
 }}
 
-String prettyAnalogPrint(String name, float value)
+String prettyPrint(String name, float value)
+{{
+    return (name + " := "+ value);
+}}
+String prettyPrint(String name, int value)
 {{
     return (name + " := "+ value);
 }}

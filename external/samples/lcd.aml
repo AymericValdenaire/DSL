@@ -4,7 +4,16 @@ INIT STATE print_temp
 LiquidCrystal lcd 2 3 4 5 6 7 8 size[16,2]
 
 ANALOG SENSOR temp 1
+DIGITAL SENSOR button 9
 
 STATE print_temp {
     PRINT lcd temp
+    => STATE print_button
+}
+
+STATE print_button {
+    PRINT lcd button
+    WAIT 500
+    PRINT lcd "Hello world"
+    => STATE print_temp
 }

@@ -63,9 +63,9 @@ Action :
 
 Print:
     cmd='PRINTLN' output=[PrintableDevice] from_brick=[Brick] |
-    cmd='PRINTLN' serial=[PrintableDevice] msg=STRING |
+    cmd='PRINTLN' output=[PrintableDevice] msg=STRING |
     cmd='PRINT' output=[PrintableDevice] from_brick=[Brick] |
-    cmd='PRINT' serial=[PrintableDevice] msg=STRING
+    cmd='PRINT' output=[PrintableDevice] msg=STRING
 
 ;
 

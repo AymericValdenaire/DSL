@@ -21,7 +21,7 @@ class Model(object):
         return 'void loop() {{ {init_state}(); }}'.format(init_state=self.init_state.name)
 
     def generate_var_init_code(self):
-        return ''.join([e.generate_var_init_code() for e in self.bricks])
+        return '\n'.join([e.generate_var_init_code() for e in self.bricks])
 
     def generate_setup_code(self):
         setup = open("templates/setup.amlt", 'r').read()
@@ -238,26 +238,25 @@ class Transition:
                                  delay_instr=delay_instr)
 
 class Print:
-    def __init__(self, parent, cmd, output, serial, from_brick, msg):
+    def __init__(self, parent, cmd, output, from_brick, msg):
         self.parent = parent
         self.cmd = cmd
         self.output = output
-        self.serial = serial
         self.from_brick = from_brick
         self.msg = msg
 
     def __str__(self):
         # LCD mode
         cmd = 'print' if self.cmd == "PRINT" else "println"
-        if self.output is not None:
-            payload = "prettyDigitalPrint(\"{}\",{})".format(self.from_brick.name,self.from_brick.inline_read_code())\
-                if self.from_brick is not None else "\"" + self.msg.ljust(self.output.size[0]) + "\""
+        if type(self.output) is LiquidCrystal:
+            payload = "prettyPrint(\"{}\",{})".format(self.from_brick.name,self.from_brick.inline_read_code())\
+                if self.from_brick is not None else "\"" + self.msg.ljust(self.output.matrix_size[0]) + "\""
 
-            return '{lcd_name}.setCursor(0, 0);\n' \
+            return '{lcd_name}.flush();\n\t{lcd_name}.setCursor(0, 0);\n' \
                 '\t{lcd_name}.{cmd}({payload});\n'.format(lcd_name=self.output.name,cmd=cmd, payload=payload)
 
-        if self.serial is not None:
-            payload = "prettyDigitalPrint(\"{}\",{})".format(self.from_brick.name, self.from_brick.inline_read_code()) if self.from_brick is not None else "\"" + self.msg + "\""
+        if type(self.output) is Serial:
+            payload = "prettyPrint(\"{}\",{})".format(self.from_brick.name, self.from_brick.inline_read_code()) if self.from_brick is not None else "\"" + self.msg + "\""
 
             return 'Serial.{cmd}({payload});\n'.format(cmd=cmd, payload=payload)
 
