@@ -30,7 +30,4 @@ public abstract class Brick implements Visitable {
         visitor.visit(this);
     }
 
-    public String declareVariable(){
-        return String.format("int %s = %d;\n", name, pin);
-    }
 }
