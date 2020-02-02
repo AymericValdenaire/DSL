@@ -48,7 +48,7 @@ public class ArduinoApp implements Visitable {
   public String generateVarInitCode() {
     StringBuilder builder = new StringBuilder();
     for (Brick currentBrick : bricks) {
-      builder.append("\n").append(currentBrick.toString());
+      builder.append(currentBrick.declarationVariableCode());
     }
     return builder.toString();
   }

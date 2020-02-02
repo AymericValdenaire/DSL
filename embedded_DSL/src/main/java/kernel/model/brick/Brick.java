@@ -22,4 +22,9 @@ public abstract class Brick{
         return String.format("\nint %s = %d;", name, pin);
     }
 
+
+    public String declarationVariableCode(){
+        return String.format("int %s = %d;\n", name, pin);
+    }
+
 }
