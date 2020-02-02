@@ -6,6 +6,7 @@ import kernel.logic.statements.transition.Transition;
 import kernel.logic.statements.transition.condition.Condition;
 import kernel.logic.statements.transition.condition.ConditionTerm;
 import kernel.model.brick.Brick;
+import kernel.model.brick.Serial;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -55,12 +56,13 @@ public class TransitionConditionBuilder {
         value = "LOW";
         break;
       default:
-        throw new Exception("Bad keyword on condition");
+        value = "\""+value+"\"";
+        break;
     }
     if(transition.getCondition() == null) {
-        transition.setCondition(new Condition(brickName , "==", value));
+        transition.setCondition(new Condition(brick , "==", value));
     }else{
-      transition.getCondition().setRight(new Condition(brickName , "==", value));
+      transition.getCondition().setRight(new Condition(brick , "==", value));
     }
 
     return new TransitionConditionOperationBuilder(this,transition);

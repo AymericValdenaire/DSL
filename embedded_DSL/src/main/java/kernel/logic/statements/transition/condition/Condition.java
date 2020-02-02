@@ -1,5 +1,7 @@
 package kernel.logic.statements.transition.condition;
 
+import kernel.model.brick.Serial;
+import kernel.model.brick.sensor.Sensor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +26,7 @@ public class Condition{
   @Override
   public String toString() {
     return String.format("%s %s %s",
-            (left instanceof Condition) ? left.toString() : "digitalRead("+left.toString()+")"
+            left.toString()
             , operator
             , right.toString());
   }

@@ -1,9 +1,3 @@
-import static builder.ArduinoBuilder.analogicActuator;
-import static builder.ArduinoBuilder.analogicSensor;
-import static builder.ArduinoBuilder.arduino;
-import static builder.ArduinoBuilder.digitalActuator;
-import static builder.ArduinoBuilder.digitalSensor;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -12,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import kernel.ArduinoApp;
 import kernel.generator.Generator;
+
+import static builder.ArduinoBuilder.*;
 
 public class Main {
 
@@ -121,6 +117,36 @@ public class Main {
                       .when().ifIsEqual("button1", "ON")
                       .thenGoToState("off")
                     .initState("off")
+                    .build();
+
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+
+    // ----------------
+    // SCENARIO SERIAL
+    // ----------------
+
+    arduinoApp =
+            arduino("Serial")
+                    .setup(digitalSensor("button1", 10))
+                    .setup(digitalActuator("led", 11))
+                    .setup(digitalActuator("buzzer", 9))
+                    .setup(serial("serial",9600))
+                    .states()
+                      .state("buzzer_on")
+                        .set("led").toLow()
+                        .set("buzzer").toHigh()
+                        .println("serial","led : OFF")
+                        .when().ifIsEqual("serial", "test")
+                        .thenGoToState("led_on")
+                      .state("led_on")
+                        .println("serial","led : ON")
+                        .set("led").toHigh()
+                        .set("buzzer").toLow()
+                        .when().ifIsEqual("serial", "test")
+                        .thenGoToState("buzzer_on")
+                    .initState("led_on")
                     .build();
 
     generator = new Generator();

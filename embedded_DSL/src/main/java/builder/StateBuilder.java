@@ -2,8 +2,12 @@ package builder;
 
 import builder.exception.ValidationException;
 import kernel.logic.State;
+import kernel.logic.statements.action.Print;
+import kernel.model.brick.Serial;
 import lombok.AccessLevel;
 import lombok.Getter;
+
+import static builder.ArduinoBuilder.serials;
 
 @Getter(AccessLevel.PROTECTED)
 /**
@@ -27,6 +31,17 @@ public class StateBuilder {
    */
   public BrickSetterBuilder set(String name) throws ValidationException {
     return new BrickSetterBuilder(this, name, this.currentState);
+  }
+
+  public StateBuilder println(String name, String value) throws ValidationException {
+
+    Serial serial = serials
+            .stream()
+            .filter(actuator -> actuator.getName().equals(name))
+            .findFirst()
+            .orElseThrow(() -> new ValidationException("Brick of name " + name + " is not found or is not a actuator"));
+    currentState.getStatements().add(new Print("PRINTLN", serial,value));
+    return this;
   }
 
   public StateBuilder sleep(int time) {

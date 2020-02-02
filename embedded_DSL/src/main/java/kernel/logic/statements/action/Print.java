@@ -3,12 +3,16 @@ package kernel.logic.statements.action;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
 import kernel.model.brick.actuator.LiquidCrystal;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Print extends Action{
   private String cmd;
-  private final LiquidCrystal output;
+  private  LiquidCrystal output;
   private final Serial serial;
-  private final Brick from_brick;
+  private  Brick from_brick;
   private final String msg;
 
   public Print(String cmd, LiquidCrystal output, Serial serial, Brick from_brick, String msg) {
@@ -19,6 +23,11 @@ public class Print extends Action{
     this.msg = msg;
   }
 
+  public Print(String cmd,Serial serial, String msg){
+    this.cmd = cmd;
+    this.serial = serial;
+    this.msg = msg;
+  }
   @Override
   public String toString() {
     if(cmd.equals("PRINT")) {
@@ -46,7 +55,7 @@ public class Print extends Action{
       } else {
         payload = String.format("\"%s\"", msg);
       }
-      return String.format("Serial.%s(%s);\n", cmd, payload);
+      return String.format("Serial.%s(%s);", cmd, payload);
     }
 
     return payload;

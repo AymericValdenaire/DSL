@@ -2,7 +2,7 @@ package kernel.model.brick;
 
 public class Serial extends Brick {
 
-    private final String name;
+    private String name;
     private final int baudrate;
 
     public Serial(String name, int baudrate) {
@@ -10,6 +10,7 @@ public class Serial extends Brick {
         this.name = name;
         this.baudrate = baudrate;
     }
+
 
     @Override
     public String generateSetupCode() {

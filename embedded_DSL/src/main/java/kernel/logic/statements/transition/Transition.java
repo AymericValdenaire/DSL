@@ -47,7 +47,7 @@ public class Transition extends Statement {
     }
 
     return String.format(
-            "guard =  millis() - time > debounce;\n"
+            "guard =  millis() - time > debounce;\n\n"
                     + "    if (%s  && guard) {\n"
                     + "        time = millis();\n"
                     + "        %s();\n"
