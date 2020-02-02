@@ -12,8 +12,8 @@ public class AnalogicActuator extends Actuator{
   }
 
   @Override
-  public String generateAssignementCode() {
-    return String.format("analogWrite(%s, %s);", name);
+  public String generateAssignementCode(String value) {
+    return String.format("analogWrite(%s, %s);", name,value);
   }
 
 }

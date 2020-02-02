@@ -13,5 +13,5 @@ public abstract class Actuator extends Brick {
         return String.format("\n\tpinMode(%d, OUTPUT);", pin);
     }
 
-    public abstract String generateAssignementCode();
+    public abstract String generateAssignementCode(String value);
 }

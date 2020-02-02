@@ -14,6 +14,6 @@ public class Assignement extends Action {
 
     @Override
     public String toString() {
-        return String.format(var.generateAssignementCode(), value.toString());
+        return String.format(var.generateAssignementCode(value.toString()));
     }
 }
