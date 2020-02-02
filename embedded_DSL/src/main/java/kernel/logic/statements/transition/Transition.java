@@ -16,7 +16,7 @@ public class Transition extends Statement {
   }
 
   @Override
-  public String generateSetupCode() {
+  public String toString() {
     String nextStateToMake;
     if (this.exception == null) {
       nextStateToMake = this.exception.generateSetupCode();
@@ -40,8 +40,9 @@ public class Transition extends Statement {
     }
   }
 
+
   @Override
-  public String toString(){
-    
+  public String generateSetupCode() {
+    return "";
   }
 }

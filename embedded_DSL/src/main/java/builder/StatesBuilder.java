@@ -28,7 +28,7 @@ public class StatesBuilder {
         .anyMatch(state -> state.getName().equals(name))) {
       throw new ValidationException("State " + name + " is already defined");
     }
-    State state = new State();
+    State state = new State(name, statements, frequency);
     state.setName(name);
     this.parent.getArduinoApp().getStateMachine().add(state);
     return new StateBuilder(this, state);

@@ -1,25 +1,29 @@
 package kernel.logic;
 
-import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
-import kernel.logic.statements.action.Assignement;
-import kernel.logic.statements.transition.Transition;
-import kernel.model.brick.sensor.Sensor;
-import lombok.Data;
+import kernel.logic.statements.Statement;
+import lombok.Getter;
 
-@Data
+@Getter
 public class State implements Visitable {
 
-  String name;
-  Sensor sensor;
-  List<Transition> transitions;
-  List<Assignement> assignements;
+  private final String name;
+  private final List<Statement> statements;
+  private final Float frequency;
+  private final Integer maxStateSleep;
 
-  public State(){
-    transitions = new ArrayList<>();
-    assignements = new ArrayList<>();
+  public State(String name, List<Statement> statements, Float frequency){
+    this.name = name;
+    this.statements = statements;
+    this.frequency = frequency;
+    if (frequency > 0) {
+      Float maxStateSleepFloat = (1000 * (1 / frequency));
+      this.maxStateSleep = maxStateSleepFloat.intValue();
+    } else {
+      this.maxStateSleep = null;
+    }
   }
 
   public void accept(Visitor visitor) {
@@ -27,12 +31,19 @@ public class State implements Visitable {
   }
 
   @Override
-  public String generateSetupCode() {
-    return null;
+  public String toString() {
+    String state = String.format("void {%s}()\n"
+        + "{{\n"
+        + "{%s} // No transition, loop on {%s} state"
+        + "\t{%s}();\n"
+        + "}}");
+
+    Boolean noTransition = true;
+    
   }
 
   @Override
-  public String toString() {
-    return null;
+  public String generateSetupCode() {
+    return "";
   }
 }
