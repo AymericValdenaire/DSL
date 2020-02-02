@@ -37,9 +37,9 @@ public class ArduinoBuilder {
    * On crée une instance du builder, et on lui ajoute une instance de l'app (point d'entrée du code
    * arduino)
    */
-  public static ArduinoBuilder arduino(String name) {
+  public static ArduinoBuilder arduino(String name,String initialState) {
     ArduinoBuilder arduinoBuilder = new ArduinoBuilder();
-    arduinoBuilder.arduinoApp = new ArduinoApp(name);
+    arduinoBuilder.arduinoApp = new ArduinoApp(initialState);
     arduinoBuilder.arduinoApp.setName(name);
     return arduinoBuilder;
   }

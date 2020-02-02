@@ -12,9 +12,12 @@ import kernel.model.DigitalValue;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
 
+import java.util.List;
+
 public class Generator extends Visitor<StringBuilder>{
 
   private StringBuilder builder;
+  private List<State> stateMachine;
 
   public Generator(){
     this.builder = new StringBuilder();
@@ -22,15 +25,18 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Brick brick) {
-    builder.insert(0, brick.declareVariable() );
+    builder.insert(0, brick.toString() );
     builder.append(brick.generateSetupCode());
   }
 
   @Override
-  public void visit(State state) {
-    for(int i = 0; i < state.getTransitions().size();i++) {
+  public void visit(State currentstate) {
+    builder.append(currentstate.generateSetupCode());
+    Transition transition;
+    for(int i = 0; i < currentstate.getTransitions().size();i++) {
 
-      this.visit(state.getTransitions().get(i));
+      transition = currentstate.getTransitions().get(i);
+      this.visit(currentstate.getTransitions().get(i));
       /*
       builder.append(String.format("if ( "));
       if(state.getName().equals("on")) {
@@ -42,10 +48,17 @@ public class Generator extends Visitor<StringBuilder>{
       state.getTransitions().get(i).accept(this);
 
        */
+
+      for(State state : stateMachine){
+        if(state.getName().equals(transition.getNextState())){
+          for(int j = 0; j < currentstate.getStatements().size();j++) {
+            this.visit(state.getStatements().get(j));
+          }
+        }
+      }
+
     }
-    for(int i = 0; i < state.getAssignements().size();i++) {
-      this.visit((state.getAssignements().get(i)));
-    }
+
     builder.append("\n}");
   }
 
@@ -61,7 +74,7 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(ArduinoApp arduinoApp) {
-
+    this.stateMachine = arduinoApp.getStateMachine();
     //setup
     builder.append("void setup()\n{\n");
     for (Brick brick: arduinoApp.getBricks()){
@@ -90,7 +103,6 @@ public class Generator extends Visitor<StringBuilder>{
 
   @Override
   public void visit(Exception e) {
-  public void visit(DigitalValue digitalValue) {
 
   }
 
@@ -108,8 +120,6 @@ public class Generator extends Visitor<StringBuilder>{
   public void visit(Condition condition) {
 
   }
-
-
 
 
   public String getGeneratedCode(){

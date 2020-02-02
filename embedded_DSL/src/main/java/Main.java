@@ -25,7 +25,7 @@ public class Main {
     // ----------------
 
     arduinoApp =
-        arduino("scenario1")
+        arduino("scenario1","off")
             .setup(digitalSensor("button", 10))
             .setup(digitalActuator("led", 11))
             .setup(digitalActuator("buzzer", 9))
@@ -38,13 +38,39 @@ public class Main {
                   .set("led").toHigh()
                   .set("buzzer").toHigh()
                   .when().ifIsEqual("button", "OFF").thenGoToState("off")
-              .initState("off")
           .build();
 
     generator = new Generator();
     arduinoApp.accept(generator);
-    arduinoAppGenerated.put(arduinoApp.getName(), generator);
+    arduinoAppGenerated.put("scenario1", generator);
 
+    // ----------------
+    // SCENARIO 2
+    // ----------------
+
+    arduinoApp =
+            arduino("scenario1","off")
+                    .setup(digitalSensor("button1", 10))
+                    .setup(digitalSensor("button2", 11))
+                    .setup(digitalActuator("buzzer", 9))
+                    .states()
+                      .state("off")
+                        .set("buzzer").toLow()
+                        .when().ifIsEqual("button1", "ON")
+                                .and()
+                                .ifIsEqual("button2", "ON")
+                        .thenGoToState("on")
+                      .state("on")
+                        .set("buzzer").toHigh()
+                        .when().ifIsEqual("button1", "OFF")
+                                .or()
+                                .ifIsEqual("button2", "OFF")
+                        .thenGoToState("off")
+                    .build();
+
+    generator = new Generator();
+    arduinoApp.accept(generator);
+    arduinoAppGenerated.put("scenario2", generator);
     // ----------------
     // BUILDER TEST
     // ----------------

@@ -7,19 +7,21 @@ import kernel.generator.Visitor;
 import kernel.logic.State;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class ArduinoApp implements Visitable {
 
   private List<Brick> bricks;
   private List<State> stateMachine;
-  private State initialState;
+  private String initialState;
   private Serial serial;
   private Float frequency;
   private int maxStateSleep;
+  private String name;
 
-  public ArduinoApp(List<Brick> bricks, List<State> states, State initialState, Serial serial, Float frequency){
+  public ArduinoApp(List<Brick> bricks, List<State> states, String initialState, Serial serial, Float frequency){
     this.initialState = initialState;
     this.serial = serial;
     this.frequency = frequency;
@@ -29,13 +31,19 @@ public class ArduinoApp implements Visitable {
     this.maxStateSleep = maxStateSleepFloat.intValue();
   }
 
+  public ArduinoApp(String initialState){
+    bricks = new ArrayList<>();
+    stateMachine = new ArrayList<>();
+    this.initialState = initialState;
+  }
+
   @Override
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 
   public String generateLoopCode() {
-    return String.format("void loop() {{ {%s}(); }}", initialState.getName());
+    return String.format("void loop() {{ {%s}(); }}", initialState);
   }
 
   public String generateVarInitCode() {
@@ -53,7 +61,7 @@ public class ArduinoApp implements Visitable {
         + "\n"
         + "    // Used for Exceptions\n"
         + "    pinMode(12, OUTPUT);\n"
-        + "}}", serial.generateSetupCode());
+        + "}}", (serial != null) ? serial.generateSetupCode() : "" );
   }
 
   public String generateStatesCode() {

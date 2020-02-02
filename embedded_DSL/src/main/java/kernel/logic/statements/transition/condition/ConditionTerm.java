@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ConditionTerm implements Visitable {
 
   private final Object right;
-  private final Brick left;
+  private final Object left;
   private final String operator;
 
   public ConditionTerm(Brick left, String operator, Object right) {

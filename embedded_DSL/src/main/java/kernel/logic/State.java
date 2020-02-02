@@ -1,22 +1,31 @@
 package kernel.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import kernel.logic.statements.Statement;
 import kernel.logic.statements.action.Wait;
 import kernel.logic.statements.transition.Transition;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class State implements Visitable {
 
-  private final String name;
-  private final List<Statement> statements;
-  private final Float frequency;
-  private final Integer maxStateSleep;
+  private String name;
+  private List<Transition> transitions;
+  private List<Statement> statements;
+  private Float frequency;
+  private Integer maxStateSleep;
+
+  public State(){
+    this.transitions = new ArrayList<>();
+    this.statements = new ArrayList<>();
+  }
 
   public State(String name, List<Statement> statements, Float frequency){
+    this.transitions = new ArrayList<>();
     this.name = name;
     this.statements = statements;
     this.frequency = frequency;
@@ -58,7 +67,7 @@ public class State implements Visitable {
     }
 
     if(noTransition) {
-      stateCodeBuilder.append("\tdelay(").append(sleepBeforeNextState.toString()).append(");");
+      stateCodeBuilder.append("\tdelay(").append(sleepBeforeNextState).append(");");
     }
 
     return String.format(state, name, stateCodeBuilder.toString(), name, name);

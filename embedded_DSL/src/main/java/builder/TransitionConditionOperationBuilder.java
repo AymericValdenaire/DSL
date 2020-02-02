@@ -1,6 +1,7 @@
 package builder;
 
 import kernel.logic.statements.transition.Transition;
+import kernel.logic.statements.transition.condition.Condition;
 
 /**
  * Permet de définir la condition d'une transition
@@ -26,6 +27,8 @@ public class TransitionConditionOperationBuilder {
    * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder and() {
+    transition.setCondition(new Condition(transition.getCondition() , "&&", null));
+    transition.getCondition().setOperator("and");
     return parent;
   }
 
@@ -35,6 +38,7 @@ public class TransitionConditionOperationBuilder {
    * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder or() {
+    transition.getCondition().setOperator("or");
     return parent;
   }
 

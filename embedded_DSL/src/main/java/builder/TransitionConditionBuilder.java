@@ -4,6 +4,7 @@ import builder.exception.ValidationException;
 import kernel.logic.State;
 import kernel.logic.statements.transition.Transition;
 import kernel.logic.statements.transition.condition.Condition;
+import kernel.logic.statements.transition.condition.ConditionTerm;
 import kernel.model.brick.Brick;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +22,9 @@ public class TransitionConditionBuilder {
   private Transition transition;
 
   public TransitionConditionBuilder(StateBuilder stateBuilder, State state) {
-
+    this.transition = new Transition();
+    this.currentState = state;
+    currentState.getTransitions().add(transition);
     this.parent = stateBuilder;
     this.currentState = state;
   }
@@ -44,9 +47,15 @@ public class TransitionConditionBuilder {
         .findFirst()
         .orElseThrow(() -> new ValidationException("Brick of name " + brickName + " is invalid"));
     this.value = value;
-    this.transition = new Transition();
-    this.transition.setCondition(new Condition(brick,"==",value));
-    currentState.getTransitions().add(transition);
+
+    if(transition.getCondition() == null) {
+      transition.setCondition(new Condition(brickName , "==", value));
+    }else{
+      transition.getCondition().setRight(new Condition(brickName , "==", value));
+    }
+
     return new TransitionConditionOperationBuilder(this,transition);
   }
+
+
 }

@@ -1,14 +1,15 @@
 package kernel.logic.statements.transition.condition;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class Condition implements Visitable {
 
-  private final Object left;
-  private final Object right;
-  private final String operator;
+  private Object left;
+  private Object right;
+  private String operator;
 
   public Condition(Object left, String operator, Object right) {
     this.left = left;

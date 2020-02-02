@@ -28,7 +28,7 @@ public class StatesBuilder {
         .anyMatch(state -> state.getName().equals(name))) {
       throw new ValidationException("State " + name + " is already defined");
     }
-    State state = new State(name, statements, frequency);
+    State state = new State();
     state.setName(name);
     this.parent.getArduinoApp().getStateMachine().add(state);
     return new StateBuilder(this, state);
@@ -39,7 +39,7 @@ public class StatesBuilder {
    *
    * @return ArduinoApp
    */
-  public StatesBuilder initState(String stateName) throws ValidationException {
+  /*public StatesBuilder initState(String stateName) throws ValidationException {
     this.parent.getArduinoApp().setIntialState(
           this.parent.getArduinoApp().getStateMachine().stream()
           .filter(state -> state.getName().equals(stateName))
@@ -47,7 +47,7 @@ public class StatesBuilder {
           .orElseThrow(() -> new ValidationException("State " + stateName + " not found"))
         );
     return this;
-  }
+  }*/
 
   public ArduinoApp build() {
     return this.parent.build();

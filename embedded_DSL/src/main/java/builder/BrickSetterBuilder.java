@@ -39,12 +39,12 @@ public class BrickSetterBuilder {
   }
 
   public StateBuilder toHigh() {
-    state.getAssignements().add(new Assignement(actuator, Signal.HIGH));
+    state.getStatements().add(new Assignement(actuator, Signal.HIGH));
     return parent;
   }
 
   public StateBuilder toLow() {
-    state.getAssignements().add(new Assignement(actuator, Signal.LOW));
+    state.getStatements().add(new Assignement(actuator, Signal.LOW));
     return parent;
   }
 
@@ -54,7 +54,7 @@ public class BrickSetterBuilder {
   }
 
   public StateBuilder to(String action) {
-    state.getAssignements().add(new Assignement(actuator, action));
+    state.getStatements().add(new Assignement(actuator, action));
     return parent;
   }
 
