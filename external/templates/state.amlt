@@ -1,5 +1,6 @@
 void {name}()
 {{
 {code}  // No transition, loop on {name} state
+    {sleep_remain}
     {name}();
 }}

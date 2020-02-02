@@ -197,7 +197,11 @@ class State:
         if no_transition and self.max_state_sleep is not None:
             state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
 
-        return state.format(name=self.name, code=state_inner_code)
+        end_state_sleep = ''
+        if time_to_sleep_before_next_state is not None and time_to_sleep_before_next_state > 0 :
+            end_state_sleep = 'delay({});'.format(time_to_sleep_before_next_state)
+
+        return state.format(name=self.name, code=state_inner_code, sleep_remain=end_state_sleep)
 
 class Exception:
     def __init__(self, parent, value):
