@@ -7,6 +7,7 @@ import kernel.generator.Visitor;
 import kernel.logic.State;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
+import kernel.model.brick.actuator.LiquidCrystal;
 import lombok.Data;
 
 @Data
@@ -55,17 +56,50 @@ public class ArduinoApp implements Visitable {
 
   @Override
   public String generateSetupCode() {
-    StringBuilder stringBuilder = new StringBuilder(String.format("\nvoid setup()\n"
-            + "{%s\n"
-            + "\tpinMode(12, OUTPUT);// Used for Exceptions\n",(serial != null) ? serial.generateSetupCode() : "" ));
+    StringBuilder stringBuilder = new StringBuilder(String.format("\n"
+        + "long time = 0;\n"
+        + "long debounce = 200;\n"
+        + "\n"
+        + "boolean guard;\n"
+        + "void error(int n)\n"
+        + "{\n"
+        + "    for(int c = 0 ; c != n ; c++)\n"
+        + "    {\n"
+        + "        digitalWrite(12, HIGH);\n"
+        + "        delay(200);\n"
+        + "        digitalWrite(12, LOW);\n"
+        + "        delay(200);\n"
+        + "    }\n"
+        + "    delay(200 * n);\n"
+        + "    error(n);\n"
+        + "}\n"
+        + "\n"
+        + "String prettyDigitalRead(String name, int value)\n"
+        + "{\n"
+        + "    if (value == 0)\n"
+        + "    {\n"
+        + "        return (name + \" := ON\");\n"
+        + "    }\n"
+        + "    return (name + \" := OFF\");\n"
+        + "}\n"
+        + "\n"
+        + "String prettyAnalogPrint(String name, float value)\n"
+        + "{\n"
+        + "    return (name + \" := \"+ value);\n"
+        + "}\n"
+        + "\n"
+        + "void setup()\n"
+        + "{%s\n"
+        + "\n"
+        + "    // Used for Exceptions\n"
+        + "    pinMode(12, OUTPUT);\n"
+        + "}", (serial != null) ? serial.generateSetupCode() : "" ));
     for (Brick currentBrick : bricks) {
       stringBuilder.append(currentBrick.generateSetupCode());
     }
     stringBuilder.append( "}");
     stringBuilder.insert(0,"long time = 0;\nlong debounce = 200;\n");
     return stringBuilder.toString();
-
-
   }
 
   public String generateStatesCode() {
@@ -76,17 +110,23 @@ public class ArduinoApp implements Visitable {
     return builder.toString();
   }
 
-  /*public String generateIncludes() {
-    String includes = "";
+  public String generateIncludes() {
+    StringBuilder includes = new StringBuilder();
     for(Brick currentBrick : bricks) {
-
+      if(currentBrick.getClass().equals(LiquidCrystal.class)){
+        LiquidCrystal lcd = (LiquidCrystal) currentBrick;
+        for (String include : lcd.dependencies()) {
+          includes.append(String.format("#include <%s.h>\n", include));
+        }
+      }
     }
-  }*/
+    return includes.toString();
+  }
 
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    //builder.append(generateIncludes);
+    builder.append(generateIncludes());
     builder.append(generateVarInitCode()).append(generateSetupCode()).append(generateStatesCode()).append(generateLoopCode());
     return builder.toString();
   }
