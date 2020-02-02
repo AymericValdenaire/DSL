@@ -1,0 +1,91 @@
+/* extracted from https://bottlecaps.de/rr/ui on Sun Feb 2, 2020, 13:42 (UTC+01)
+ */
+
+Model  ::= ('INIT' 'STATE' State.ID) ( Serial? ('FREQUENCY' FLOAT)? | ('FREQUENCY' FLOAT)?  Serial?) Bricks+ States+
+
+Brick ::= Sensor | Actuator | Serial
+
+Sensor::= AnalogicSensor | DigitalSensor
+
+Actuator::= AnalogicActuator | DigitalActuator | LiquidCrystal
+
+
+AnalogicSensor ::= 'ANALOG' 'SENSOR' ID INT
+
+
+DigitalSensor ::= 'DIGITAL' 'SENSOR' ID INT
+
+
+AnalogicActuator ::= 'ANALOG' 'ACTUATOR' ID INT
+
+
+DigitalActuator ::= 'DIGITAL' 'ACTUATOR' ID INT
+
+
+LiquidCrystal ::= 'LiquidCrystal' ID  INT+ 'size[' (INT (','?))+ ']'
+
+Serial ::= 'SERIAL' ID 'BAUDRATE' INT
+
+
+State::=
+    'STATE' ID '{'
+        Statements*
+    '}'
+
+
+Statements ::= Action | Transition
+
+Action ::= Assignment | Print | Wait
+
+
+Print ::= 'PRINTLN' PrintableDevice.ID (Brick | STRING) |
+          'PRINT' PrintableDevice.ID (Brick | STRING)
+
+
+
+PrintableDevice ::= Serial | LiquidCrystal
+
+
+Wait::= 'WAIT' INT
+
+
+
+
+
+Transition::=
+    Condition '=>' ('STATE' State.ID | Exception) |
+    '=>' 'STATE' State.ID |
+    '=>' Exception
+
+
+Condition::=
+    ConditionTerm BooleanOperators Condition |
+    ConditionTerm BooleanOperators ConditionTerm |
+    ConditionTerm
+
+Assignment ::=
+    Actuator.ID '=' DigitalValue |
+    Actuator.ID '=' INT |
+    AnalogicActuator.ID '=' FLOAT |
+    Actuator.ID '=' Sensor.ID
+
+
+Exception::= 'ERROR' INT
+
+
+
+ConditionTerm::=
+    Serial.ID '==' STRING |
+    Brick.ID Operators (Comparable | DigitalValue)
+
+
+DigitalValue ::= 'ON' | 'OFF'
+
+Comparable::= INT | FLOAT | STRING
+
+
+Operators::=
+    '==' | '!=' | '>=' | '<='
+
+
+BooleanOperators::= '&&' | '||'
