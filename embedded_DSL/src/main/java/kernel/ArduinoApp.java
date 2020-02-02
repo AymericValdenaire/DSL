@@ -42,7 +42,7 @@ public class ArduinoApp implements Visitable {
   }
 
   public String generateLoopCode() {
-    return String.format("\nvoid loop() {{ %s(); }}", initialState);
+    return String.format("\nvoid loop() { %s(); }", initialState);
   }
 
   public String generateVarInitCode() {
@@ -62,7 +62,7 @@ public class ArduinoApp implements Visitable {
       stringBuilder.append(currentBrick.generateSetupCode());
     }
     stringBuilder.append( "}");
-
+    stringBuilder.insert(0,"long time = 0;\nlong debounce = 200;\n");
     return stringBuilder.toString();
 
 

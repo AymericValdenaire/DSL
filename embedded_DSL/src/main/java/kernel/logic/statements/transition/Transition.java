@@ -48,12 +48,11 @@ public class Transition extends Statement {
 
     return String.format(
             "guard =  millis() - time > debounce;\n"
-                    + "    if ({%s}  && guard) {{\n"
+                    + "    if (%s  && guard) {\n"
                     + "        time = millis();\n"
-                    + "        {%s}{%s}\n"
-                    + "    }}",
-            this.condition.toString(),
-            delayInstr,
+                    + "        %s();\n"
+                    + "    }",
+            String.format(this.condition.toString()),
             nextState
     );
   }

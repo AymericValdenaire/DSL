@@ -28,7 +28,6 @@ public class TransitionConditionOperationBuilder {
    */
   public TransitionConditionBuilder and() {
     transition.setCondition(new Condition(transition.getCondition() , "&&", null));
-    transition.getCondition().setOperator("and");
     return parent;
   }
 
@@ -38,7 +37,7 @@ public class TransitionConditionOperationBuilder {
    * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder or() {
-    transition.getCondition().setOperator("or");
+    transition.setCondition(new Condition(transition.getCondition() , "||", null));
     return parent;
   }
 
