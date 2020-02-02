@@ -12,8 +12,8 @@ public class DigitalActuator extends Actuator{
   }
 
   @Override
-  public String generateAssignementCode() {
-    return String.format("digitalWrite(%s, %s);", name);
+  public String generateAssignementCode(String value) {
+    return String.format("digitalWrite(%s, %s);", name,value);
   }
 
 }

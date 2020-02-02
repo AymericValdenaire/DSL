@@ -2,17 +2,23 @@ package kernel.logic.statements.transition;
 
 import kernel.logic.statements.Statement;
 import kernel.logic.statements.transition.condition.Condition;
+import lombok.Data;
 
+@Data
 public class Transition extends Statement {
 
-  private final Condition condition;
-  private final String nextState;
-  private final Exception exception;
+  private Condition condition;
+  private String nextState;
+  private Exception exception;
 
   public Transition(Condition condition, String nextState, Exception exception) {
     this.condition = condition;
     this.nextState = nextState;
     this.exception = exception;
+  }
+
+  public Transition(){
+    exception = null;
   }
 
   @Override
@@ -29,7 +35,7 @@ public class Transition extends Statement {
     }
 
     String nextStateInstruction;
-    if (this.exception == null) {
+    if (this.exception != null) {
       nextStateInstruction = this.exception.generateSetupCode();
     } else {
       nextStateInstruction = this.nextState + "();";
@@ -51,6 +57,23 @@ public class Transition extends Statement {
     }
   }
 
+  public String generateCode() {
+
+    String nextStateInstruction;
+    if (this.exception != null) {
+      nextStateInstruction = this.exception.generateSetupCode();
+    } else {
+      nextStateInstruction = this.nextState + "();";
+    }
+
+    if (this.condition == null) {
+      return String.format("\n\t%s", nextStateInstruction);
+    } else {
+      return String.format(
+                      "    if ("+this.condition.toString()+") {\n"
+      );
+    }
+  }
   @Override
   public String toString(){
     return "";

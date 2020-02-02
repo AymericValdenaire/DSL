@@ -29,4 +29,8 @@ public abstract class Brick implements Visitable {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
+
+    public String declareVariable(){
+        return String.format("int %s = %d;\n", name, pin);
+    }
 }

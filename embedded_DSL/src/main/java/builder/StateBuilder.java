@@ -39,7 +39,7 @@ public class StateBuilder {
    * @return TransitionConditionBuilder
    */
   public TransitionConditionBuilder when() {
-    return new TransitionConditionBuilder(this);
+    return new TransitionConditionBuilder(this,currentState);
   }
 
   /**
