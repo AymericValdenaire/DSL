@@ -108,11 +108,13 @@ public class Main {
                       .when().ifIsEqual("button1", "ON")
                       .thenGoToState("only_buzzer")
                     .state("only_buzzer")
+                      .set("led").toLow()
                       .set("buzzer").toHigh()
                       .when().ifIsEqual("button1", "ON")
                       .thenGoToState("only_led")
                     .state("only_led")
                       .set("led").toHigh()
+                      .set("buzzer").toLow()
                       .when().ifIsEqual("button1", "ON")
                       .thenGoToState("off")
                     .build();
