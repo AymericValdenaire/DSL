@@ -1,11 +1,11 @@
 package kernel.logic.statements.transition.condition;
-import kernel.generator.Visitable;
-import kernel.generator.Visitor;
-import lombok.Data;
-import lombok.Getter;
 
-@Data
-public class Condition implements Visitable {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Condition{
 
   private Object left;
   private Object right;
@@ -17,12 +17,6 @@ public class Condition implements Visitable {
     this.operator = operator;
   }
 
-  @Override
-  public void accept(Visitor visitor) {
-    visitor.visit(this);
-  }
-
-  @Override
   public String generateSetupCode() {
     return "";
   }

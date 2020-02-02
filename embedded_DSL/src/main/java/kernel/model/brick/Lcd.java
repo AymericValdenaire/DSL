@@ -1,7 +1,5 @@
 package kernel.model.brick;
 
-import kernel.generator.Visitor;
-
 public class Lcd extends Brick {
     private final int bus_id;
 
@@ -19,11 +17,6 @@ public class Lcd extends Brick {
     public Lcd(String name, int busId){
         super(name, busId);
         this.bus_id = busId;
-    }
-
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
     }
 
     @Override

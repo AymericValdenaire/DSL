@@ -1,9 +1,6 @@
 package kernel.model;
 
-import kernel.generator.Visitable;
-import kernel.generator.Visitor;
-
-public class DigitalValue implements Visitable {
+public class DigitalValue {
 
   private final String value;
 
@@ -11,12 +8,6 @@ public class DigitalValue implements Visitable {
     this.value = value;
   }
 
-  @Override
-  public void accept(Visitor visitor) {
-    visitor.visit(this);
-  }
-
-  @Override
   public String generateSetupCode() {
     return "";
   }

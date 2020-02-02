@@ -57,7 +57,7 @@ public class ArduinoApp implements Visitable {
   @Override
   public String generateSetupCode() {
     return String.format("void setup()\n"
-        + "{{{setup_code}\n"
+        + "{{{%s}\n"
         + "\n"
         + "    // Used for Exceptions\n"
         + "    pinMode(12, OUTPUT);\n"
@@ -86,6 +86,5 @@ public class ArduinoApp implements Visitable {
     builder.append(generateVarInitCode()).append(generateSetupCode()).append(generateStatesCode()).append(generateLoopCode());
     return builder.toString();
   }
-
 
 }

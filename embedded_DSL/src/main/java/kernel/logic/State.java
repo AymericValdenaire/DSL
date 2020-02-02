@@ -2,16 +2,15 @@ package kernel.logic;
 
 import java.util.ArrayList;
 import java.util.List;
-import kernel.generator.Visitable;
-import kernel.generator.Visitor;
 import kernel.logic.statements.Statement;
 import kernel.logic.statements.action.Wait;
 import kernel.logic.statements.transition.Transition;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class State implements Visitable {
+@Getter
+@Setter
+public class State {
 
   private String name;
   private List<Transition> transitions;
@@ -35,10 +34,6 @@ public class State implements Visitable {
     } else {
       this.maxStateSleep = null;
     }
-  }
-
-  public void accept(Visitor visitor) {
-    visitor.visit(this);
   }
 
   @Override
@@ -71,10 +66,5 @@ public class State implements Visitable {
     }
 
     return String.format(state, name, stateCodeBuilder.toString(), name, name);
-  }
-
-  @Override
-  public String generateSetupCode() {
-    return "";
   }
 }

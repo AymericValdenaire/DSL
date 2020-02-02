@@ -7,7 +7,7 @@ import kernel.model.brick.Serial;
 import lombok.Getter;
 
 @Getter
-public class ConditionTerm implements Visitable {
+public class ConditionTerm {
 
   private final Object right;
   private final Object left;
@@ -23,16 +23,6 @@ public class ConditionTerm implements Visitable {
     this.right = right;
     this.left = serial;
     this.operator = null;
-  }
-
-  @Override
-  public void accept(Visitor visitor) {
-    visitor.visit(this);
-  }
-
-  @Override
-  public String generateSetupCode() {
-    return "";
   }
 
   @Override

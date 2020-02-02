@@ -1,26 +1,14 @@
 package kernel.logic.statements.transition;
 
-import kernel.generator.Visitable;
-import kernel.generator.Visitor;
 import lombok.Getter;
 
 @Getter
-public class Exception implements Visitable {
+public class Exception{
 
   private int value;
 
   public Exception(int value){
     this.value = value;
-  }
-
-  @Override
-  public void accept(Visitor visitor) {
-    visitor.visit(this);
-  }
-
-  @Override
-  public String generateSetupCode() {
-    return "";
   }
 
   @Override
