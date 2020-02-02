@@ -12,11 +12,11 @@ Language : Java
 - [x] [Scenario 4](https://github.com/FontanyLegall-Brandon/DSL/blob/master/embedded_DSL/src/main/java/Main.java#L99-L120)
 
 #### Scenario complexe
-- [x] Specifying Execution Frequency
-- [x] Remote Communication
-- [x] Exception Throwing
-- [x] Supporting the LCD screen
-- [x] Handling Analogical Bricks
+- Specifying Execution Frequency
+- [x] [Remote Communication](https://github.com/FontanyLegall-Brandon/DSL/blob/master/embedded_DSL/src/main/java/Main.java#L130-L150)
+- [x] [Exception Throwing](https://github.com/FontanyLegall-Brandon/DSL/blob/master/embedded_DSL/src/main/java/Main.java#L160-L171)
+- Supporting the LCD screen
+- [x] [Handling Analogical Bricks](https://github.com/FontanyLegall-Brandon/DSL/blob/master/embedded_DSL/src/main/java/Main.java#L181-L195)
 
 ## External DSL 
 Language : TextX
