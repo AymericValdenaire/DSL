@@ -55,12 +55,17 @@ public class ArduinoApp implements Visitable {
 
   @Override
   public String generateSetupCode() {
-    return String.format("\nvoid setup()\n"
-        + "{{%s\n"
-        + "\n"
-        + "    // Used for Exceptions\n"
-        + "    pinMode(12, OUTPUT);\n"
-        + "}}", (serial != null) ? serial.generateSetupCode() : "" );
+    StringBuilder stringBuilder = new StringBuilder(String.format("\nvoid setup()\n"
+            + "{%s\n"
+            + "\tpinMode(12, OUTPUT);// Used for Exceptions\n",(serial != null) ? serial.generateSetupCode() : "" ));
+    for (Brick currentBrick : bricks) {
+      stringBuilder.append(currentBrick.generateSetupCode());
+    }
+    stringBuilder.append( "}");
+
+    return stringBuilder.toString();
+
+
   }
 
   public String generateStatesCode() {

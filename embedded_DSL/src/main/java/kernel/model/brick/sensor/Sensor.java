@@ -10,7 +10,7 @@ public abstract class Sensor extends Brick {
 
     @Override
     public String generateSetupCode() {
-        return String.format("\n\tpinMode(%d, INPUT);", this.pin);
+        return String.format("\tpinMode(%d, INPUT);\n", this.pin);
     }
 
 }

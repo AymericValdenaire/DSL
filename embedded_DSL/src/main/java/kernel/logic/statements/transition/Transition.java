@@ -34,9 +34,9 @@ public class Transition extends Statement {
 
     if (this.exception != null) {
       nextState = this.exception.toString();
-    } else {
-      nextState = exception.toString();
-    }
+    } /*else {
+      nextState = exception.toString(); // c'est de la merde ?
+    }*/
 
     if (nextState.getClass().equals(Exception.class)) {
       nextState += "();";

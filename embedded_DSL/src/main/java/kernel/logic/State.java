@@ -38,11 +38,10 @@ public class State {
 
   @Override
   public String toString() {
-    String state = "void %s()\n"
-        + "{{\n"
-        + "{%s} // No transition, loop on {%s} state"
+    String state = "void %s()"
+        + "{\n\n%s} // No transition, loop on {%s} state"
         + "\t{%s}();\n"
-        + "}}";
+        + "}";
 
     Boolean noTransition = true;
     Integer sleepBeforeNextState = maxStateSleep;
@@ -51,20 +50,23 @@ public class State {
       if (current.getClass().equals(Wait.class) && maxStateSleep != null) {
         Wait currentWait = (Wait) current;
         sleepBeforeNextState -= currentWait.getMilli();
+      }else {
+        stateCodeBuilder.append("\t"+current.toString()+"\n");
       }
-      if (current.getClass().equals(Transition.class)) {
+    }
+
+    for(Transition transition : transitions) {
+      if (transition.getClass().equals(Transition.class)) {
         noTransition = false;
-        Transition currentTransition = (Transition) current;
-        stateCodeBuilder.append("\n\t").append(currentTransition.generateCode(sleepBeforeNextState));
+        stateCodeBuilder.append("\n\t").append(transition.generateCode(sleepBeforeNextState));
       } else {
-        stateCodeBuilder.append("\n\t").append(current.toString());
+        stateCodeBuilder.append("\n\t").append(transition.toString());
       }
     }
 
-    if(noTransition) {
-      stateCodeBuilder.append("\n\tdelay(").append(sleepBeforeNextState).append(");");
+    if(noTransition){
+      stateCodeBuilder.append("\tdelay(").append(sleepBeforeNextState).append(");");
     }
-
     return String.format(state, name, stateCodeBuilder.toString(), name, name);
   }
 }
