@@ -38,7 +38,7 @@ public class State {
 
   @Override
   public String toString() {
-    String state = "void {%s}()\n"
+    String state = "void %s()\n"
         + "{{\n"
         + "{%s} // No transition, loop on {%s} state"
         + "\t{%s}();\n"
@@ -62,7 +62,7 @@ public class State {
     }
 
     if(noTransition) {
-      stateCodeBuilder.append("\tdelay(").append(sleepBeforeNextState).append(");");
+      stateCodeBuilder.append("\n\tdelay(").append(sleepBeforeNextState).append(");");
     }
 
     return String.format(state, name, stateCodeBuilder.toString(), name, name);

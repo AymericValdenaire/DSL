@@ -8,7 +8,6 @@ import kernel.logic.State;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class ArduinoApp implements Visitable {
@@ -43,21 +42,21 @@ public class ArduinoApp implements Visitable {
   }
 
   public String generateLoopCode() {
-    return String.format("void loop() {{ {%s}(); }}", initialState);
+    return String.format("\nvoid loop() {{ %s(); }}", initialState);
   }
 
   public String generateVarInitCode() {
     StringBuilder builder = new StringBuilder();
     for (Brick currentBrick : bricks) {
-      builder.append(currentBrick.toString());
+      builder.append("\n").append(currentBrick.toString());
     }
     return builder.toString();
   }
 
   @Override
   public String generateSetupCode() {
-    return String.format("void setup()\n"
-        + "{{{%s}\n"
+    return String.format("\nvoid setup()\n"
+        + "{{%s\n"
         + "\n"
         + "    // Used for Exceptions\n"
         + "    pinMode(12, OUTPUT);\n"
