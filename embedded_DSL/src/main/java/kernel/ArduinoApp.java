@@ -7,9 +7,9 @@ import kernel.generator.Visitor;
 import kernel.logic.State;
 import kernel.model.brick.Brick;
 import kernel.model.brick.Serial;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class ArduinoApp implements Visitable {
 
   private List<Brick> bricks;
@@ -18,8 +18,10 @@ public class ArduinoApp implements Visitable {
   private Serial serial;
   private int frequency;
   private int maxStateSleep;
+  private String name;
 
-  public ArduinoApp(){
+  public ArduinoApp(String name){
+    this.name = name;
     bricks = new ArrayList<Brick>();
     stateMachine =  new ArrayList<State>();
   }

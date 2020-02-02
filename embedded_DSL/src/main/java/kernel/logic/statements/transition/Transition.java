@@ -6,7 +6,7 @@ import kernel.logic.statements.transition.condition.Condition;
 public class Transition extends Statement {
 
   private final Condition condition;
-  private final String nextState;
+  private String nextState;
   private final Exception exception;
 
   public Transition(Condition condition, String nextState, Exception exception) {
@@ -15,31 +15,38 @@ public class Transition extends Statement {
     this.exception = exception;
   }
 
-  @Override
-  public String toString() {
-    String nextStateToMake;
-    if (this.exception == null) {
-      nextStateToMake = this.exception.generateSetupCode();
-    } else {
-      nextStateToMake = this.nextState + "();";
+  public String generateCode(Integer delay) {
+    String delayInstr = "";
+
+    if(delay != null && delay > 0){
+      delayInstr = String.format("delay(%d);\n\t\t", delay);
     }
 
-    if (this.condition == null) {
-      return String.format("{%s}\n\t{%s}", "delay_instr",nextStateToMake);
+    if (this.exception != null) {
+      nextState = this.exception.generateSetupCode();
     } else {
-      return String.format(
-          "guard =  millis() - time > debounce;\n"
-              + "    if ({%s}  && guard) {{\n"
-              + "        time = millis();\n"
-              + "        {%s}{%s}\n"
-              + "    }}",
-          this.condition.toString(),
-          "delay_instr",
-          nextStateToMake
-      );
+      nextState = exception.toString();
     }
+
+    if(nextState.getClass().equals(Exception.class)) {
+      nextState += "();";
+    }
+
+    if(condition == null) {
+      return String.format("{%s}\n\t{%s}", delayInstr, nextState);
+    }
+
+    return String.format(
+        "guard =  millis() - time > debounce;\n"
+            + "    if ({%s}  && guard) {{\n"
+            + "        time = millis();\n"
+            + "        {%s}{%s}\n"
+            + "    }}",
+        this.condition.toString(),
+        delayInstr,
+        nextState
+    );
   }
-
 
   @Override
   public String generateSetupCode() {

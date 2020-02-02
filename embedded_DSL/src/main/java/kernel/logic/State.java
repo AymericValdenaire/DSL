@@ -4,6 +4,8 @@ import java.util.List;
 import kernel.generator.Visitable;
 import kernel.generator.Visitor;
 import kernel.logic.statements.Statement;
+import kernel.logic.statements.action.Wait;
+import kernel.logic.statements.transition.Transition;
 import lombok.Getter;
 
 @Getter
@@ -32,14 +34,34 @@ public class State implements Visitable {
 
   @Override
   public String toString() {
-    String state = String.format("void {%s}()\n"
+    String state = "void {%s}()\n"
         + "{{\n"
         + "{%s} // No transition, loop on {%s} state"
         + "\t{%s}();\n"
-        + "}}");
+        + "}}";
 
     Boolean noTransition = true;
-    
+    Integer sleepBeforeNextState = maxStateSleep;
+    StringBuilder stateCodeBuilder = new StringBuilder();
+    for(Statement current : statements) {
+      if (current.getClass().equals(Wait.class) && maxStateSleep != null) {
+        Wait currentWait = (Wait) current;
+        sleepBeforeNextState -= currentWait.getMilli();
+      }
+      if (current.getClass().equals(Transition.class)) {
+        noTransition = false;
+        Transition currentTransition = (Transition) current;
+        stateCodeBuilder.append("\n\t").append(currentTransition.generateCode(sleepBeforeNextState));
+      } else {
+        stateCodeBuilder.append("\n\t").append(current.toString());
+      }
+    }
+
+    if(noTransition) {
+      stateCodeBuilder.append("\tdelay(").append(sleepBeforeNextState.toString()).append(");");
+    }
+
+    return String.format(state, name, stateCodeBuilder.toString(), name, name);
   }
 
   @Override

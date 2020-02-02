@@ -39,7 +39,7 @@ public class ArduinoBuilder {
    */
   public static ArduinoBuilder arduino(String name) {
     ArduinoBuilder arduinoBuilder = new ArduinoBuilder();
-    arduinoBuilder.arduinoApp = new ArduinoApp();
+    arduinoBuilder.arduinoApp = new ArduinoApp(name);
     arduinoBuilder.arduinoApp.setName(name);
     return arduinoBuilder;
   }
