@@ -1,6 +1,6 @@
 INIT STATE print_temp
 
-DIGITAL ACTUATOR buzzer 9
+ANALOG ACTUATOR buzzer 9
 ANALOG SENSOR rotary 1
 
 STATE print_temp {

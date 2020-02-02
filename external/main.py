@@ -194,7 +194,7 @@ class State:
                                                                                                   1000 / self.model_freq),
                                                                                               self.name))
 
-        if no_transition:
+        if no_transition and self.max_state_sleep is not None:
             state_inner_code += "\tdelay({});".format(time_to_sleep_before_next_state)
 
         return state.format(name=self.name, code=state_inner_code)
@@ -288,16 +288,17 @@ class Assignment:
         self.value = value
         self.var_analog = var_analog
 
-        if self.new_value is not None:
-            self.value = self.new_value.inline_read_code()
-        if self.var_analog is not None:
-            self.value = self.var_analog
-
     def __str__(self):
-        if self.var is AnalogicActuator:
-            return "analogWrite({}, {});".format(self.var.name, self.value)
+        if type(self.var) is AnalogicActuator:
+            if self.new_value is not None:
+                return "analogWrite({}, {});".format(self.var.name, self.new_value.inline_read_code())
+            else:
+                return "analogWrite({}, {});".format(self.var.name, self.value)
         else:
-            return "digitalWrite({}, {});".format(self.var.name, self.value)
+            if self.new_value is not None:
+                return "digitalWrite({}, {});".format(self.var.name, self.new_value.inline_read_code())
+            else:
+                return "digitalWrite({}, {});".format(self.var.name, self.value)
 
 
 class AssignmentFromBrick:
