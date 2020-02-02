@@ -28,8 +28,8 @@ Language : TextX
 - [x] [Scenario 4](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/scenario_4.aml)
 
 #### Scenario complexe
-- [x] Specifying Execution Frequency
-- [x] Remote Communication
+- [x] [Specifying Execution Frequency](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/frenquency_test.aml)
+- [x] [Remote Communication](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/serial.aml)
 - [x] [Exception Throwing](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/exception.aml)
 - [x] [Supporting the LCD screen](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/lcd.aml)
 - [x] [Handling Analogical Bricks](https://github.com/FontanyLegall-Brandon/DSL/blob/master/external/samples/analogic.aml)
