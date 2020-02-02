@@ -59,10 +59,18 @@ public class TransitionConditionBuilder {
         value = "\""+value+"\"";
         break;
     }
-    if(transition.getCondition() == null) {
-        transition.setCondition(new Condition(brick , "==", value));
+    if(brick instanceof Serial){
+      if(transition.getCondition() == null) {
+        transition.setCondition(new Condition(brick.toString()+"indexOf("+value+")" , ">=", "0"));
+      }else{
+        transition.getCondition().setRight(new Condition(brick.toString()+"indexOf("+value+")" , ">=", "0"));
+      }
     }else{
-      transition.getCondition().setRight(new Condition(brick , "==", value));
+      if(transition.getCondition() == null) {
+        transition.setCondition(new Condition(brick , "==", value));
+      }else{
+        transition.getCondition().setRight(new Condition(brick , "==", value));
+      }
     }
 
     return new TransitionConditionOperationBuilder(this,transition);
